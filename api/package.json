@@ -1,0 +1,57 @@
+{
+    "name": "alpha-ingest-api",
+    "version": "0.0.1",
+    "description": "Ingest API",
+    "main": "start.js",
+    "scripts": {
+        "test": "lab --lint --timeout 10000",
+        "test:coverage": "lab --lint --coverage",
+        "start": "npm-run-all --parallel start:server",
+        "start:server": "node start.js",
+        "precommit": "npm run git:hook",
+        "prepush": "npm run git:hook",
+        "git:hook": "lab --lint"
+    },
+    "keywords": [
+        "nodejs",
+        "hapi",
+        "elasticsearch",
+        "kibana",
+        "ingest",
+        "api"
+    ],
+    "author": "Luis Malavé <luis.malave@samtec.com> (https://github.com/malave)",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "devDependencies": {
+        "code": "^4.0.0",
+        "husky": "^0.13.3",
+        "lab": "^13.0.4",
+        "npm-run-all": "^4.0.2"
+    },
+    "dependencies": {
+        "async": "^2.4.0",
+        "blipp": "^2.3.0",
+        "boom": "^4.3.1",
+        "dotenv": "^4.0.0",
+        "elasticsearch": "^13.0.1",
+        "h2o2": "^5.4.0",
+        "handlebars": "^4.0.8",
+        "hapi": "^16.1.1",
+        "hapi-swagger": "^7.7.0",
+        "hoek": "^4.1.1",
+        "inert": "^4.2.0",
+        "joi": "^10.4.1",
+        "moment": "^2.18.1",
+        "request": "^2.81.0",
+        "vision": "^4.1.1"
+    },
+    "eslintConfig": {
+        "extends": "eslint-config-hapi",
+        "rules": {
+            "quotes": [
+                "error",
+                "single"
+            ]
+        }
+    }
+}
