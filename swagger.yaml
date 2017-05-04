@@ -1,0 +1,181 @@
+swagger: '2.0'
+info:
+  description: Ingest API
+  version: 1.0.0
+  title: SPG Ingest
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: luis.malave@samtec.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: samtec.com
+basePath: /v1
+tags:
+  - name: channelTemplate
+    description: Channel Template
+  - name: channel
+    description: Channel
+schemes:
+  - http
+paths:
+  /channelTemplates:
+    get:
+      tags:
+        - channelTemplate
+      summary: Find all instances of the model
+      description: ''
+      operationId: findAllChannelTemplates
+      produces:
+        - application/xml
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChannelTemplate'
+  '/channelTemplates/{id}':
+    get:
+      tags:
+        - channelTemplate
+      summary: 'Find a model instances by {id}'
+      description: ''
+      operationId: findOneChannelTemplate
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of Channel Template to return
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChannelTemplate'
+  /channel:
+    get:
+      tags:
+        - channel
+      summary: Find all instances of the model
+      description: ''
+      operationId: findAllChannels
+      produces:
+        - application/xml
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Channel'
+    post:
+      tags:
+        - channel
+      summary: Create new instance of the model
+      description: ''
+      operationId: addChannel
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: query
+          name: channelTemplateId
+          type: string
+          description: Channel Template Id
+          required: true
+        - in: body
+          name: parameters
+          description: Array of paramenters
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Parameter'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Channel'
+  '/channel/{id}':
+    get:
+      tags:
+        - channel
+      summary: 'Find a model instances by {id}'
+      description: ''
+      operationId: findOneChannel
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of Channel Template to return
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChannelTemplate'
+definitions:
+  Parameter:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  Flow:
+    type: object
+    properties:
+      label:
+        type: string
+      nodes:
+        type: array
+  ChannelTemplate:
+    type: object
+    properties:
+      id:
+        type: string
+      version:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      flow:
+        $ref: '#/definitions/Flow'
+      parmeters:
+        type: array
+        items:
+          $ref: '#/definitions/Parameter'
+  Channel:
+    type: object
+    properties:
+      id:
+        type: string
+      version:
+        type: string
+      templateVersion:
+        type: string
+      templateId:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
