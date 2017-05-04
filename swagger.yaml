@@ -27,8 +27,31 @@ paths:
       description: ''
       operationId: findAllChannelTemplates
       produces:
-        - application/xml
         - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ChannelTemplate'
+    post:
+      tags:
+        - channelTemplate
+      summary: Create new instance of the model
+      description: ''
+      operationId: addChannelTemplates
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          description: ID of Channel Template to return
+          required: true
+          schema:
+            $ref: '#/definitions/ChannelTemplate'
       responses:
         '200':
           description: successful operation
@@ -44,7 +67,6 @@ paths:
       description: ''
       operationId: findOneChannelTemplate
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: id
@@ -59,6 +81,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ChannelTemplate'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Not found
   /channel:
     get:
       tags:
@@ -67,7 +93,6 @@ paths:
       description: ''
       operationId: findAllChannels
       produces:
-        - application/xml
         - application/json
       responses:
         '200':
@@ -84,9 +109,7 @@ paths:
       operationId: addChannel
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - in: query
@@ -117,7 +140,6 @@ paths:
       description: ''
       operationId: findOneChannel
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: id
@@ -132,6 +154,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ChannelTemplate'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Not found
 definitions:
   Parameter:
     type: object
@@ -140,6 +166,51 @@ definitions:
         type: string
       value:
         type: string
+      editable:
+        type: boolean
+        description: If the parameter is editable in the UI.
+        default: true
+      visible:
+        type: boolean
+        description: If the parameter is visible in the UI.
+        default: true
+      type:
+        type: string
+        description: Based on HTML input type (https://developer.mozilla.org/en/docs/Web/HTML/Element/input) and other tags, not all types supported. 
+        enum:
+          #- button
+          - checkbox
+          #- color
+          - date
+          #- datetime-local
+          - email
+          #- file
+          - hidden
+          #- image
+          - month
+          - number
+          - password
+          - radio
+          - range
+          #- reset
+          #- search
+          #- submit
+          #- tel
+          - text
+          - textArea
+          - time
+          - url
+          - week
+          - select
+        default: text
+      options:
+        type: array
+        description: List of options for types that require them (checkbox, select, radio, etc.).
+        items:
+          type: string
+    required:
+      - key
+      - value
   Flow:
     type: object
     properties:
@@ -154,16 +225,24 @@ definitions:
         type: string
       version:
         type: string
+      deprecated:
+        type: boolean
+        default: false
       name:
         type: string
       description:
         type: string
       flow:
         $ref: '#/definitions/Flow'
-      parmeters:
+      parameters:
         type: array
         items:
           $ref: '#/definitions/Parameter'
+    required:
+      - name
+      - description
+      - flow
+      - parameters
   Channel:
     type: object
     properties:
@@ -171,11 +250,16 @@ definitions:
         type: string
       version:
         type: string
-      templateVersion:
-        type: string
       templateId:
+        type: string
+      templateVersion:
         type: string
       name:
         type: string
       description:
         type: string
+    required:
+      - name
+      - description
+      - templateId
+      - templateVersion
