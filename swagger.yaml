@@ -10,7 +10,7 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 host: samtec.com
-basePath: /v1
+basePath: /ingest/v1
 tags:
   - name: channelTemplate
     description: Channel Template
@@ -153,7 +153,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ChannelTemplate'
+              $ref: '#/definitions/Channel'
         '400':
           description: Invalid ID supplied
         '404':
@@ -166,51 +166,8 @@ definitions:
         type: string
       value:
         type: string
-      editable:
-        type: boolean
-        description: If the parameter is editable in the UI.
-        default: true
-      visible:
-        type: boolean
-        description: If the parameter is visible in the UI.
-        default: true
-      type:
-        type: string
-        description: Based on HTML input type (https://developer.mozilla.org/en/docs/Web/HTML/Element/input) and other tags, not all types supported. 
-        enum:
-          #- button
-          - checkbox
-          #- color
-          - date
-          #- datetime-local
-          - email
-          #- file
-          - hidden
-          #- image
-          - month
-          - number
-          - password
-          - radio
-          - range
-          #- reset
-          #- search
-          #- submit
-          #- tel
-          - text
-          - textArea
-          - time
-          - url
-          - week
-          - select
-        default: text
-      options:
-        type: array
-        description: List of options for types that require them (checkbox, select, radio, etc.).
-        items:
-          type: string
     required:
       - key
-      - value
   Flow:
     type: object
     properties:
@@ -234,15 +191,10 @@ definitions:
         type: string
       flow:
         $ref: '#/definitions/Flow'
-      parameters:
-        type: array
-        items:
-          $ref: '#/definitions/Parameter'
     required:
       - name
       - description
       - flow
-      - parameters
   Channel:
     type: object
     properties:
@@ -258,6 +210,10 @@ definitions:
         type: string
       description:
         type: string
+      parameters:
+        type: array
+        items:
+          $ref: '#/definitions/Parameter'
     required:
       - name
       - description
