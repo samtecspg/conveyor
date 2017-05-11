@@ -1,13 +1,13 @@
 'use strict';
 const ChannelController = require('../controllers/channel.controller');
-const ChannelValidate = require('../validate/channel.validate');
+const ChannelValidator = require('../validators/channel.validator');
 
 const channelRoutes = [
     {
         method: 'GET',
         path: '/channels',
         config: {
-            validate: ChannelValidate.findAll,
+            validate: ChannelValidator.findAll,
             handler: ChannelController.findAll
         }
     },
@@ -15,7 +15,7 @@ const channelRoutes = [
         method: 'GET',
         path: '/channels/{id}',
         config: {
-            validate: ChannelValidate.findById,
+            validate: ChannelValidator.findById,
             handler: ChannelController.findById
         }
     },
@@ -23,7 +23,7 @@ const channelRoutes = [
         method: 'POST',
         path: '/channels',
         config: {
-            validate: ChannelValidate.add,
+            validate: ChannelValidator.add,
             handler: ChannelController.add
         }
     }

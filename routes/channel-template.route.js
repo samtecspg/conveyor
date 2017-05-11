@@ -1,13 +1,13 @@
 'use strict';
 const ChannelTemplateController = require('../controllers/channel-template.controller');
-const ChannelTemplateValidate = require('../validate/channel-template.validate');
+const ChannelTemplateValidator = require('../validators/channel-template.validator');
 
 const channelRoutes = [
     {
         method: 'GET',
         path: '/channelTemplates',
         config: {
-            validate: ChannelTemplateValidate.findAll,
+            validate: ChannelTemplateValidator.findAll,
             handler: ChannelTemplateController.findAll
         }
     },
@@ -15,7 +15,7 @@ const channelRoutes = [
         method: 'GET',
         path: '/channelTemplates/{id}',
         config: {
-            validate: ChannelTemplateValidate.findById,
+            validate: ChannelTemplateValidator.findById,
             handler: ChannelTemplateController.findById
         }
     },
@@ -23,7 +23,7 @@ const channelRoutes = [
         method: 'POST',
         path: '/channelTemplates',
         config: {
-            validate: ChannelTemplateValidate.add,
+            validate: ChannelTemplateValidator.add,
             handler: ChannelTemplateController.add
         }
     }
