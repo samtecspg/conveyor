@@ -168,6 +168,7 @@ definitions:
         type: string
     required:
       - key
+      - value
   Flow:
     type: object
     properties:
@@ -219,3 +220,4 @@ definitions:
       - description
       - templateId
       - templateVersion
+      - parameters

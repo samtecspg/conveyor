@@ -23,7 +23,7 @@ before((done) => {
     });
 });
 
-suite('/channel', () => {
+suite('/channels', () => {
 
     suite('/get', () => {
 
@@ -31,32 +31,15 @@ suite('/channel', () => {
 
             const options = {
                 method: 'GET',
-                url: '/channel'
+                url: '/channels'
             };
-            server
-                .inject(options)
-                .then((res) => {
 
-                    expect(res.statusCode).to.equal(200);
-                    expect(res.result).to.be.an.array();
-                    done();
-                });
-        });
+            server.inject(options, (res) => {
 
-        test('should respond with 200 successful operation and return and array of objects', (done) => {
-
-            const options = {
-                method: 'GET',
-                url: '/channel'
-            };
-            server
-                .inject(options)
-                .then((res) => {
-
-                    expect(res.statusCode).to.equal(200);
-                    expect(res.result).to.be.an.array();
-                    done();
-                });
+                expect(res.statusCode).to.equal(200);
+                expect(res.result).to.be.an.array();
+                done();
+            });
         });
 
         test('should respond with 200 successful operation and return a single object', (done) => {
@@ -67,7 +50,7 @@ suite('/channel', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channel/${data.id}`
+                url: `/channels/${data.id}`
             };
 
             server.inject(options, (res) => {
@@ -86,7 +69,7 @@ suite('/channel', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channel/${data.id}`
+                url: `/channels/${data.id}`
             };
 
             server.inject(options, (res) => {
@@ -103,15 +86,23 @@ suite('/channel', () => {
         test('should respond with 200 successful operation and return an object', (done) => {
 
             const data = {
-                version: '0.0.1',
                 templateId: 'anduin-executions-template',
                 templateVersion: '1.0.0',
                 name: 'anduin-executions',
-                description: 'Anduin Executions can be posted here for storage and use in Samson'
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: [
+                    {
+                        key: 'test-key',
+                        value: 'test-value'
+                    },
+                    {
+                        key: 'test-key',
+                        value: 'test-value'
+                    }]
             };
             const options = {
                 method: 'POST',
-                url: '/channel',
+                url: '/channels',
                 payload: data
             };
 
@@ -128,7 +119,67 @@ suite('/channel', () => {
             const data = [{ invalid: true }];
             const options = {
                 method: 'POST',
-                url: '/channel',
+                url: '/channels',
+                payload: data
+            };
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(400);
+                expect(res.result.error).to.equal('Bad Request');
+                done();
+            });
+        });
+
+        test('should respond with 400 Bad Request [Invalid Parameter Schema - number instead of string]', (done) => {
+
+            const data = {
+                templateId: 'anduin-executions-template',
+                templateVersion: '1.0.0',
+                name: 'anduin-executions',
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: [
+                    {
+                        key: 1,
+                        value: 'test-value'
+                    },
+                    {
+                        key: 'test-key',
+                        value: 'test-value'
+                    }]
+            };
+            const options = {
+                method: 'POST',
+                url: '/channels',
+                payload: data
+            };
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(400);
+                expect(res.result.error).to.equal('Bad Request');
+                done();
+            });
+        });
+
+        test('should respond with 400 Bad Request [Invalid Parameter Schema - missing required value]', (done) => {
+
+            const data = {
+                templateId: 'anduin-executions-template',
+                templateVersion: '1.0.0',
+                name: 'anduin-executions',
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: [
+                    {
+                        value: 'test-value'
+                    },
+                    {
+                        key: 'test-key'
+                    }]
+            };
+            const options = {
+                method: 'POST',
+                url: '/channels',
                 payload: data
             };
 

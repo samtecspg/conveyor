@@ -1,16 +1,16 @@
 'use strict';
 
-const Channel = require('../models').Channel;
-
+const ChannelSchema = require('../models').Channel.schema;
+const ParameterSchema = require('../models').Parameter.schema;
+const Joi = require('joi');
 class ChannelValidate {
     constructor() {
 
         this.findById = {
             params: (() => {
 
-                const channelSchema = new Channel().schema;
                 return {
-                    id: channelSchema.id.required()
+                    id: ChannelSchema.id.required()
                 };
             })()
         };
@@ -18,13 +18,15 @@ class ChannelValidate {
         this.add = {
             payload: (() => {
 
-                const channelSchema = new Channel().schema;
                 return {
-                    version: channelSchema.version.required(),
-                    templateId: channelSchema.templateId.required(),
-                    templateVersion: channelSchema.templateVersion.required(),
-                    name: channelSchema.name.required(),
-                    description: channelSchema.description.required()
+                    templateId: ChannelSchema.templateId.required(),
+                    templateVersion: ChannelSchema.templateVersion.required(),
+                    name: ChannelSchema.name.required(),
+                    description: ChannelSchema.description.required(),
+                    parameters: Joi.array().items({
+                        key: ParameterSchema.key.required(),
+                        value: ParameterSchema.value.required()
+                    }).required()
                 };
             })()
         };

@@ -5,7 +5,7 @@ const ChannelValidate = require('../validate/channel.validate');
 const channelRoutes = [
     {
         method: 'GET',
-        path: '/channel',
+        path: '/channels',
         config: {
             validate: ChannelValidate.findAll,
             handler: ChannelController.findAll
@@ -13,7 +13,7 @@ const channelRoutes = [
     },
     {
         method: 'GET',
-        path: '/channel/{id}',
+        path: '/channels/{id}',
         config: {
             validate: ChannelValidate.findById,
             handler: ChannelController.findById
@@ -21,7 +21,7 @@ const channelRoutes = [
     },
     {
         method: 'POST',
-        path: '/channel',
+        path: '/channels',
         config: {
             validate: ChannelValidate.add,
             handler: ChannelController.add
