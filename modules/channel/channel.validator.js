@@ -1,7 +1,7 @@
 'use strict';
 
-const ChannelSchema = require('../models').Channel.schema;
-const ParameterSchema = require('../models').Parameter.schema;
+const ChannelSchema = require('../../models/index').Channel.schema;
+const ParameterSchema = require('../../models/index').Parameter.schema;
 const Joi = require('joi');
 class ChannelValidate {
     constructor() {

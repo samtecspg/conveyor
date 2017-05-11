@@ -1,7 +1,7 @@
 'use strict';
 
 const Hapi = require('hapi');
-const Routes = require('./routes');
+const Routes = require('./config/routes');
 
 module.exports = (callback) => {
 

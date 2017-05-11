@@ -1,6 +1,6 @@
 'use strict';
 
-const ChannelTemplateSchema = require('../models').ChannelTemplate.schema;
+const ChannelTemplateSchema = require('../../models/index').ChannelTemplate.schema;
 class ChannelTemplateValidate {
     constructor() {
 

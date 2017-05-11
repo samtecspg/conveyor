@@ -1,6 +1,6 @@
 'use strict';
-const ChannelTemplateController = require('../controllers/channel-template.controller');
-const ChannelTemplateValidator = require('../validators/channel-template.validator');
+const ChannelTemplateController = require('./channel-template.controller');
+const ChannelTemplateValidator = require('./channel-template.validator');
 
 const channelRoutes = [
     {
