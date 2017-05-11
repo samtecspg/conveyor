@@ -13,7 +13,7 @@ let server;
 
 before((done) => {
 
-    require('../index.js')((err, srv) => {
+    require('../index')((err, srv) => {
 
         if (err) {
             done(err);

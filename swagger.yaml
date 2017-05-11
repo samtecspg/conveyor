@@ -65,7 +65,7 @@ paths:
         - channelTemplate
       summary: 'Find a model instances by {id}'
       description: ''
-      operationId: findOneChannelTemplate
+      operationId: findByIdChannelTemplate
       produces:
         - application/json
       parameters:
