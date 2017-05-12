@@ -1,6 +1,6 @@
 'use strict';
 const ChannelController = require('../controllers');
-const ChannelValidator = require('../channel.validator');
+const ChannelValidator = require('./channel.validator');
 
 const channelRoutes = [
     {
