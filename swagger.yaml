@@ -65,7 +65,7 @@ paths:
         - channelTemplate
       summary: 'Find a model instances by {id}'
       description: ''
-      operationId: findOneChannelTemplate
+      operationId: findByIdChannelTemplate
       produces:
         - application/json
       parameters:
@@ -132,6 +132,8 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Channel'
+        '400':
+          description: Invalid Channel Template Id or Parameter array supplied
   '/channel/{id}':
     get:
       tags:
@@ -168,6 +170,7 @@ definitions:
         type: string
     required:
       - key
+      - value
   Flow:
     type: object
     properties:
@@ -219,3 +222,4 @@ definitions:
       - description
       - templateId
       - templateVersion
+      - parameters
