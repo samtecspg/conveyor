@@ -112,19 +112,27 @@ paths:
       produces:
         - application/json
       parameters:
-        - in: query
-          name: channelTemplateId
-          type: string
-          description: Channel Template Id
-          required: true
         - in: body
-          name: parameters
+          name: payload
           description: Array of paramenters
-          required: true
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Parameter'
+            type: object
+            required:
+              - templateId
+              - name
+              - description
+              - parameters
+            properties:
+              templateId:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              parameters:
+                type: array
+                items:
+                  $ref: '#/definitions/Parameter'
       responses:
         '200':
           description: successful operation
@@ -132,6 +140,8 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Channel'
+        '400':
+          description: Invalid Channel Template Id or Parameter array supplied
   '/channel/{id}':
     get:
       tags:
@@ -219,5 +229,4 @@ definitions:
       - name
       - description
       - templateId
-      - templateVersion
       - parameters
