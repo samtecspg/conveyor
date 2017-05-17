@@ -1,10 +1,8 @@
 'use strict';
-const TestData = require('../tests/test-data');
+const ChannelTemplate = require('../../../models').ChannelTemplate;
 
 module.exports = (request, reply) => {
 
-
-    const channel = request.payload;
-    channel.id = TestData.id;
-    return reply(channel);
+    const channelTemplate = ChannelTemplate.save(request.payload);
+    return reply(channelTemplate);
 };

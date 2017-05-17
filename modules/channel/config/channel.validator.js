@@ -20,7 +20,6 @@ class ChannelValidate {
 
                 return {
                     templateId: ChannelSchema.templateId.required(),
-                    templateVersion: ChannelSchema.templateVersion.required(),
                     name: ChannelSchema.name.required(),
                     description: ChannelSchema.description.required(),
                     parameters: Joi.array().items({

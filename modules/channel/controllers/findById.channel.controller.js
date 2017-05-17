@@ -1,14 +1,16 @@
 'use strict';
 const Boom = require('boom');
-const TestData = require('../tests/test-data');
+const Channel = require('../../../models').Channel;
 
 module.exports = (request, reply) => {
 
-    if (request.params.id === '-1') {
+    const channel = Channel.findById(request.params.id);
+
+    if (!channel) {
         const err = Boom.notFound('Channel not found');
         reply(err);
     }
     else {
-        return reply(TestData);
+        return reply(channel);
     }
 };

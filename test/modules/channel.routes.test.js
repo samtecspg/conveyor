@@ -87,7 +87,6 @@ suite('/channels', () => {
 
             const data = {
                 templateId: 'anduin-executions-template',
-                templateVersion: '1.0.0',
                 name: 'anduin-executions',
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: [
@@ -110,6 +109,36 @@ suite('/channels', () => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.object();
+                done();
+            });
+        });
+
+        test('should respond with 400 Bad Request [Invalid Template Id]', (done) => {
+
+            const data = {
+                templateId: '-1',
+                name: 'anduin-executions',
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: [
+                    {
+                        key: 'test-key',
+                        value: 'test-value'
+                    },
+                    {
+                        key: 'test-key',
+                        value: 'test-value'
+                    }]
+            };
+            const options = {
+                method: 'POST',
+                url: '/channels',
+                payload: data
+            };
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(400);
+                expect(res.result.error).to.equal('Bad Request');
                 done();
             });
         });

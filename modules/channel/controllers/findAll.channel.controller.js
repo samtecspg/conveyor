@@ -1,8 +1,7 @@
 'use strict';
-const TestData = require('../tests/test-data');
+const Channel = require('../../../models').Channel;
 
 module.exports = (request, reply) => {
 
-    const response = [TestData];
-    reply(response);
+    reply(Channel.findAll());
 };
