@@ -7,7 +7,8 @@ const schema = {
     deprecated: Joi.boolean(),
     name: Joi.string(),
     description: Joi.string(),
-    flow: Joi.object()
+    parameters: Joi.array().items(Joi.string()),
+    flow: Joi.string()
 };
 
 const TestData = {
@@ -16,7 +17,68 @@ const TestData = {
     deprecated: false,
     name: 'anduin-executions',
     description: 'Anduin Executions can be posted here for storage and use in Samson',
-    flow: {}
+    parameters: ['channelName', 'url'],
+    flow: JSON.stringify(
+        {
+            'label': 'flow-{{channelName}}-{{_id}}',
+            'nodes': [
+                {
+                    'id': '{{channelName}}-1-{{_id}}',
+                    'type': 'http in',
+                    'z': '96c7bac4.7985d8',
+                    'name': '',
+                    'url': '\/{{url}}',
+                    'method': 'post',
+                    'swaggerDoc': '',
+                    'x': 356,
+                    'y': 455,
+                    'wires': [
+                        [
+                            '{{channelName}}-3-{{_id}}',
+                            '{{channelName}}-4-{{_id}}'
+                        ]
+                    ]
+                },
+                {
+                    'id': '{{channelName}}-2-{{_id}}',
+                    'type': 'http response',
+                    'z': '96c7bac4.7985d8',
+                    'name': '',
+                    'x': 646,
+                    'y': 455,
+                    'wires': []
+                },
+                {
+                    'id': '{{channelName}}-3-{{_id}}',
+                    'type': 'function',
+                    'z': '96c7bac4.7985d8',
+                    'name': '',
+                    'func': 'msg.payload = \'Test Channel1\';\n\nreturn msg;',
+                    'outputs': 1,
+                    'noerr': 0,
+                    'x': 506,
+                    'y': 427,
+                    'wires': [
+                        [
+                            '{{channelName}}-2-{{_id}}'
+                        ]
+                    ]
+                },
+                {
+                    'id': '{{channelName}}-4-{{_id}}',
+                    'type': 'debug',
+                    'z': '96c7bac4.7985d8',
+                    'name': 'debug',
+                    'active': true,
+                    'console': 'false',
+                    'complete': 'true',
+                    'x': 513.5,
+                    'y': 514,
+                    'wires': []
+                }
+            ]
+        }
+    )
 };
 
 class ChannelTemplateModel {

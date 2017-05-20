@@ -4,13 +4,15 @@ const Channel = require('../../../models').Channel;
 
 module.exports = (request, reply) => {
 
-    const channel = Channel.findById(request.params.id);
+    return Channel.findById(request.params.id, (err, channel) => {
 
-    if (!channel) {
-        const err = Boom.notFound('Channel not found');
-        reply(err);
-    }
-    else {
+        if (err) {
+            if (err.output.statusCode === 404) {
+                return reply(Boom.notFound('Channel not found'));
+            }
+            return reply(Boom.badRequest('ES Request error'));
+        }
         return reply(channel);
-    }
+    });
+
 };

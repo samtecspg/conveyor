@@ -5,12 +5,19 @@ const Boom = require('boom');
 
 module.exports = (request, reply) => {
 
-    const channel = request.payload;
     const channelTemplate = ChannelTemplate.findById(request.payload.templateId);
     if (!channelTemplate) {
         const err = Boom.badRequest('Invalid Channel Template Id or Parameter array supplied');
         return reply(err);
     }
+    const callback = (err, result) => {
 
-    return reply(Channel.save(channel));
+        if (err) {
+            const err = Boom.badRequest('Invalid Channel Template Id or Parameter array supplied');
+            return reply(err);
+        }
+        return reply(result);
+    };
+    return Channel.save(request.payload, channelTemplate, callback);
+
 };

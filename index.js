@@ -1,12 +1,15 @@
 'use strict';
 
+require('dotenv').load();
 const Hapi = require('hapi');
 const Routes = require('./config/routes');
-
+const Blipp = require('blipp');
 module.exports = (callback) => {
 
     const server = new Hapi.Server();
-    server.connection({ port: 4000 });
+    server.connection({ port: process.env.PORT });
+
+
     /* $lab:coverage:off$ */
     for (const route in Routes) {
         if (Routes.hasOwnProperty(route)) {
@@ -14,5 +17,6 @@ module.exports = (callback) => {
         }
     }
     /* $lab:coverage:on$ */
+    server.register({ register: Blipp, options: {} });
     callback(null, server);
 };

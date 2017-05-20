@@ -19,7 +19,8 @@ class ChannelTemplateValidate {
                 return {
                     name: ChannelTemplateSchema.name.required(),
                     description: ChannelTemplateSchema.description.required(),
-                    flow: ChannelTemplateSchema.flow.required()
+                    flow: ChannelTemplateSchema.flow.required(),
+                    parameters: ChannelTemplateSchema.parameters.required()
                 };
             })()
         };

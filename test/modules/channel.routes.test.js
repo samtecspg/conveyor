@@ -45,7 +45,7 @@ suite('/channels', () => {
         test('should respond with 200 successful operation and return a single object', (done) => {
 
             const data = {
-                id: '94de64ab-3123-45ac-9364-5b9325931b9a'
+                id: 'AVwbXRbeRxLKxHrsDO53'
             };
 
             const options = {
@@ -91,13 +91,13 @@ suite('/channels', () => {
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: [
                     {
-                        key: 'test-key',
-                        value: 'test-value'
-                    },
-                    {
-                        key: 'test-key',
-                        value: 'test-value'
-                    }]
+                        key: 'channelName',
+                        value: 'test name'
+                    }, {
+                        key: 'url',
+                        value: 'url-path'
+                    }
+                ]
             };
             const options = {
                 method: 'POST',
