@@ -202,6 +202,10 @@ definitions:
         type: string
       flow:
         $ref: '#/definitions/Flow'
+      parameters:
+        type: array
+        items:
+            type: string
     required:
       - name
       - description

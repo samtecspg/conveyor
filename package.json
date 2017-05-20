@@ -1,0 +1,43 @@
+{
+    "name": "alpha-ingest-api",
+    "version": "0.0.1",
+    "description": "Ingest API",
+    "main": "start.js",
+    "scripts": {
+        "test": "lab --lint --coverage",
+        "start": "npm-run-all --parallel test start:server",
+        "start:server": "node start.js",
+        "precommit": "npm run git:hook",
+        "prepush": "npm run git:hook",
+        "git:hook": "lab --lint"
+    },
+    "keywords": [],
+    "author": "Luis Malavé",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "devDependencies": {
+        "code": "^4.0.0",
+        "husky": "^0.13.3",
+        "lab": "^13.0.4",
+        "npm-run-all": "^4.0.2"
+    },
+    "dependencies": {
+        "async": "^2.4.0",
+        "blipp": "^2.3.0",
+        "boom": "^4.3.1",
+        "dotenv": "^4.0.0",
+        "handlebars": "^4.0.8",
+        "hapi": "^16.1.1",
+        "joi": "^10.4.1",
+        "request": "^2.81.0",
+        "wreck": "^12.2.0"
+    },
+    "eslintConfig": {
+        "extends": "eslint-config-hapi",
+        "rules": {
+            "quotes": [
+                "error",
+                "double"
+            ]
+        }
+    }
+}
