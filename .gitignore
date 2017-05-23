@@ -1,5 +1,5 @@
 /.idea/
-/node_modules/
+/api/node_modules/
 *.csv
 *.dat
 *.iml
@@ -17,3 +17,4 @@
 .strong-pm
 npm-debug.log
 .env
+/es-data/nodes

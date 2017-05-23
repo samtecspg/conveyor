@@ -1,7 +1,10 @@
 'use strict';
 
 const Wreck = require('wreck').defaults({
-    headers: { 'content-type': 'application/json' },
+    headers: { 
+        'content-type': 'application/json',
+        'Authorization':'Basic ' + new Buffer('elastic:changeme'    ).toString('base64')
+    },
     baseUrl: process.env.ELASTIC_SEARCH_URL,
     json: true
 });

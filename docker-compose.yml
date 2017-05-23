@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.0'
 
 #
 # Note the ES default version is locked in by the ":-x.x.x" part of the
@@ -9,34 +9,49 @@ version: '2.1'
 #  MODEL_DIR
 #  ES_DATA
 #  ES_CONFIG
+#  API_PORT
 
 services:
-  ingestapi:
-    build: .
-    ports: ['0.0.0.0:4000:4000']
+  api:
+    build: api/
+    ports: ['80']
     networks: ['ingest-net']
+    environment:
+      - PORT=80
+      - ELASTIC_SEARCH_URL=http://elasticsearch:9200
+      - NODE_RED_URL=http://node-red:1880
+    depends_on:
+      - elasticsearch
+      - node-red
   node-red:
     image: nodered/node-red-docker
-    ports: ['0.0.0.0:1880:1880','0.0.0.0:38022:38022']
+    ports: ['1880','38022']
     networks: ['ingest-net']
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-5.4.0}
-    environment: ['http.host=0.0.0.0', 'transport.host=127.0.0.1']
-    ports: ['0.0.0.0:9200:9200']
+    build: elasticsearch/
     environment:
-      - ES_JAVA_OPTS=-Xmx1g -Xms1g
+      - "ES_JAVA_OPTS=-Xmx1g -Xms1g"
+    ports: ['9200']
     networks: ['ingest-net']
-    volumes: ["${ES_DATA:-./es-data}:/usr/share/elasticsearch/data", "${ES_CONFIG:-./es-config}:/etc/elasticsearch/"]
-    # Check that Elasticsearch is responding before hitting it with real requests.
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     healthcheck:
-      test: ['CMD', 'curl', '-f', '-u', 'elastic:changeme', 'http://localhost:9200']
+      test: ['CMD', 'curl', '-f', '-u', '${ES_USER:-elastic}:${ES_PASSWORD:-changeme}', 'http://localhost:9200']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
   kibana:
-    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-5.4.0}
-    ports: ['0.0.0.0:5601:5601']
+    build: kibana/
+    ports: ['5601']
     networks: ['ingest-net']
-    depends_on: {elasticsearch: {condition: service_healthy}}
-    # Check that Kibana is responding before loading dashboards etc.
+    volumes:
+      - ./kibana/config/:/usr/share/kibana/config
+    depends_on:
+      - elasticsearch
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5601/login']
-
-networks: {ingest-net: {}}
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+networks:
+  ingest-net:

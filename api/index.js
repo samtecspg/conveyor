@@ -1,13 +1,13 @@
 'use strict';
 
-require('dotenv').load();
+require('dotenv').config({path: '../.env'});
 const Hapi = require('hapi');
 const Routes = require('./config/routes');
 const Blipp = require('blipp');
 module.exports = (callback) => {
 
     const server = new Hapi.Server();
-    server.connection({ port: process.env.PORT });
+    server.connection({ port: process.env.PORT || 80 });
 
 
     /* $lab:coverage:off$ */
