@@ -7,14 +7,15 @@ module.exports = (request, reply) => {
 
     const channelTemplate = ChannelTemplate.findById(request.payload.templateId);
     if (!channelTemplate) {
-        const err = Boom.badRequest('Invalid Channel Template Id or Parameter array supplied');
+        const err = Boom.badRequest('Channel Template not found');
         return reply(err);
     }
     const callback = (err, result) => {
 
         if (err) {
-            const err = Boom.badRequest('Invalid Channel Template Id or Parameter array supplied');
-            return reply(err);
+            console.log(err);
+            const message = Boom.badRequest('Invalid Channel Template Id or Parameter array supplied');
+            return reply(message);
         }
         return reply(result);
     };

@@ -1,0 +1,1 @@
+FROM nodered/node-red-docker:slim

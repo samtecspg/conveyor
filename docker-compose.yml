@@ -1,0 +1,57 @@
+version: '3.0'
+
+#
+# Note the ES default version is locked in by the ":-x.x.x" part of the
+#  "$ELASTIC_VERSION:-x.x.x" string (with is in MULTIPLE PLACES below)
+#
+# Vars that can be set to override things via a .env file:
+#  ELASTIC_VERSION
+#  MODEL_DIR
+#  ES_DATA
+#  ES_CONFIG
+#  API_PORT
+
+services:
+  api:
+    build: api/
+    ports: ['80']
+    networks: ['ingest-net']
+    environment:
+      - PORT=80
+      - ELASTIC_SEARCH_URL=http://elasticsearch:9200
+      - NODE_RED_URL=http://node-red:1880
+    depends_on:
+      - elasticsearch
+      - node-red
+  node-red:
+    image: nodered/node-red-docker
+    ports: ['1880','38022']
+    networks: ['ingest-net']
+  elasticsearch:
+    build: elasticsearch/
+    environment:
+      - "ES_JAVA_OPTS=-Xmx1g -Xms1g"
+    ports: ['9200']
+    networks: ['ingest-net']
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    healthcheck:
+      test: ['CMD', 'curl', '-f', '-u', '${ES_USER:-elastic}:${ES_PASSWORD:-changeme}', 'http://localhost:9200']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+  kibana:
+    build: kibana/
+    ports: ['5601']
+    networks: ['ingest-net']
+    volumes:
+      - ./kibana/config/:/usr/share/kibana/config
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5601/login']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+networks:
+  ingest-net:

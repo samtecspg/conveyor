@@ -4,8 +4,9 @@
     "description": "Ingest API",
     "main": "start.js",
     "scripts": {
-        "test": "lab --lint --coverage",
-        "start": "npm-run-all --parallel test start:server",
+        "test": "lab --lint",
+        "test:coverage": "lab --lint --coverage",
+        "start": "npm-run-all --parallel start:server",
         "start:server": "node start.js",
         "precommit": "npm run git:hook",
         "prepush": "npm run git:hook",
