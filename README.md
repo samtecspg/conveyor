@@ -63,40 +63,20 @@ You should get a reply something like:
 
 ![image of node-red interface](https://github.com/samtecspg/alpha-ingest-api/blob/develop/docs/img/node_red_from_channel_create.jpg "New channel flow in node-red")
 
+7. Other things to look at:  
 
-#### Luis' raw notes on use:
+`/channels/{id}` endpoint
 
-Kicking off something:
+`curl 'http://localhost:4000/channels/{AVw7hqpJAt2wk1eUgP7t}'`
 
-    curl -X POST \
-      http://0.0.0.0:38123/channels \
-      -H 'accept: application/json' \
-      -H 'cache-control: no-cache' \
-      -H 'content-type: application/json' \
-      -H 'postman-token: bf8e488d-b341-29a7-84ef-9befeb9b65a3' \
-      -d '{
-        "templateId": "anduin-executions-template",
-        "name": "anduin-executions",
-        "description": "Anduin Executions can be posted here for storage and use in Samson",
-        "parameters": [
-            {
-                "key": "channelName",
-                "value": "test name"
-            }, {
-                "key": "url",
-                "value": "url-path"
-            }
-        ]
-    }'
+Should return something like:
 
-this will create the channel in ES and execute the template in Node-RED
+`{"id":"AVw7hqpJAt2wk1eUgP7t","version":1,"templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"channelName","value":"test name2"},{"key":"url","value":"url-path"}]}`
 
+`/channels` endpoint
 
-The channels templates is hard coded and there is only one right now
+`curl 'http://localhost:4000/channels'`
 
-`http://0.0.0.0:4000/channels/{id}`
+Should return something like:
 
-
-
-Get all channels = `http://0.0.0.0:4000/channels/`
-
+`[{"id":"AVw7hqpJAt2wk1eUgP7t","templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"channelName","value":"test name2"},{"key":"url","value":"url-path"}]},{"id":"AVw7hGMTAt2wk1eUgP7s","templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"channelName","value":"test name"},{"key":"url","value":"url-path"}]}]`
