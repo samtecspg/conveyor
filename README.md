@@ -57,9 +57,11 @@ You should get a reply something like:
 
 5. If you update kibana you should see a new record:
 
+![image of kibana](https://github.com/samtecspg/alpha-ingest-api/blob/develop/docs/img/kibana_from_channel_create.jpg "New channel record")
 
 6. and if you jump over to your node-red ( http://localhost:1880 ) you should see a flow defined
 
+![image of node-red interface](https://github.com/samtecspg/alpha-ingest-api/blob/develop/docs/img/node_red_from_channel_create.jpg "New channel flow in node-red")
 
 
 #### Luis' raw notes on use:
