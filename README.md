@@ -18,7 +18,51 @@ Elastic search will default to writing its database into the `./es-data` on the 
 will persist unless that directory is cleaned out.
 
 ## Use
-Raw copy of Luis notes on use:
+**Warning**: ES wants a gig of ram all to its self, and for you data drive to be under 85% used (it checks!). If either of those aren't available then it won't work right.
+
+The following is assuming you just did a `docker-compose up` and your `es-data` directory was blank...
+
+1. ES will chug away setting things up for a while before you can use kibana normally - you can try the kibana url ( http://localhost:5601 ) while your waiting - it will just give you an error until ES is ready)
+
+2. Once you can get in kibana, you need to setup to look for index of "*" (I.E. everything) and uncheck the timeseries checkbox.
+
+3. Assuming you don't have a leftover database you should only a few records.
+
+4. At this point you can kick off a channel create:
+
+    curl -X POST \
+      http://localhost:4000/channels \
+      -H 'accept: application/json' \
+      -H 'cache-control: no-cache' \
+      -H 'content-type: application/json' \
+      -H 'postman-token: bf8e488d-b341-29a7-84ef-9befeb9b65a3' \
+      -d '{
+        "templateId": "anduin-executions-template",
+        "name": "anduin-executions",
+        "description": "Anduin Executions can be posted here for storage and use in Samson",
+        "parameters": [
+            {
+                "key": "channelName",
+                "value": "test name2"
+            }, {
+                "key": "url",
+                "value": "url-path"
+            }
+        ]
+    }'
+
+You should get a reply something like:
+
+    {"_index":"ingest","_type":"channel","_id":"AVw7hqpJAt2wk1eUgP7t","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true}%                                                                                                  
+
+5. If you update kibana you should see a new record:
+
+
+6. and if you jump over to your node-red ( http://localhost:1880 ) you should see a flow defined
+
+
+
+#### Luis' raw notes on use:
 
 Kicking off something:
 
