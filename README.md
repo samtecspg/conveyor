@@ -30,26 +30,26 @@ The following is assuming you just did a `docker-compose up` and your `es-data` 
 
 4. At this point you can kick off a channel create:
 
-    curl -X POST \
-      http://localhost:4000/channels \
-      -H 'accept: application/json' \
-      -H 'cache-control: no-cache' \
-      -H 'content-type: application/json' \
-      -H 'postman-token: bf8e488d-b341-29a7-84ef-9befeb9b65a3' \
-      -d '{
-        "templateId": "anduin-executions-template",
-        "name": "anduin-executions",
-        "description": "Anduin Executions can be posted here for storage and use in Samson",
-        "parameters": [
-            {
-                "key": "channelName",
-                "value": "test name2"
-            }, {
-                "key": "url",
-                "value": "url-path"
-            }
-        ]
-    }'
+        curl -X POST \
+          http://localhost:4000/channels \
+          -H 'accept: application/json' \
+          -H 'cache-control: no-cache' \
+          -H 'content-type: application/json' \
+          -H 'postman-token: bf8e488d-b341-29a7-84ef-9befeb9b65a3' \
+          -d '{
+            "templateId": "anduin-executions-template",
+            "name": "anduin-executions",
+            "description": "Anduin Executions can be posted here for storage and use in Samson",
+            "parameters": [
+                {
+                    "key": "channelName",
+                    "value": "test name2"
+                }, {
+                    "key": "url",
+                    "value": "url-path"
+                }
+            ]
+        }'
 
 You should get a reply something like:
 
