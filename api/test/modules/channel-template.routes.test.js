@@ -46,7 +46,7 @@ suite('/channelTemplates', () => {
         test('should respond with 200 successful operation and return a single object', (done) => {
 
             const data = {
-                id: '94de64ab-3123-45ac-9364-5b9325931b9a'
+                id: process.env.TEST_DATA_CHANNEL_TEMPLATE_ID_1
             };
 
             const options = {
@@ -76,7 +76,7 @@ suite('/channelTemplates', () => {
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(404);
-                expect(res.result.message).to.contain('Channel not found');
+                expect(res.result.message).to.contain('Channel Template not found');
                 done();
             });
         });

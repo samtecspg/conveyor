@@ -1,47 +1,58 @@
 'use strict';
-
-const Wreck = require('wreck').defaults({
-    headers: { 
-        'content-type': 'application/json',
-        'Authorization':'Basic ' + new Buffer('elastic:changeme'    ).toString('base64')
-    },
-    baseUrl: process.env.ELASTIC_SEARCH_URL,
-    json: true
+const Elasticsearch = require('elasticsearch');
+const Client = new Elasticsearch.Client({
+    host: process.env.ELASTIC_SEARCH_URL,
+    log: process.env.ELASTIC_SEARCH_LOG_LEVEL || 'error'
 });
 
 //TODO: use a single object for parameters
 const datasource = {
-    save: (index, type, document, cb) => {
 
-        const wreck = Wreck.defaults({
-            payload: document
-        });
-        wreck.post(`${index}/${type}`, (error, response, body) => {
+    save: (params, cb) => {
 
-            if (error || body.error) {
-                return cb(error || body);
+        Client.index({
+            index: params.index,
+            type: params.type,
+            body: params.document
+        }, (err, response) => {
+
+            if (err || response.error) {
+                console.log(new Error(err || response.error));
+                return cb(err || response.error);
             }
-            cb(null, body);
-        });
-    },
-    findById: (index, type, id, cb) => {
-
-        Wreck.get(`/${index}/${type}/${id}`, (error, response, body) => {
-
-            if (error || body.error) {
-                return cb(error || body);
-            }
-            cb(null, body);
+            return cb(null, response);
         });
     },
-    findAll: (index, type, cb) => {
+    findById: (params, cb) => {
 
-        Wreck.get(`/${index}/${type}/_search`, (error, response, body) => {
+        Client.get({
+            index: params.index,
+            type: params.type,
+            id: params.id
+        }, (err, response) => {
 
-            if (error || body.error) {
-                return cb(error || body);
+            if (err || response.error) {
+                console.log(new Error(err || response.error));
+                return cb(err || response.error);
             }
-            cb(null, body);
+            return cb(null, response);
+        });
+
+    },
+    findAll: (params, cb) => {
+
+        Client.search({
+            index: params.index,
+            type: params.type,
+            body: { query: { match_all: {} } },
+            size: params.size ? params.size : 10
+        }, (err, response) => {
+
+            if (err || response.error) {
+                console.log(new Error(err || response.error));
+                return cb(err || response.error);
+            }
+            return cb(null, response);
         });
     }
 };

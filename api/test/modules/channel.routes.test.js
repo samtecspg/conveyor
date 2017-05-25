@@ -45,7 +45,7 @@ suite('/channels', () => {
         test('should respond with 200 successful operation and return a single object', (done) => {
 
             const data = {
-                id: 'AVwbXRbeRxLKxHrsDO53'
+                id: process.env.TEST_DATA_CHANNEL_ID_1
             };
 
             const options = {
@@ -86,7 +86,7 @@ suite('/channels', () => {
         test('should respond with 200 successful operation and return an object', (done) => {
 
             const data = {
-                templateId: 'anduin-executions-template',
+                templateId: process.env.TEST_DATA_CHANNEL_TEMPLATE_ID_1,
                 name: 'anduin-executions',
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: [
@@ -194,7 +194,7 @@ suite('/channels', () => {
         test('should respond with 400 Bad Request [Invalid Parameter Schema - missing required value]', (done) => {
 
             const data = {
-                templateId: 'anduin-executions-template',
+                templateId: process.env.TEST_DATA_CHANNEL_TEMPLATE_ID_1,
                 templateVersion: '1.0.0',
                 name: 'anduin-executions',
                 description: 'Anduin Executions can be posted here for storage and use in Samson',

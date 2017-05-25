@@ -1,6 +1,9 @@
 'use strict';
 
 const Joi = require('joi');
+const ES = require('../datasources').Elasticsearch;
+const _ = require('lodash');
+
 const schema = {
     id: Joi.string(),
     version: Joi.string(),
@@ -11,100 +14,105 @@ const schema = {
     flow: Joi.string()
 };
 
-const TestData = {
-    id: '94de64ab-3123-45ac-9364-5b9325931b9a',
-    version: '0.0.1',
-    deprecated: false,
-    name: 'anduin-executions',
-    description: 'Anduin Executions can be posted here for storage and use in Samson',
-    parameters: ['channelName', 'url'],
-    flow: JSON.stringify(
-        {
-            'label': 'flow-{{channelName}}-{{_id}}',
-            'nodes': [
-                {
-                    'id': '{{channelName}}-1-{{_id}}',
-                    'type': 'http in',
-                    'z': '96c7bac4.7985d8',
-                    'name': '',
-                    'url': '\/{{url}}',
-                    'method': 'post',
-                    'swaggerDoc': '',
-                    'x': 356,
-                    'y': 455,
-                    'wires': [
-                        [
-                            '{{channelName}}-3-{{_id}}',
-                            '{{channelName}}-4-{{_id}}'
-                        ]
-                    ]
-                },
-                {
-                    'id': '{{channelName}}-2-{{_id}}',
-                    'type': 'http response',
-                    'z': '96c7bac4.7985d8',
-                    'name': '',
-                    'x': 646,
-                    'y': 455,
-                    'wires': []
-                },
-                {
-                    'id': '{{channelName}}-3-{{_id}}',
-                    'type': 'function',
-                    'z': '96c7bac4.7985d8',
-                    'name': '',
-                    'func': 'msg.payload = \'Test Channel1\';\n\nreturn msg;',
-                    'outputs': 1,
-                    'noerr': 0,
-                    'x': 506,
-                    'y': 427,
-                    'wires': [
-                        [
-                            '{{channelName}}-2-{{_id}}'
-                        ]
-                    ]
-                },
-                {
-                    'id': '{{channelName}}-4-{{_id}}',
-                    'type': 'debug',
-                    'z': '96c7bac4.7985d8',
-                    'name': 'debug',
-                    'active': true,
-                    'console': 'false',
-                    'complete': 'true',
-                    'x': 513.5,
-                    'y': 514,
-                    'wires': []
-                }
-            ]
-        }
-    )
-};
-
 class ChannelTemplateModel {
+    constructor(deprecated,
+                name,
+                description,
+                parameters,
+                flow) {
+
+        this.deprecated = deprecated;
+        this.name = name;
+        this.description = description;
+        this.parameters = parameters;
+        this.flow = flow;
+    }
 
     static get schema() {
 
         return schema;
     };
 
-    static save(channel) {
+    static save(payload, cb) {
 
-        channel.id = TestData.id;
-        return channel;
+        const channelTemplate = new ChannelTemplateModel(
+            payload.deprecated,
+            payload.name,
+            payload.description,
+            payload.parameters,
+            payload.flow
+        );
+        const values = {
+            index: 'channeltemplate',
+            type: 'default',
+            document: channelTemplate
+        };
+        ES.save(values, (err, result) => {
+
+            if (err) {
+                return cb(err);
+            }
+            channelTemplate.id = result._id;
+            channelTemplate.version = result._version;
+            return cb(null, channelTemplate);
+        });
+
     };
 
-    static  findById(id) {
+    static  findById(id, cb) {
 
-        if (id === '-1') {
-            return null;
-        }
-        return TestData;
+        const values = {
+            index: 'channeltemplate',
+            type: 'default',
+            id
+        };
+        ES.findById(values, (err, result) => {
+
+            if (err) {
+                return cb(err);
+            }
+            const channelTemplate = new ChannelTemplateModel(
+                result._source.deprecated,
+                result._source.name,
+                result._source.description,
+                result._source.parameters,
+                result._source.flow
+            );
+            channelTemplate.id = result._id;
+            channelTemplate.version = result._version;
+            cb(null, channelTemplate);
+        });
     };
 
-    static  findAll() {
+    static  findAll(size, cb) {
 
-        return [TestData];
+        const values = {
+            index: 'channeltemplate',
+            type: 'default',
+            size
+        };
+        ES.findAll(values, (err, results) => {
+
+            if (err) {
+                return cb(err);
+            }
+            const response = [];
+            _(results.hits.hits).each((result) => {
+
+                const channelTemplate = new ChannelTemplateModel(
+                    result._source.deprecated,
+                    result._source.name,
+                    result._source.description,
+                    result._source.parameters,
+                    result._source.flow
+                );
+                channelTemplate.id = result._id;
+                channelTemplate.version = result._version;
+                response.push(channelTemplate);
+            });
+
+            cb(null, response);
+        });
     }
 }
 
