@@ -23,7 +23,7 @@ before((done) => {
     });
 });
 
-suite('/channels', () => {
+suite('/channel', () => {
 
     suite('/get', () => {
 
@@ -31,7 +31,7 @@ suite('/channels', () => {
 
             const options = {
                 method: 'GET',
-                url: '/channels'
+                url: '/channel'
             };
 
             server.inject(options, (res) => {
@@ -50,7 +50,7 @@ suite('/channels', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channels/${data.id}`
+                url: `/channel/${data.id}`
             };
 
             server.inject(options, (res) => {
@@ -69,7 +69,7 @@ suite('/channels', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channels/${data.id}`
+                url: `/channel/${data.id}`
             };
 
             server.inject(options, (res) => {
@@ -101,7 +101,7 @@ suite('/channels', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channels',
+                url: '/channel',
                 payload: data
             };
 
@@ -131,7 +131,7 @@ suite('/channels', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channels',
+                url: '/channel',
                 payload: data
             };
 
@@ -148,7 +148,7 @@ suite('/channels', () => {
             const data = [{ invalid: true }];
             const options = {
                 method: 'POST',
-                url: '/channels',
+                url: '/channel',
                 payload: data
             };
 
@@ -179,7 +179,7 @@ suite('/channels', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channels',
+                url: '/channel',
                 payload: data
             };
 
@@ -208,7 +208,7 @@ suite('/channels', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channels',
+                url: '/channel',
                 payload: data
             };
 

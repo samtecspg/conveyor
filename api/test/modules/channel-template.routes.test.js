@@ -23,7 +23,7 @@ before((done) => {
     });
 });
 
-suite('/channelTemplates', () => {
+suite('/channelTemplate', () => {
 
     suite('/get', () => {
 
@@ -31,7 +31,7 @@ suite('/channelTemplates', () => {
 
             const options = {
                 method: 'GET',
-                url: '/channelTemplates'
+                url: '/channelTemplate'
             };
             server
                 .inject(options)
@@ -51,7 +51,7 @@ suite('/channelTemplates', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channelTemplates/${data.id}`
+                url: `/channelTemplate/${data.id}`
             };
 
             server.inject(options, (res) => {
@@ -70,7 +70,7 @@ suite('/channelTemplates', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channelTemplates/${data.id}`
+                url: `/channelTemplate/${data.id}`
             };
 
             server.inject(options, (res) => {
@@ -93,7 +93,7 @@ suite('/channelTemplates', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channelTemplates',
+                url: '/channelTemplate',
                 payload: data
             };
 
@@ -109,7 +109,7 @@ suite('/channelTemplates', () => {
             const data = [{ invalid: true }];
             const options = {
                 method: 'POST',
-                url: '/channels',
+                url: '/channelTemplate',
                 payload: data
             };
 
