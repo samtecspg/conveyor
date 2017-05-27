@@ -5,7 +5,7 @@ const ChannelTemplateValidator = require('./channel-template.validator');
 const channelRoutes = [
     {
         method: 'GET',
-        path: '/channelTemplates',
+        path: '/channelTemplate',
         config: {
             validate: ChannelTemplateValidator.findAll,
             handler: ChannelTemplateController.findAll
@@ -13,7 +13,7 @@ const channelRoutes = [
     },
     {
         method: 'GET',
-        path: '/channelTemplates/{id}',
+        path: '/channelTemplate/{id}',
         config: {
             validate: ChannelTemplateValidator.findById,
             handler: ChannelTemplateController.findById
@@ -21,7 +21,7 @@ const channelRoutes = [
     },
     {
         method: 'POST',
-        path: '/channelTemplates',
+        path: '/channelTemplate',
         config: {
             validate: ChannelTemplateValidator.add,
             handler: ChannelTemplateController.add

@@ -14,7 +14,14 @@ class ChannelValidate {
                 };
             })()
         };
-        this.findAll = {};
+        this.findAll = {
+            query: (() => {
+
+                return {
+                    size: Joi.number()
+                };
+            })()
+        };
         this.add = {
             payload: (() => {
 

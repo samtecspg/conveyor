@@ -26,11 +26,11 @@
         "blipp": "^2.3.0",
         "boom": "^4.3.1",
         "dotenv": "^4.0.0",
+        "elasticsearch": "^13.0.1",
         "handlebars": "^4.0.8",
         "hapi": "^16.1.1",
         "joi": "^10.4.1",
-        "request": "^2.81.0",
-        "wreck": "^12.2.0"
+        "request": "^2.81.0"
     },
     "eslintConfig": {
         "extends": "eslint-config-hapi",

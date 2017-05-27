@@ -4,12 +4,14 @@ const Boom = require('boom');
 
 module.exports = (request, reply) => {
 
-    const channelTemplate = ChannelTemplate.findById(request.params.id);
-    if (!channelTemplate) {
-        const err = Boom.notFound('Channel not found');
-        reply(err);
-    }
-    else {
+    return ChannelTemplate.findById(request.params.id, (err, channelTemplate) => {
+
+        if (err) {
+            if (err.statusCode === 404) {
+                return reply(Boom.notFound('Channel Template not found'));
+            }
+            return reply(Boom.badRequest('ES Request error'));
+        }
         return reply(channelTemplate);
-    }
+    });
 };

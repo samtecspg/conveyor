@@ -1,9 +1,10 @@
 'use strict';
 
-require('dotenv').config({path: '../.env'});
+require('dotenv').config({ path: '../.env' });
 const Hapi = require('hapi');
 const Routes = require('./config/routes');
 const Blipp = require('blipp');
+
 module.exports = (callback) => {
 
     const server = new Hapi.Server();

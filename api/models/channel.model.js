@@ -18,7 +18,6 @@ const schema = {
     parameters: Joi.array().items(ParameterModel.schema)
 };
 
-
 class ChannelModel {
 
     constructor(id,
@@ -66,7 +65,12 @@ class ChannelModel {
             // Save to ES
             (next) => {
 
-                ES.save('ingest', 'channel', channel, next);
+                const values = {
+                    index: 'channel',
+                    type: 'default',
+                    document: channel
+                };
+                ES.save(values, next);
             },
 
             //Add flow to Node-RED
@@ -80,12 +84,25 @@ class ChannelModel {
                 });
             }
 
-        ], cb);
+        ], (err, result) => {
+
+            if (err) {
+                return cb(err);
+            }
+            channel.id = result._id;
+            channel.version = result._version;
+            cb(null, channel);
+        });
     };
 
     static  findById(id, cb) {
 
-        ES.findById('ingest', 'channel', id, (err, result) => {
+        const values = {
+            index: 'channel',
+            type: 'default',
+            id
+        };
+        ES.findById(values, (err, result) => {
 
             if (err) {
                 return cb(err);
@@ -103,9 +120,14 @@ class ChannelModel {
         });
     };
 
-    static  findAll(cb) {
+    static  findAll(size, cb) {
 
-        ES.findAll('ingest', 'channel', (err, results) => {
+        const values = {
+            index: 'channel',
+            type: 'default',
+            size
+        };
+        ES.findAll(values, (err, results) => {
 
             if (err) {
                 return cb(err);
