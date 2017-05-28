@@ -63,11 +63,11 @@ You should get a reply something like:
 
 5. If you update kibana you should see a new record:
 
-![image of kibana](https://github.com/samtecspg/alpha-ingest-api/blob/develop/docs/img/kibana_from_flow_create.jpg "New flow record")
+![image of kibana](./docs/img/kibana_from_flow_create.jpg "New flow record")
 
 6. and if you jump over to your node-red ( http://localhost:1880 ) you should see a flow defined
 
-![image of node-red interface](https://github.com/samtecspg/alpha-ingest-api/blob/develop/docs/img/node_red_from_flow_create.jpg "New flow flow in node-red")
+![image of node-red interface](./docs/img/node_red_from_flow_create.jpg "New flow flow in node-red")
 
 7. Other things to look at:  
 
