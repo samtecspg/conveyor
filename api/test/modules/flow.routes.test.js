@@ -23,7 +23,7 @@ before((done) => {
     });
 });
 
-suite('/channel', () => {
+suite('/flow', () => {
 
     suite('/get', () => {
 
@@ -31,7 +31,7 @@ suite('/channel', () => {
 
             const options = {
                 method: 'GET',
-                url: '/channel'
+                url: '/flow'
             };
 
             server.inject(options, (res) => {
@@ -50,7 +50,7 @@ suite('/channel', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channel/${data.id}`
+                url: `/flow/${data.id}`
             };
 
             server.inject(options, (res) => {
@@ -61,7 +61,7 @@ suite('/channel', () => {
             });
         });
 
-        test('should respond with 404 Channel not found', (done) => {
+        test('should respond with 404 Flow not found', (done) => {
 
             const data = {
                 id: '-1'
@@ -69,13 +69,13 @@ suite('/channel', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channel/${data.id}`
+                url: `/flow/${data.id}`
             };
 
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(404);
-                expect(res.result.message).to.contain('Channel not found');
+                expect(res.result.message).to.contain('Flow not found');
                 done();
             });
         });
@@ -92,7 +92,7 @@ suite('/channel', () => {
                 parameters: [
                     {
                         key: 'channelName',
-                        value: 'test name'
+                        value: 'testname'
                     }, {
                         key: 'url',
                         value: 'url-path'
@@ -101,7 +101,7 @@ suite('/channel', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channel',
+                url: '/flow',
                 payload: data
             };
 
@@ -131,7 +131,7 @@ suite('/channel', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channel',
+                url: '/flow',
                 payload: data
             };
 
@@ -148,7 +148,7 @@ suite('/channel', () => {
             const data = [{ invalid: true }];
             const options = {
                 method: 'POST',
-                url: '/channel',
+                url: '/flow',
                 payload: data
             };
 
@@ -179,7 +179,7 @@ suite('/channel', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channel',
+                url: '/flow',
                 payload: data
             };
 
@@ -208,7 +208,7 @@ suite('/channel', () => {
             };
             const options = {
                 method: 'POST',
-                url: '/channel',
+                url: '/flow',
                 payload: data
             };
 

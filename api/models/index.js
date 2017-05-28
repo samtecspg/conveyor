@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    Channel: require('./channel.model'),
+    Flow: require('./flow.model'),
     Parameter: require('./parameter.model'),
-    ChannelTemplate: require('./channel-template.model')
+    FlowTemplate: require('./flow-template.model')
 };
