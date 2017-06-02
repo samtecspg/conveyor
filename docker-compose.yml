@@ -13,7 +13,7 @@ services:
       - elasticsearch
       - node-red
   node-red:
-    image: nodered/node-red-docker:${NODERED_VERSION}
+    image: nodered/node-red-docker:${NODERED_VERSION:-slim}
     ports: ['1880:1880']
     volumes:
       - ${NODERED_CONFIG:-./helpers-stuff/node-red}:/data
