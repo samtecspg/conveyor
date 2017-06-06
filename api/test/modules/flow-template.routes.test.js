@@ -89,7 +89,14 @@ suite('/flowTemplate', () => {
                 name: 'anduin-executions',
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: ['id', 'channelName', 'url'],
-                flow: 'test'
+                flow: {
+                    label: 'Test',
+                    nodes: [
+                        {
+                            test: 'Test'
+                        }
+                    ]
+                }
             };
             const options = {
                 method: 'POST',

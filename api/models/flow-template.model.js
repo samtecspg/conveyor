@@ -13,7 +13,10 @@ const schema = {
     name: Joi.string(),
     description: Joi.string(),
     parameters: Joi.array().items(Joi.string()),
-    flow: Joi.string()
+    flow: Joi.object().keys({
+        label: Joi.string(),
+        nodes: Joi.array().items(Joi.object())
+    })
 };
 
 class FlowTemplateModel {
@@ -42,7 +45,7 @@ class FlowTemplateModel {
             payload.name,
             payload.description,
             payload.parameters,
-            payload.flow
+            JSON.stringify(payload.flow)
         );
         const values = {
             index: esIndex + 'template',
