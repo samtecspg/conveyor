@@ -8,7 +8,7 @@ const Blipp = require('blipp');
 module.exports = (callback) => {
     /* $lab:coverage:off$ */
     const server = new Hapi.Server();
-    
+
     server.connection({
         port: process.env.PORT || 80,
         routes: {

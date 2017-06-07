@@ -43,6 +43,24 @@ suite('/flowTemplate', () => {
                 });
         });
 
+        test('should respond with 200 successful operation and return and array with 1 object', (done) => {
+
+            const options = {
+                method: 'GET',
+                url: '/flowTemplate?size=1'
+            };
+            server
+                .inject(options)
+                .then((res) => {
+
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.result).to.be.an.array();
+                    expect(res.result).to.have.length(1);
+
+                    done();
+                });
+        });
+
         test('should respond with 200 successful operation and return a single object', (done) => {
 
             const data = {
@@ -114,6 +132,57 @@ suite('/flowTemplate', () => {
         test('should respond with 400 Bad Request', (done) => {
 
             const data = [{ invalid: true }];
+            const options = {
+                method: 'POST',
+                url: '/flowTemplate',
+                payload: data
+            };
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(400);
+                expect(res.result.error).to.equal('Bad Request');
+                done();
+            });
+        });
+        test('should respond with 400 Bad Request if no label exists in flow object', (done) => {
+
+            const data = {
+                name: 'anduin-executions',
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: ['id', 'channelName', 'url'],
+                flow: {
+                    nodes: [
+                        {
+                            test: 'Test'
+                        }
+                    ]
+                }
+            };
+            const options = {
+                method: 'POST',
+                url: '/flowTemplate',
+                payload: data
+            };
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(400);
+                expect(res.result.error).to.equal('Bad Request');
+                done();
+            });
+        });
+
+        test('should respond with 400 Bad Request if no nodes exists in flow object', (done) => {
+
+            const data = {
+                name: 'anduin-executions',
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: ['id', 'channelName', 'url'],
+                flow: {
+                    label: 'Test'
+                }
+            };
             const options = {
                 method: 'POST',
                 url: '/flowTemplate',
