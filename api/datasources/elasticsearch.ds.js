@@ -7,7 +7,7 @@ const Client = new Elasticsearch.Client({
     httpAuth: process.env.ELASTIC_SEARCH_HTTP_AUTH || ''
 });
 /* $lab:coverage:on$ */
-//TODO: use a single object for parameters
+
 const datasource = {
 
     save: (params, cb) => {
@@ -18,9 +18,9 @@ const datasource = {
             body: params.document
         }, (err, response) => {
 
-            if (err || response.error) {
-                console.log(new Error(err || response.error));
-                return cb(err || response.error);
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
             }
             return cb(null, response);
         });
@@ -33,9 +33,9 @@ const datasource = {
             id: params.id
         }, (err, response) => {
 
-            if (err || response.error) {
-                console.log(new Error(err || response.error));
-                return cb(err || response.error);
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
             }
             return cb(null, response);
         });
@@ -50,9 +50,9 @@ const datasource = {
             size: params.size ? params.size : 10
         }, (err, response) => {
 
-            if (err || response.error) {
-                console.log(new Error(err || response.error));
-                return cb(err || response.error);
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
             }
             return cb(null, response);
         });
