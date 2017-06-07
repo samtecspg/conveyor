@@ -2,13 +2,14 @@ version: '3.0'
 
 services:
   api:
-    build: api/
+    build: .
     ports: ['4000:80']
     networks: ['ingest-net']
     environment:
       - PORT=80
       - ELASTIC_SEARCH_URL=http://elasticsearch:9200
       - NODE_RED_URL=http://node-red:1880
+      - ES_INDEX=${ES_INDEX:-flow}
     depends_on:
       - elasticsearch
       - node-red

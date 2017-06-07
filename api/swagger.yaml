@@ -12,20 +12,20 @@ info:
 host: samtec.com
 basePath: /ingest/v1
 tags:
-  - name: channelTemplate
-    description: Channel Template
-  - name: channel
-    description: Channel
+  - name: flowTemplate
+    description: Flow Template
+  - name: flow
+    description: Flow
 schemes:
   - http
 paths:
-  /channelTemplates:
+  /flowTemplates:
     get:
       tags:
-        - channelTemplate
+        - flowTemplate
       summary: Find all instances of the model
       description: ''
-      operationId: findAllChannelTemplates
+      operationId: findAllFlowTemplates
       produces:
         - application/json
       responses:
@@ -34,13 +34,13 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ChannelTemplate'
+              $ref: '#/definitions/FlowTemplate'
     post:
       tags:
-        - channelTemplate
+        - flowTemplate
       summary: Create new instance of the model
       description: ''
-      operationId: addChannelTemplates
+      operationId: addFlowTemplates
       consumes:
         - application/json
       produces:
@@ -48,30 +48,30 @@ paths:
       parameters:
         - name: body
           in: body
-          description: ID of Channel Template to return
+          description: ID of Flow Template to return
           required: true
           schema:
-            $ref: '#/definitions/ChannelTemplate'
+            $ref: '#/definitions/FlowTemplate'
       responses:
         '200':
           description: successful operation
           schema:
             type: array
             items:
-              $ref: '#/definitions/ChannelTemplate'
-  '/channelTemplates/{id}':
+              $ref: '#/definitions/FlowTemplate'
+  '/flowTemplates/{id}':
     get:
       tags:
-        - channelTemplate
+        - flowTemplate
       summary: 'Find a model instances by {id}'
       description: ''
-      operationId: findByIdChannelTemplate
+      operationId: findByIdFlowTemplate
       produces:
         - application/json
       parameters:
         - name: id
           in: path
-          description: ID of Channel Template to return
+          description: ID of Flow Template to return
           required: true
           type: string
       responses:
@@ -80,18 +80,18 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ChannelTemplate'
+              $ref: '#/definitions/FlowTemplate'
         '400':
           description: Invalid ID supplied
         '404':
           description: Not found
-  /channel:
+  /flow:
     get:
       tags:
-        - channel
+        - flow
       summary: Find all instances of the model
       description: ''
-      operationId: findAllChannels
+      operationId: findAllFlows
       produces:
         - application/json
       responses:
@@ -100,13 +100,13 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Channel'
+              $ref: '#/definitions/Flow'
     post:
       tags:
-        - channel
+        - flow
       summary: Create new instance of the model
       description: ''
-      operationId: addChannel
+      operationId: addFlow
       consumes:
         - application/json
       produces:
@@ -139,22 +139,22 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Channel'
+              $ref: '#/definitions/Flow'
         '400':
-          description: Invalid Channel Template Id or Parameter array supplied
-  '/channel/{id}':
+          description: Invalid Flow Template Id or Parameter array supplied
+  '/flow/{id}':
     get:
       tags:
-        - channel
+        - flow
       summary: 'Find a model instances by {id}'
       description: ''
-      operationId: findOneChannel
+      operationId: findOneFlow
       produces:
         - application/json
       parameters:
         - name: id
           in: path
-          description: ID of Channel Template to return
+          description: ID of Flow Template to return
           required: true
           type: string
       responses:
@@ -163,7 +163,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Channel'
+              $ref: '#/definitions/Flow'
         '400':
           description: Invalid ID supplied
         '404':
@@ -186,7 +186,7 @@ definitions:
         type: string
       nodes:
         type: array
-  ChannelTemplate:
+  FlowTemplate:
     type: object
     properties:
       id:
@@ -210,7 +210,7 @@ definitions:
       - name
       - description
       - flow
-  Channel:
+  Flow:
     type: object
     properties:
       id:

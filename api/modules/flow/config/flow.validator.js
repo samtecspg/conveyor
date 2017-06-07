@@ -1,16 +1,16 @@
 'use strict';
 
-const ChannelSchema = require('../../../models/index').Channel.schema;
+const FlowSchema = require('../../../models/index').Flow.schema;
 const ParameterSchema = require('../../../models/index').Parameter.schema;
 const Joi = require('joi');
-class ChannelValidate {
+class FlowValidate {
     constructor() {
 
         this.findById = {
             params: (() => {
 
                 return {
-                    id: ChannelSchema.id.required()
+                    id: FlowSchema.id.required()
                 };
             })()
         };
@@ -26,9 +26,9 @@ class ChannelValidate {
             payload: (() => {
 
                 return {
-                    templateId: ChannelSchema.templateId.required(),
-                    name: ChannelSchema.name.required(),
-                    description: ChannelSchema.description.required(),
+                    templateId: FlowSchema.templateId.required(),
+                    name: FlowSchema.name.required(),
+                    description: FlowSchema.description.required(),
                     parameters: Joi.array().items({
                         key: ParameterSchema.key.required(),
                         value: ParameterSchema.value.required()
@@ -39,5 +39,5 @@ class ChannelValidate {
     }
 }
 
-const channelValidate = new ChannelValidate();
-module.exports = channelValidate;
+const flowValidate = new FlowValidate();
+module.exports = flowValidate;

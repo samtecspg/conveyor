@@ -1,5 +1,5 @@
 'use strict';
-const ChannelTemplate = require('../../../models').ChannelTemplate;
+const FlowTemplate = require('../../../models').FlowTemplate;
 const Boom = require('boom');
 
 module.exports = (request, reply) => {
@@ -12,5 +12,5 @@ module.exports = (request, reply) => {
         }
         return reply(result);
     };
-    return ChannelTemplate.save(request.payload, callback);
+    return FlowTemplate.save(request.payload, callback);
 };

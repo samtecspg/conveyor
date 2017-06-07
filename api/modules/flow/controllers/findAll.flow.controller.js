@@ -1,15 +1,14 @@
 'use strict';
-const ChannelTemplate = require('../../../models').ChannelTemplate;
+const Flow = require('../../../models').Flow;
 const Boom = require('boom');
-
 module.exports = (request, reply) => {
 
     const size = request.query ? request.query.size : null;
-    return ChannelTemplate.findAll(size, (err, channels) => {
+    return Flow.findAll(size, (err, flows) => {
 
         if (err) {
             return reply(Boom.badRequest('ES Request error'));
         }
-        return reply(channels);
+        return reply(flows);
     });
 };

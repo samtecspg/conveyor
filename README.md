@@ -2,9 +2,15 @@
 
 API for creating and mananging data ingest flows to a ES backend
 
+## Development
+
+To make commits against this library see the instructions [here](development.md)
+
 ## Startup
 
 Reasonable defaults are in the `docker-compose`, if you want to customize start there.
+
+There is an environment variable under the API section of the compose file called `ES_INDEX` this allows overwriting where this API stores it's values in ES. This is to allow for multiple of these APIs to run off the same ES cluster.
 
 `docker-compose up` will start up the full suit of services needed for ingest, including the database.
 
@@ -28,10 +34,10 @@ The following is assuming you just did a `docker-compose up` and your `es-data` 
 
 3. Assuming you don't have a leftover database you should only a few records.
 
-4. At this point you can kick off a channel create:
+4. At this point you can kick off a flow create:
 
         curl -X POST \
-          http://localhost:4000/channels \
+          http://localhost:4000/flows \
           -H 'accept: application/json' \
           -H 'cache-control: no-cache' \
           -H 'content-type: application/json' \
@@ -42,7 +48,7 @@ The following is assuming you just did a `docker-compose up` and your `es-data` 
             "description": "Anduin Executions can be posted here for storage and use in Samson",
             "parameters": [
                 {
-                    "key": "channelName",
+                    "key": "flowName",
                     "value": "test name2"
                 }, {
                     "key": "url",
@@ -53,30 +59,30 @@ The following is assuming you just did a `docker-compose up` and your `es-data` 
 
 You should get a reply something like:
 
-    {"_index":"ingest","_type":"channel","_id":"AVw7hqpJAt2wk1eUgP7t","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true}%                                                                                                  
+    {"_index":"ingest","_type":"flow","_id":"AVw7hqpJAt2wk1eUgP7t","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true}%                                                                                                  
 
 5. If you update kibana you should see a new record:
 
-![image of kibana](https://github.com/samtecspg/alpha-ingest-api/blob/develop/docs/img/kibana_from_channel_create.jpg "New channel record")
+![image of kibana](./docs/img/kibana_from_flow_create.jpg "New flow record")
 
 6. and if you jump over to your node-red ( http://localhost:1880 ) you should see a flow defined
 
-![image of node-red interface](https://github.com/samtecspg/alpha-ingest-api/blob/develop/docs/img/node_red_from_channel_create.jpg "New channel flow in node-red")
+![image of node-red interface](./docs/img/node_red_from_flow_create.jpg "New flow flow in node-red")
 
 7. Other things to look at:  
 
-`/channels/{id}` endpoint
+`/flows/{id}` endpoint
 
-`curl 'http://localhost:4000/channels/{AVw7hqpJAt2wk1eUgP7t}'`
-
-Should return something like:
-
-`{"id":"AVw7hqpJAt2wk1eUgP7t","version":1,"templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"channelName","value":"test name2"},{"key":"url","value":"url-path"}]}`
-
-`/channels` endpoint
-
-`curl 'http://localhost:4000/channels'`
+`curl 'http://localhost:4000/flows/{AVw7hqpJAt2wk1eUgP7t}'`
 
 Should return something like:
 
-`[{"id":"AVw7hqpJAt2wk1eUgP7t","templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"channelName","value":"test name2"},{"key":"url","value":"url-path"}]},{"id":"AVw7hGMTAt2wk1eUgP7s","templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"channelName","value":"test name"},{"key":"url","value":"url-path"}]}]`
+`{"id":"AVw7hqpJAt2wk1eUgP7t","version":1,"templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"flowName","value":"test name2"},{"key":"url","value":"url-path"}]}`
+
+`/flows` endpoint
+
+`curl 'http://localhost:4000/flows'`
+
+Should return something like:
+
+`[{"id":"AVw7hqpJAt2wk1eUgP7t","templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"flowName","value":"test name2"},{"key":"url","value":"url-path"}]},{"id":"AVw7hGMTAt2wk1eUgP7s","templateId":"94de64ab-3123-45ac-9364-5b9325931b9a","templateVersion":"0.0.1","name":"anduin-executions","description":"Anduin Executions can be posted here for storage and use in Samson","parameters":[{"key":"flowName","value":"test name"},{"key":"url","value":"url-path"}]}]`

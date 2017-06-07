@@ -23,7 +23,7 @@ before((done) => {
     });
 });
 
-suite('/channelTemplate', () => {
+suite('/flowTemplate', () => {
 
     suite('/get', () => {
 
@@ -31,7 +31,7 @@ suite('/channelTemplate', () => {
 
             const options = {
                 method: 'GET',
-                url: '/channelTemplate'
+                url: '/flowTemplate'
             };
             server
                 .inject(options)
@@ -51,7 +51,7 @@ suite('/channelTemplate', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channelTemplate/${data.id}`
+                url: `/flowTemplate/${data.id}`
             };
 
             server.inject(options, (res) => {
@@ -62,7 +62,7 @@ suite('/channelTemplate', () => {
             });
         });
 
-        test('should respond with 404 Channel not found', (done) => {
+        test('should respond with 404 Flow not found', (done) => {
 
             const data = {
                 id: '-1'
@@ -70,13 +70,13 @@ suite('/channelTemplate', () => {
 
             const options = {
                 method: 'GET',
-                url: `/channelTemplate/${data.id}`
+                url: `/flowTemplate/${data.id}`
             };
 
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(404);
-                expect(res.result.message).to.contain('Channel Template not found');
+                expect(res.result.message).to.contain('Flow Template not found');
                 done();
             });
         });
@@ -89,11 +89,18 @@ suite('/channelTemplate', () => {
                 name: 'anduin-executions',
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: ['id', 'channelName', 'url'],
-                flow: 'test'
+                flow: {
+                    label: 'Test',
+                    nodes: [
+                        {
+                            test: 'Test'
+                        }
+                    ]
+                }
             };
             const options = {
                 method: 'POST',
-                url: '/channelTemplate',
+                url: '/flowTemplate',
                 payload: data
             };
 
@@ -109,7 +116,7 @@ suite('/channelTemplate', () => {
             const data = [{ invalid: true }];
             const options = {
                 method: 'POST',
-                url: '/channelTemplate',
+                url: '/flowTemplate',
                 payload: data
             };
 

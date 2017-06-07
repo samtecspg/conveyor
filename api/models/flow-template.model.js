@@ -4,6 +4,8 @@ const Joi = require('joi');
 const ES = require('../datasources').Elasticsearch;
 const _ = require('lodash');
 
+const esIndex = process.env.ES_INDEX;
+
 const schema = {
     id: Joi.string(),
     version: Joi.string(),
@@ -11,10 +13,13 @@ const schema = {
     name: Joi.string(),
     description: Joi.string(),
     parameters: Joi.array().items(Joi.string()),
-    flow: Joi.string()
+    flow: Joi.object().keys({
+        label: Joi.string(),
+        nodes: Joi.array().items(Joi.object())
+    })
 };
 
-class ChannelTemplateModel {
+class FlowTemplateModel {
     constructor(deprecated,
                 name,
                 description,
@@ -35,26 +40,26 @@ class ChannelTemplateModel {
 
     static save(payload, cb) {
 
-        const channelTemplate = new ChannelTemplateModel(
+        const flowTemplate = new FlowTemplateModel(
             payload.deprecated,
             payload.name,
             payload.description,
             payload.parameters,
-            payload.flow
+            JSON.stringify(payload.flow)
         );
         const values = {
-            index: 'channeltemplate',
+            index: esIndex + 'template',
             type: 'default',
-            document: channelTemplate
+            document: flowTemplate
         };
         ES.save(values, (err, result) => {
 
             if (err) {
                 return cb(err);
             }
-            channelTemplate.id = result._id;
-            channelTemplate.version = result._version;
-            return cb(null, channelTemplate);
+            flowTemplate.id = result._id;
+            flowTemplate.version = result._version;
+            return cb(null, flowTemplate);
         });
 
     };
@@ -62,7 +67,7 @@ class ChannelTemplateModel {
     static  findById(id, cb) {
 
         const values = {
-            index: 'channeltemplate',
+            index: esIndex + 'template',
             type: 'default',
             id
         };
@@ -71,23 +76,23 @@ class ChannelTemplateModel {
             if (err) {
                 return cb(err);
             }
-            const channelTemplate = new ChannelTemplateModel(
+            const flowTemplate = new FlowTemplateModel(
                 result._source.deprecated,
                 result._source.name,
                 result._source.description,
                 result._source.parameters,
                 result._source.flow
             );
-            channelTemplate.id = result._id;
-            channelTemplate.version = result._version;
-            cb(null, channelTemplate);
+            flowTemplate.id = result._id;
+            flowTemplate.version = result._version;
+            cb(null, flowTemplate);
         });
     };
 
     static  findAll(size, cb) {
 
         const values = {
-            index: 'channeltemplate',
+            index: esIndex + 'template',
             type: 'default',
             size
         };
@@ -99,16 +104,16 @@ class ChannelTemplateModel {
             const response = [];
             _(results.hits.hits).each((result) => {
 
-                const channelTemplate = new ChannelTemplateModel(
+                const flowTemplate = new FlowTemplateModel(
                     result._source.deprecated,
                     result._source.name,
                     result._source.description,
                     result._source.parameters,
                     result._source.flow
                 );
-                channelTemplate.id = result._id;
-                channelTemplate.version = result._version;
-                response.push(channelTemplate);
+                flowTemplate.id = result._id;
+                flowTemplate.version = result._version;
+                response.push(flowTemplate);
             });
 
             cb(null, response);
@@ -116,4 +121,4 @@ class ChannelTemplateModel {
     }
 }
 
-module.exports = ChannelTemplateModel;
+module.exports = FlowTemplateModel;

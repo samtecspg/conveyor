@@ -7,7 +7,7 @@ RUN npm set progress=false && \
 RUN npm install -g yarn
 RUN mkdir /usr/src && mkdir /usr/src/app
 WORKDIR /usr/src/app
-COPY package.json yarn.lock ./
+COPY ./api/package.json ./api/yarn.lock ./
 RUN yarn install
-COPY . /usr/src/app
+COPY ./api /usr/src/app
 CMD ["node", "start.js"]
