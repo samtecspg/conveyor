@@ -1,11 +1,12 @@
 'use strict';
+/* $lab:coverage:off$ */
 const Elasticsearch = require('elasticsearch');
 const Client = new Elasticsearch.Client({
     host: process.env.ELASTIC_SEARCH_URL,
     log: process.env.ELASTIC_SEARCH_LOG_LEVEL || 'error',
     httpAuth: process.env.ELASTIC_SEARCH_HTTP_AUTH || ''
 });
-
+/* $lab:coverage:on$ */
 //TODO: use a single object for parameters
 const datasource = {
 
