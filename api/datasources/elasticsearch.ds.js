@@ -56,6 +56,37 @@ const datasource = {
             }
             return cb(null, response);
         });
+    },
+    findOne: (params, cb) => {
+
+        Client.search({
+            index: params.index,
+            type: params.type,
+            body: { query: { match_all: {} } },
+            size: 1
+        }, (err, response) => {
+
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
+            }
+            return cb(null, response);
+        });
+    },
+    'delete': (params, cb) => {
+
+        Client.delete({
+            index: params.index,
+            type: params.type,
+            id: params.id
+        }, (err, response) => {
+
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
+            }
+            return cb(null, response);
+        });
     }
 };
 

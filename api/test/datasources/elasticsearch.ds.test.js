@@ -8,15 +8,41 @@ const expect = Code.expect;
 const suite = lab.suite;
 const test = lab.test;
 const before = lab.before;
+const after = lab.after;
+
+const FlowTemplateHelper = require('../helpers/flow-template.helper');
+const testData = {
+    flowTemplate: null
+};
 
 before((done) => {
 
     require('../../index')((err) => {
 
         if (err) {
-            done(err);
+            return done(err);
         }
-        done();
+        FlowTemplateHelper.create((err, result) => {
+
+            if (err) {
+                return done(err);
+            }
+            testData.flowTemplate = result;
+            return done();
+        });
+
+    });
+});
+
+after((done) => {
+
+    FlowTemplateHelper.delete(testData.flowTemplate, (err, result) => {
+
+        if (err) {
+            return done(err);
+        }
+        testData.flowTemplate = result;
+        return done();
     });
 });
 
@@ -29,7 +55,7 @@ suite('ES', () => {
             const data = {
                 index: 'flowtemplate',
                 type: 'default',
-                id: process.env.TEST_DATA_CHANNEL_TEMPLATE_ID_1
+                id: testData.flowTemplate._id
             };
             ES.findById(data, (err, response) => {
 
@@ -44,7 +70,7 @@ suite('ES', () => {
             const data = {
                 index: 'flowtemplate',
                 type: 'default',
-                document: require('../data/flow-tempalte.data')
+                document: FlowTemplateHelper.defaultData
             };
             ES.save(data, (err, response) => {
 
