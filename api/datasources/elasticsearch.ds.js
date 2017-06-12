@@ -1,12 +1,13 @@
 'use strict';
+/* $lab:coverage:off$ */
 const Elasticsearch = require('elasticsearch');
 const Client = new Elasticsearch.Client({
     host: process.env.ELASTIC_SEARCH_URL,
     log: process.env.ELASTIC_SEARCH_LOG_LEVEL || 'error',
     httpAuth: process.env.ELASTIC_SEARCH_HTTP_AUTH || ''
 });
+/* $lab:coverage:on$ */
 
-//TODO: use a single object for parameters
 const datasource = {
 
     save: (params, cb) => {
@@ -17,9 +18,9 @@ const datasource = {
             body: params.document
         }, (err, response) => {
 
-            if (err || response.error) {
-                console.log(new Error(err || response.error));
-                return cb(err || response.error);
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
             }
             return cb(null, response);
         });
@@ -32,9 +33,9 @@ const datasource = {
             id: params.id
         }, (err, response) => {
 
-            if (err || response.error) {
-                console.log(new Error(err || response.error));
-                return cb(err || response.error);
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
             }
             return cb(null, response);
         });
@@ -49,9 +50,40 @@ const datasource = {
             size: params.size ? params.size : 10
         }, (err, response) => {
 
-            if (err || response.error) {
-                console.log(new Error(err || response.error));
-                return cb(err || response.error);
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
+            }
+            return cb(null, response);
+        });
+    },
+    findOne: (params, cb) => {
+
+        Client.search({
+            index: params.index,
+            type: params.type,
+            body: { query: { match_all: {} } },
+            size: 1
+        }, (err, response) => {
+
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
+            }
+            return cb(null, response);
+        });
+    },
+    'delete': (params, cb) => {
+
+        Client.delete({
+            index: params.index,
+            type: params.type,
+            id: params.id
+        }, (err, response) => {
+
+            if (err) {
+                console.log(new Error(err));
+                return cb(err);
             }
             return cb(null, response);
         });

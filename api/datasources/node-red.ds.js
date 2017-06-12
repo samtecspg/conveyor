@@ -1,11 +1,11 @@
 'use strict';
-
+/* $lab:coverage:off$ */
 const Wreck = require('wreck').defaults({
     headers: { 'content-type': 'application/json' },
     baseUrl: process.env.NODE_RED_URL,
     json: true
 });
-
+/* $lab:coverage:on$ */
 const datasource = {
     flow: {
         save: (flow, cb) => {

@@ -2,14 +2,14 @@
 
 const Joi = require('joi');
 
-class FlowModel {
+class NodeRedFlowModel {
     static get schema() {
 
         return {
             label: Joi.string(),
-            nodes: Joi.any()
+            nodes: Joi.array().items(Joi.object())
         };
     };
 }
 
-module.exports = FlowModel;
+module.exports = NodeRedFlowModel;

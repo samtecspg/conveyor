@@ -8,6 +8,11 @@ const expect = Code.expect;
 const suite = lab.suite;
 const test = lab.test;
 const before = lab.before;
+const after = lab.after;
+const FlowTemplateHelper = require('../helpers/flow-template.helper');
+const testData = {
+    flowTemplate: null
+};
 
 let server;
 
@@ -19,7 +24,26 @@ before((done) => {
             done(err);
         }
         server = srv;
-        done();
+        FlowTemplateHelper.create((err, result) => {
+
+            if (err) {
+                return done(err);
+            }
+            testData.flowTemplate = result;
+            return done();
+        });
+    });
+});
+
+after((done) => {
+
+    FlowTemplateHelper.delete(testData.flowTemplate, (err, result) => {
+
+        if (err) {
+            return done(err);
+        }
+        testData.flowTemplate = result;
+        return done();
     });
 });
 
@@ -43,21 +67,35 @@ suite('/flowTemplate', () => {
                 });
         });
 
-        test('should respond with 200 successful operation and return a single object', (done) => {
-
-            const data = {
-                id: process.env.TEST_DATA_CHANNEL_TEMPLATE_ID_1
-            };
+        test('should respond with 200 successful operation and return and array with 1 object', (done) => {
 
             const options = {
                 method: 'GET',
-                url: `/flowTemplate/${data.id}`
+                url: '/flowTemplate?size=1'
+            };
+            server
+                .inject(options)
+                .then((res) => {
+
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.result).to.be.an.array();
+                    expect(res.result).to.have.length(1);
+
+                    done();
+                });
+        });
+
+        test('should respond with 200 successful operation and return a single object', (done) => {
+
+            const options = {
+                method: 'GET',
+                url: `/flowTemplate/${testData.flowTemplate._id}`
             };
 
             server.inject(options, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.result.id).to.be.equal(data.id);
+                expect(res.result.id).to.be.equal(testData.flowTemplate._id);
                 done();
             });
         });
@@ -114,6 +152,57 @@ suite('/flowTemplate', () => {
         test('should respond with 400 Bad Request', (done) => {
 
             const data = [{ invalid: true }];
+            const options = {
+                method: 'POST',
+                url: '/flowTemplate',
+                payload: data
+            };
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(400);
+                expect(res.result.error).to.equal('Bad Request');
+                done();
+            });
+        });
+        test('should respond with 400 Bad Request if no label exists in flow object', (done) => {
+
+            const data = {
+                name: 'anduin-executions',
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: ['id', 'channelName', 'url'],
+                flow: {
+                    nodes: [
+                        {
+                            test: 'Test'
+                        }
+                    ]
+                }
+            };
+            const options = {
+                method: 'POST',
+                url: '/flowTemplate',
+                payload: data
+            };
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(400);
+                expect(res.result.error).to.equal('Bad Request');
+                done();
+            });
+        });
+
+        test('should respond with 400 Bad Request if no nodes exists in flow object', (done) => {
+
+            const data = {
+                name: 'anduin-executions',
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: ['id', 'channelName', 'url'],
+                flow: {
+                    label: 'Test'
+                }
+            };
             const options = {
                 method: 'POST',
                 url: '/flowTemplate',
