@@ -3,7 +3,6 @@
 const FlowTemplateSchema = require('../../../models/index').FlowTemplate.schema;
 const NodeRedFlowModel = require('../../../models/index').NodeRedFlowModel.schema;
 
-
 class FlowTemplateValidate {
     constructor() {
 
@@ -12,6 +11,14 @@ class FlowTemplateValidate {
 
                 return {
                     id: FlowTemplateSchema.id.required()
+                };
+            })()
+        };
+        this.findByName = {
+            params: (() => {
+
+                return {
+                    name: FlowTemplateSchema.name.required()
                 };
             })()
         };

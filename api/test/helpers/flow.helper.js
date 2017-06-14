@@ -1,11 +1,11 @@
 'use strict';
 
 const ES = require('../../datasources').Elasticsearch;
+const _ = require('lodash');
 const defaultData =
     {
-        'id': 'AVyCP2YnizmIbsE8o-4s',
         'version': 1,
-        'templateId': 'AVyCPw5pizmIbsE8o-4r',
+        'template': 'AVyCPw5pizmIbsE8o-4r',
         'templateVersion': 1,
         'name': 'anduin-executions-channel',
         'description': 'Anduin Executions can be posted here for storage and use in Samson',
@@ -14,17 +14,19 @@ const defaultData =
 
 const helper = {
     defaultData,
-    create: (cb) => {
-
+    create: (key, cb) => {
+        const data = _.clone(defaultData);
+        _.extend(data, { name: `${data.name}-${key}` });
         ES.save({
             index: process.env.ES_INDEX,
             type: 'default',
-            document: defaultData
+            document: data
         }, (err, result) => {
 
             if (err) {
                 return done(err);
             }
+            defaultData.id = result._id;
             return cb(null, result);
         });
     },

@@ -12,19 +12,34 @@ const esIndex = process.env.ES_INDEX;
 
 const schema = {
     id: Joi.string(),
-    version: Joi.string(),
-    templateId: Joi.string(),
+    nodeRedId: Joi.number(),
+    version: Joi.number(),
+    template: Joi.string(),
     templateVersion: Joi.string(),
     name: Joi.string(),
     description: Joi.string(),
     parameters: Joi.array().items(ParameterModel.schema)
 };
 
+function parseEStoModel(document) {
+    let flow = new FlowModel(
+        document._id,
+        document._version,
+        document._source.template,
+        document._source.templateVersion,
+        document._source.name,
+        document._source.description,
+        document._source.parameters
+    );
+    flow.nodeRedId = document._source.nodeRedId;
+    return flow;
+}
+
 class FlowModel {
 
     constructor(id,
                 version,
-                templateId,
+                template,
                 templateVersion,
                 name,
                 description,
@@ -32,7 +47,7 @@ class FlowModel {
 
         this.id = id;
         this.version = version;
-        this.templateId = templateId;
+        this.template = template;
         this.templateVersion = templateVersion;
         this.name = name;
         this.description = description;
@@ -46,55 +61,116 @@ class FlowModel {
 
     static save(payload, flowTemplate, cb) {
 
-        const flow = new FlowModel(null, null, flowTemplate.id, flowTemplate.version, payload.name, payload.description, payload.parameters);
+        const flowModel = new FlowModel(null, null, flowTemplate.name, flowTemplate.version, payload.name, payload.description, payload.parameters);
         const template = Handlebars.compile(flowTemplate.flow);
         const parameters = {};
 
         // Get parameters values, but only the required by the template
         _(flowTemplate.parameters).forEach((key) => {
 
-            const parameter = _.find(flow.parameters, ['key', key]);
+            const parameter = _.find(flowModel.parameters, ['key', key]);
             parameters[key] = parameter ? parameter.value : null;
         });
 
         //If a parameter is null then exit
         if (_.includes(parameters, null)) {
-            const error = new Error(`Missing or null parameter(s). Expected [${flowTemplate.parameters}]. Received [${_.map(flow.parameters, 'key')}]`);
-            console.log(error);
+            const error = new Error(`Missing or null parameter(s). Expected [${flowTemplate.parameters}]. Received [${_.map(flowModel.parameters, 'key')}]`);
+            console.error(error);
             return cb(error);
         }
-        Async.waterfall([
-            // Save to ES
-            (next) => {
 
-                const values = {
-                    index: esIndex,
-                    type: 'default',
-                    document: flow
-                };
-                ES.save(values, next);
-            },
+        const saveES = (newFlow, next) => {
 
-            //Add flow to Node-RED
-            (es, next) => {
+            const values = {
+                index: esIndex,
+                type: 'default',
+                document: newFlow
+            };
+            ES.save(values, next);
+        };
 
-                //Use ES id in template to keep reference between bot services
-                parameters._id = es._id;
-                NodeRED.flow.save(JSON.parse(template(parameters)), (err) => {
+        const saveNR = (es, next) => {
 
-                    next(err, es);
-                });
-            }
+            //Use ES id in template to keep reference between both services
+            parameters._id = es._id;
+            NodeRED.flow.save(JSON.parse(template(parameters)), (err, id) => {
+                flowModel.nodeRedId = id;
+                next(err, flowModel, es._id);
+            });
+        };
 
-        ], (err, result) => {
+        const updateES = (updatedFlow, id, next) => {
+
+            const values = {
+                index: esIndex,
+                type: 'default',
+                id: id,
+                document: updatedFlow
+            };
+            ES.update(values, (err, result) => {
+
+                if (err) {
+                    console.error(err);
+                    return next(err);
+                }
+                updatedFlow.id = result._id;
+                return next(null, updatedFlow);
+            });
+        };
+
+        const updateNR = (updatedFlow, next) => {
+
+            //Use ES id in template to keep reference between bot services
+            parameters._id = updatedFlow.id;
+            NodeRED.flow.update(updatedFlow.nodeRedId, JSON.parse(template(parameters)), (err) => {
+
+                next(err, updatedFlow);
+            });
+        };
+
+        const callback = (err, result) => {
 
             if (err) {
+                console.error(err);
                 return cb(err);
             }
-            flow.id = result._id;
-            flow.version = result._version;
-            cb(null, flow);
+            return this.findByName(flowModel.name, (err, flow) => {
+                if (err) {
+                    console.error(err);
+                    return cb(err);
+                }
+                flowModel.version = flow.version;
+                return cb(null, flowModel);
+            });
+        };
+
+        this.findByName(payload.name, (err, result) => {
+
+            if (err) {
+                if (err.statusCode !== 404) {
+                    return cb(err);
+                }
+            }
+            if (!result) {
+                console.log('save');
+                Async.waterfall([
+                    saveES.bind(null, flowModel),
+                    saveNR,
+                    updateES
+                ], callback);
+            }
+            else {
+                console.log('update');
+                flowModel.nodeRedId = result.nodeRedId;
+                flowModel.id = result.id;
+                flowModel.version = result.version;
+                Async.waterfall([
+                    updateES.bind(null, flowModel, result.id),
+                    updateNR
+                ], callback);
+            }
         });
+
     };
 
     static  findById(id, cb) {
@@ -107,18 +183,10 @@ class FlowModel {
         ES.findById(values, (err, result) => {
 
             if (err) {
+                console.error(err);
                 return cb(err);
             }
-            const flow = new FlowModel(
-                result._id,
-                result._version,
-                result._source.templateId,
-                result._source.templateVersion,
-                result._source.name,
-                result._source.description,
-                result._source.parameters
-            );
-            cb(null, flow);
+            cb(null, parseEStoModel(result));
         });
     };
 
@@ -132,26 +200,58 @@ class FlowModel {
         ES.findAll(values, (err, results) => {
 
             if (err) {
+                console.error(err);
                 return cb(err);
             }
             const response = [];
             _(results.hits.hits).each((value) => {
-
-                const flow = new FlowModel(
-                    value._id,
-                    value._version,
-                    value._source.templateId,
-                    value._source.templateVersion,
-                    value._source.name,
-                    value._source.description,
-                    value._source.parameters
-                );
-                response.push(flow);
+                response.push(parseEStoModel(value));
             });
 
             cb(null, response);
         });
     }
+
+    static  findByName(name, cb) {
+
+        const values = {
+            index: esIndex,
+            type: 'default',
+            body: {
+                'query': {
+                    'match': {
+                        'name': {
+                            'query': name,
+                            'operator': 'and'
+                        }
+                    }
+
+                }
+            }
+
+        };
+        ES.searchByQuery(values, (err, result) => {
+
+            if (err) {
+                console.error(err);
+                return cb(err);
+            }
+
+            if (result.hits.total === 0) {
+                return cb(null, null);
+            }
+            if (result.hits.total > 1) {
+                const msg = {
+                    statusCode: 400,
+                    msg: `Multiple instances found of flow ${name}`
+                };
+                console.error(msg);
+                return cb(msg);
+            }
+            result = result.hits.hits[0];
+            cb(null, parseEStoModel(result));
+        });
+    };
 }
 
 module.exports = FlowModel;
