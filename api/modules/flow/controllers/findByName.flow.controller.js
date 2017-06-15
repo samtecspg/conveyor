@@ -7,10 +7,10 @@ module.exports = (request, reply) => {
     return Flow.findByName(request.params.name, (err, flow) => {
 
         if (err) {
-            if (err.statusCode === 404) {
-                return reply(Boom.notFound(err.msg));
-            }
-            return reply(Boom.badRequest(err.msg));
+            return reply(Boom.badRequest('ES Request error'));
+        }
+        if (!flow) {
+            return reply(Boom.notFound('Flow not found'));
         }
         return reply(flow);
     });

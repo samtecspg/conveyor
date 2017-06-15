@@ -4,7 +4,7 @@
     "description": "Ingest API",
     "main": "start.js",
     "scripts": {
-        "test": "lab --lint",
+        "test": "lab --lint --timeout 10000",
         "test:coverage": "lab --lint --coverage",
         "start": "npm-run-all --parallel start:server",
         "start:server": "node start.js",

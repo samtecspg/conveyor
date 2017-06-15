@@ -41,7 +41,7 @@ before((done) => {
             },
             (cb) => {
 
-                FlowHelper.create(testData.key,(err, result) => {
+                FlowHelper.create(testData.key, (err, result) => {
 
                     if (err) {
                         return cb(err);
@@ -50,7 +50,17 @@ before((done) => {
                     return cb();
                 });
             }
-        ], done);
+        ], (err) => {
+
+            if (err) {
+                return done(err);
+            }
+            setTimeout(() => {
+                // ES doesn't index the data fast enough to be available during testing
+                console.log('timeout complete');
+                done();
+            }, 1000);
+        });
     });
 });
 
@@ -68,7 +78,7 @@ suite('/flow', () => {
 
     suite('/get', () => {
 
-        test.skip('should respond with 200 successful operation and return and array of objects', (done) => {
+        test('should respond with 200 successful operation and return and array of objects', (done) => {
 
             const options = {
                 method: 'GET',
@@ -87,7 +97,7 @@ suite('/flow', () => {
 
             const options = {
                 method: 'GET',
-                url: `/flow/${testData.flow._id}`
+                url: `/flow/${FlowHelper.defaultData.name}-${testData.key}`
             };
 
             server.inject(options, (res) => {
@@ -98,7 +108,7 @@ suite('/flow', () => {
             });
         });
 
-        test.skip('should respond with 404 Flow not found', (done) => {
+        test('should respond with 404 Flow not found', (done) => {
 
             const data = {
                 id: '-1'
@@ -120,11 +130,11 @@ suite('/flow', () => {
 
     suite('/post', () => {
 
-        test.skip('should respond with 200 successful operation and return an object', (done) => {
+        test('should respond with 200 successful operation and return an object', (done) => {
 
             const data = {
-                template: testData.flowTemplate.name,
-                name: 'anduin-executions',
+                template: `${FlowTemplateHelper.defaultData.name}-${testData.key}`,
+                name: `${FlowHelper.defaultData.name}-1-${testData.key}`,
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: [
                     {
@@ -146,11 +156,11 @@ suite('/flow', () => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.object();
-                done();
+                FlowHelper.delete(res.result.id, done);
             });
         });
 
-        test.skip('should respond with 400 Bad Request [Invalid Template Id]', (done) => {
+        test('should respond with 400 Bad Request [Invalid Template Id]', (done) => {
 
             const data = {
                 template: '-1',
@@ -180,7 +190,7 @@ suite('/flow', () => {
             });
         });
 
-        test.skip('should respond with 400 Bad Request', (done) => {
+        test('should respond with 400 Bad Request', (done) => {
 
             const data = [{ invalid: true }];
             const options = {
@@ -197,7 +207,7 @@ suite('/flow', () => {
             });
         });
 
-        test.skip('should respond with 400 Bad Request [Invalid Parameter Schema - number instead of string]', (done) => {
+        test('should respond with 400 Bad Request [Invalid Parameter Schema - number instead of string]', (done) => {
 
             const data = {
                 template: 'anduin-executions-template',
@@ -228,7 +238,7 @@ suite('/flow', () => {
             });
         });
 
-        test.skip('should respond with 400 Bad Request [Invalid Parameter Schema - missing required value]', (done) => {
+        test('should respond with 400 Bad Request [Invalid Parameter Schema - missing required value]', (done) => {
 
             const data = {
                 template: testData.flowTemplate.name,

@@ -21,8 +21,9 @@ const schema = {
     parameters: Joi.array().items(ParameterModel.schema)
 };
 
-function parseEStoModel(document) {
-    let flow = new FlowModel(
+const parseEStoModel = (document) => {
+
+    const flow = new FlowModel(
         document._id,
         document._version,
         document._source.template,
@@ -33,7 +34,7 @@ function parseEStoModel(document) {
     );
     flow.nodeRedId = document._source.nodeRedId;
     return flow;
-}
+};
 
 class FlowModel {
 
@@ -94,6 +95,7 @@ class FlowModel {
             //Use ES id in template to keep reference between both services
             parameters._id = es._id;
             NodeRED.flow.save(JSON.parse(template(parameters)), (err, id) => {
+
                 flowModel.nodeRedId = id;
                 next(err, flowModel, es._id);
             });
@@ -104,7 +106,7 @@ class FlowModel {
             const values = {
                 index: esIndex,
                 type: 'default',
-                id: id,
+                id,
                 document: updatedFlow
             };
             ES.update(values, (err, result) => {
@@ -135,6 +137,7 @@ class FlowModel {
                 return cb(err);
             }
             return this.findByName(flowModel.name, (err, flow) => {
+
                 if (err) {
                     console.error(err);
                     return cb(err);
@@ -205,6 +208,7 @@ class FlowModel {
             }
             const response = [];
             _(results.hits.hits).each((value) => {
+
                 response.push(parseEStoModel(value));
             });
 

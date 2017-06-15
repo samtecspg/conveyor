@@ -29,7 +29,7 @@ const datasource = {
             });
             wreck.put(`/flow/${id}`, (error, response, body) => {
 
-                if (error || body.error) {
+                if (error || (body && body.error)) {
                     console.log(error);
                     return cb(error || body);
                 }

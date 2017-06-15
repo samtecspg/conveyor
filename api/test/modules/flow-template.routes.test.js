@@ -57,7 +57,7 @@ suite('/flowTemplate', () => {
 
     suite('/get', () => {
 
-        test.skip('should respond with 200 successful operation and return and array of objects', (done) => {
+        test('should respond with 200 successful operation and return and array of objects', (done) => {
 
             const options = {
                 method: 'GET',
@@ -73,7 +73,7 @@ suite('/flowTemplate', () => {
                 });
         });
 
-        test.skip('should respond with 200 successful operation and return and array with 1 object', (done) => {
+        test('should respond with 200 successful operation and return and array with 1 object', (done) => {
 
             const options = {
                 method: 'GET',
@@ -105,7 +105,7 @@ suite('/flowTemplate', () => {
             });
         });
 
-        test.skip('should respond with 404 Flow not found', (done) => {
+        test('should respond with 404 Flow not found', (done) => {
 
             const data = {
                 id: '-1'
@@ -126,7 +126,7 @@ suite('/flowTemplate', () => {
     });
     suite('/post', () => {
 
-        test.skip('should respond with 200 successful operation and return an object', (done) => {
+        test('should respond with 200 successful operation and return an object', (done) => {
 
             const data = {
                 name: 'anduin-executions',
@@ -154,7 +154,7 @@ suite('/flowTemplate', () => {
                 done();
             });
         });
-        test.skip('should respond with 400 Bad Request', (done) => {
+        test('should respond with 400 Bad Request', (done) => {
 
             const data = [{ invalid: true }];
             const options = {
@@ -170,7 +170,7 @@ suite('/flowTemplate', () => {
                 done();
             });
         });
-        test.skip('should respond with 400 Bad Request if no label exists in flow object', (done) => {
+        test('should respond with 400 Bad Request if no label exists in flow object', (done) => {
 
             const data = {
                 name: 'anduin-executions',
@@ -198,7 +198,7 @@ suite('/flowTemplate', () => {
             });
         });
 
-        test.skip('should respond with 400 Bad Request if no nodes exists in flow object', (done) => {
+        test('should respond with 400 Bad Request if no nodes exists in flow object', (done) => {
 
             const data = {
                 name: 'anduin-executions',

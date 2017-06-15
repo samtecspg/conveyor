@@ -15,6 +15,7 @@ const defaultData =
 const helper = {
     defaultData,
     create: (key, cb) => {
+
         const data = _.clone(defaultData);
         _.extend(data, { name: `${data.name}-${key}` });
         ES.save({
@@ -30,12 +31,12 @@ const helper = {
             return cb(null, result);
         });
     },
-    'delete': (flow, cb) => {
+    'delete': (id, cb) => {
 
         ES.delete({
             index: process.env.ES_INDEX,
             type: 'default',
-            id: flow._id
+            id
         }, (err) => {
 
             if (err) {
