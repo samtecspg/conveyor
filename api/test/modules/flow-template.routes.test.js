@@ -129,7 +129,7 @@ suite('/flowTemplate', () => {
         test('should respond with 200 successful operation and return an object', (done) => {
 
             const data = {
-                name: 'anduin-executions',
+                name: `${FlowTemplateHelper.defaultData.name}-1-${testData.key}`,
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: ['id', 'channelName', 'url'],
                 flow: {
@@ -151,7 +151,7 @@ suite('/flowTemplate', () => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.object();
-                done();
+                FlowTemplateHelper.delete(res.result.id, done);
             });
         });
         test('should respond with 400 Bad Request', (done) => {
