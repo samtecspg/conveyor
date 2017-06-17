@@ -13,10 +13,10 @@ const flowRoutes = [
     },
     {
         method: 'GET',
-        path: '/flow/{id}',
+        path: '/flow/{name}',
         config: {
-            validate: FlowValidator.findById,
-            handler: FlowController.findById
+            validate: FlowValidator.findByName,
+            handler: FlowController.findByName
         }
     },
     {

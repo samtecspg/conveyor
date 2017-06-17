@@ -59,19 +59,19 @@ paths:
             type: array
             items:
               $ref: '#/definitions/FlowTemplate'
-  '/flowTemplates/{id}':
+  '/flowTemplates/{name}':
     get:
       tags:
         - flowTemplate
-      summary: 'Find a model instances by {id}'
+      summary: 'Find a model instances by {name}'
       description: ''
       operationId: findByIdFlowTemplate
       produces:
         - application/json
       parameters:
-        - name: id
+        - name: name
           in: path
-          description: ID of Flow Template to return
+          description: Name of Flow Template to return
           required: true
           type: string
       responses:
@@ -118,12 +118,12 @@ paths:
           schema:
             type: object
             required:
-              - templateId
+              - template
               - name
               - description
               - parameters
             properties:
-              templateId:
+              template:
                 type: string
               name:
                 type: string
@@ -142,17 +142,17 @@ paths:
               $ref: '#/definitions/Flow'
         '400':
           description: Invalid Flow Template Id or Parameter array supplied
-  '/flow/{id}':
+  '/flow/{name}':
     get:
       tags:
         - flow
-      summary: 'Find a model instances by {id}'
+      summary: 'Find a model instances by {name}'
       description: ''
       operationId: findOneFlow
       produces:
         - application/json
       parameters:
-        - name: id
+        - name: name
           in: path
           description: ID of Flow Template to return
           required: true
@@ -217,7 +217,7 @@ definitions:
         type: string
       version:
         type: string
-      templateId:
+      template:
         type: string
       templateVersion:
         type: string
@@ -232,5 +232,5 @@ definitions:
     required:
       - name
       - description
-      - templateId
+      - template
       - parameters

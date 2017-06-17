@@ -1,5 +1,5 @@
 'use strict';
-
+require('dotenv').config({ path: '../../../.env' });
 const Code = require('code');
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
@@ -9,9 +9,10 @@ const suite = lab.suite;
 const test = lab.test;
 const before = lab.before;
 const after = lab.after;
-
+const _ = require('lodash');
 const FlowTemplateHelper = require('../helpers/flow-template.helper');
 const testData = {
+    key: `elasticsearch-${Math.random()}`,
     flowTemplate: null
 };
 
@@ -22,7 +23,7 @@ before((done) => {
         if (err) {
             return done(err);
         }
-        FlowTemplateHelper.create((err, result) => {
+        FlowTemplateHelper.create(testData.key, (err, result) => {
 
             if (err) {
                 return done(err);
@@ -36,7 +37,7 @@ before((done) => {
 
 after((done) => {
 
-    FlowTemplateHelper.delete(testData.flowTemplate, (err, result) => {
+    FlowTemplateHelper.delete(testData.flowTemplate._id, (err, result) => {
 
         if (err) {
             return done(err);
@@ -67,16 +68,18 @@ suite('ES', () => {
 
         test('save flowTemplate', (done) => {
 
+            const defaultData = _.clone(FlowTemplateHelper.defaultData);
+            _.extend(defaultData, { name: `${defaultData.name}-${testData.key}` });
             const data = {
                 index: 'flowtemplate',
                 type: 'default',
-                document: FlowTemplateHelper.defaultData
+                document: defaultData
             };
             ES.save(data, (err, response) => {
 
                 expect(err).to.be.null();
                 expect(response).not.to.be.null();
-                done();
+                FlowTemplateHelper.delete(response._id, done);
             });
         });
 

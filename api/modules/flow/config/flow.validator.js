@@ -14,6 +14,14 @@ class FlowValidate {
                 };
             })()
         };
+        this.findByName = {
+            params: (() => {
+
+                return {
+                    name: FlowSchema.name.required()
+                };
+            })()
+        };
         this.findAll = {
             query: (() => {
 
@@ -26,7 +34,7 @@ class FlowValidate {
             payload: (() => {
 
                 return {
-                    templateId: FlowSchema.templateId.required(),
+                    template: FlowSchema.template.required(),
                     name: FlowSchema.name.required(),
                     description: FlowSchema.description.required(),
                     parameters: Joi.array().items({

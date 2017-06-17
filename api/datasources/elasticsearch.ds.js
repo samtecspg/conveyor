@@ -8,6 +8,15 @@ const Client = new Elasticsearch.Client({
 });
 /* $lab:coverage:on$ */
 
+const errorHandler = (err) => {
+
+    if (process.env.NODE_ENV !== 'test') {
+        console.error(err);
+    }
+    else {
+        console.log(err.message);
+    }
+};
 const datasource = {
 
     save: (params, cb) => {
@@ -19,7 +28,25 @@ const datasource = {
         }, (err, response) => {
 
             if (err) {
-                console.log(new Error(err));
+                errorHandler(new Error(err));
+                return cb(err);
+            }
+            return cb(null, response);
+        });
+    },
+    update: (params, cb) => {
+
+        Client.update({
+            index: params.index,
+            type: params.type,
+            id: params.id,
+            body: {
+                doc: params.document
+            }
+        }, (err, response) => {
+
+            if (err) {
+                errorHandler(new Error(err));
                 return cb(err);
             }
             return cb(null, response);
@@ -34,7 +61,7 @@ const datasource = {
         }, (err, response) => {
 
             if (err) {
-                console.log(new Error(err));
+                errorHandler(new Error(err));
                 return cb(err);
             }
             return cb(null, response);
@@ -51,7 +78,7 @@ const datasource = {
         }, (err, response) => {
 
             if (err) {
-                console.log(new Error(err));
+                errorHandler(new Error(err));
                 return cb(err);
             }
             return cb(null, response);
@@ -67,7 +94,7 @@ const datasource = {
         }, (err, response) => {
 
             if (err) {
-                console.log(new Error(err));
+                errorHandler(new Error(err));
                 return cb(err);
             }
             return cb(null, response);
@@ -82,7 +109,24 @@ const datasource = {
         }, (err, response) => {
 
             if (err) {
-                console.log(new Error(err));
+                errorHandler(new Error(err));
+                return cb(err);
+            }
+            return cb(null, response);
+        });
+    },
+    searchByQuery: (params, cb) => {
+
+        Client.search({
+            version: true,
+            index: params.index,
+            type: params.type,
+            body: params.body,
+            size: params.size ? params.size : 10
+        }, (err, response) => {
+
+            if (err) {
+                errorHandler(new Error(err));
                 return cb(err);
             }
             return cb(null, response);

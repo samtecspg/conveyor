@@ -5,7 +5,7 @@ const Boom = require('boom');
 
 module.exports = (request, reply) => {
 
-    FlowTemplate.findById(request.payload.templateId, (err, flowTemplate) => {
+    FlowTemplate.findByName(request.payload.template, (err, flowTemplate) => {
 
         if (err) {
             console.log(new Error(err));

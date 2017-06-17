@@ -19,6 +19,20 @@ const datasource = {
                     console.log(error);
                     return cb(error || body);
                 }
+                return cb(null, body.id);
+            });
+        },
+        update: (id, flow, cb) => {
+
+            const wreck = Wreck.defaults({
+                payload: flow
+            });
+            wreck.put(`/flow/${id}`, (error, response, body) => {
+
+                if (error || (body && body.error)) {
+                    console.log(error);
+                    return cb(error || body);
+                }
                 return cb(null, body);
             });
         },

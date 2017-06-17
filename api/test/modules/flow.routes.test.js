@@ -1,5 +1,5 @@
 'use strict';
-
+require('dotenv').config({ path: '../../../.env' });
 const Async = require('async');
 const Code = require('code');
 const Lab = require('lab');
@@ -13,6 +13,7 @@ const after = lab.after;
 const FlowTemplateHelper = require('../helpers/flow-template.helper');
 const FlowHelper = require('../helpers/flow.helper');
 const testData = {
+    key: `flow-${Math.random()}`,
     flowTemplate: null,
     flow: null
 };
@@ -29,7 +30,7 @@ before((done) => {
         Async.parallel([
             (cb) => {
 
-                FlowTemplateHelper.create((err, result) => {
+                FlowTemplateHelper.create(testData.key, (err, result) => {
 
                     if (err) {
                         return cb(err);
@@ -40,7 +41,7 @@ before((done) => {
             },
             (cb) => {
 
-                FlowHelper.create((err, result) => {
+                FlowHelper.create(testData.key, (err, result) => {
 
                     if (err) {
                         return cb(err);
@@ -49,15 +50,25 @@ before((done) => {
                     return cb();
                 });
             }
-        ], done);
+        ], (err) => {
+
+            if (err) {
+                return done(err);
+            }
+            setTimeout(() => {
+                // ES doesn't index the data fast enough to be available during testing
+                console.log('timeout complete');
+                done();
+            }, 1000);
+        });
     });
 });
 
 after((done) => {
 
     Async.parallel([
-        (cb) => FlowTemplateHelper.delete(testData.flowTemplate, cb),
-        (cb) => FlowHelper.delete(testData.flow, cb)
+        (cb) => FlowTemplateHelper.delete(testData.flowTemplate._id, cb),
+        (cb) => FlowHelper.delete(testData.flow._id, cb)
 
     ], done);
 
@@ -86,7 +97,7 @@ suite('/flow', () => {
 
             const options = {
                 method: 'GET',
-                url: `/flow/${testData.flow._id}`
+                url: `/flow/${FlowHelper.defaultData.name}-${testData.key}`
             };
 
             server.inject(options, (res) => {
@@ -122,8 +133,8 @@ suite('/flow', () => {
         test('should respond with 200 successful operation and return an object', (done) => {
 
             const data = {
-                templateId: testData.flowTemplate._id,
-                name: 'anduin-executions',
+                template: `${FlowTemplateHelper.defaultData.name}-${testData.key}`,
+                name: `${FlowHelper.defaultData.name}-1-${testData.key}`,
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: [
                     {
@@ -145,14 +156,14 @@ suite('/flow', () => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.object();
-                done();
+                FlowHelper.delete(res.result.id, done);
             });
         });
 
         test('should respond with 400 Bad Request [Invalid Template Id]', (done) => {
 
             const data = {
-                templateId: '-1',
+                template: '-1',
                 name: 'anduin-executions',
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: [
@@ -199,7 +210,7 @@ suite('/flow', () => {
         test('should respond with 400 Bad Request [Invalid Parameter Schema - number instead of string]', (done) => {
 
             const data = {
-                templateId: 'anduin-executions-template',
+                template: 'anduin-executions-template',
                 templateVersion: '1.0.0',
                 name: 'anduin-executions',
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
@@ -230,7 +241,7 @@ suite('/flow', () => {
         test('should respond with 400 Bad Request [Invalid Parameter Schema - missing required value]', (done) => {
 
             const data = {
-                templateId: testData.flowTemplate._id,
+                template: testData.flowTemplate.name,
                 templateVersion: '1.0.0',
                 name: 'anduin-executions',
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
