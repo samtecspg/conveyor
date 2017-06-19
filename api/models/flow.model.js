@@ -97,6 +97,10 @@ class FlowModel {
             flowModel.id = es._id;
             NodeRED.flow.save(JSON.parse(template(parameters)), (err, id) => {
 
+                if (err) {
+                    console.error(new Error(err));
+                    return next(err);
+                }
                 flowModel.nodeRedId = id;
                 next(err, flowModel, es._id);
             });
@@ -127,7 +131,7 @@ class FlowModel {
             NodeRED.flow.update(updatedFlow.nodeRedId, JSON.parse(template(parameters)), (err) => {
 
                 if (err) {
-                    console.error(err);
+                    console.error(new Error(err));
                     return next(err);
                 }
                 next(err, updatedFlow);
