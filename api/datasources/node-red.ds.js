@@ -16,7 +16,7 @@ const datasource = {
             wreck.post('/flow', (error, response, body) => {
 
                 if (error || body.error) {
-                    console.log(error);
+                    console.error(error);
                     return cb(error || body);
                 }
                 return cb(null, body.id);
@@ -30,7 +30,7 @@ const datasource = {
             wreck.put(`/flow/${id}`, (error, response, body) => {
 
                 if (error || (body && body.error)) {
-                    console.log(error);
+                    console.error(error);
                     return cb(error || body);
                 }
                 return cb(null, body);
@@ -41,7 +41,7 @@ const datasource = {
             Wreck.get(`/flow/${id}`, (error, response, body) => {
 
                 if (error || body.error) {
-                    console.log(error);
+                    console.error(error);
                     return cb(error || body);
                 }
                 return cb(null, body);
@@ -52,7 +52,7 @@ const datasource = {
             Wreck.get('/flows', (error, response, body) => {
 
                 if (error || body.error) {
-                    console.log(error);
+                    console.error(error);
                     return cb(error || body);
                 }
                 return cb(null, body);
