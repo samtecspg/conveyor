@@ -1,24 +1,15 @@
 'use strict';
 const NodeRedController = require('../controllers');
-const prefix = process.env.NODE_RED_PROXY_PREFIX || 'n';
+const suffix = process.env.NODE_RED_PROXY_SUFFIX || 'data';
 const flowRoutes = [
     {
         method: '*',
-        path: `/${prefix}/flow/{name}`,
+        path: `/flow/{name}/${suffix}`,
         config: {
-            handler: NodeRedController.post,
+            handler: NodeRedController.all,
             payload: {
                 output: 'stream',
                 parse: false
-            }
-        }
-    },
-    {
-        method: 'POST',
-        path: `/${prefix}2/flow/{name}`,
-        handler: {
-            proxy: {
-                uri: `${process.env.NODE_RED_URL}/{name}`
             }
         }
     }
