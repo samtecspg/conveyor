@@ -94,8 +94,13 @@ class FlowModel {
 
             //Use ES id in template to keep reference between both services
             parameters._id = es._id;
+            flowModel.id = es._id;
             NodeRED.flow.save(JSON.parse(template(parameters)), (err, id) => {
 
+                if (err) {
+                    console.error(new Error(err));
+                    return next(err);
+                }
                 flowModel.nodeRedId = id;
                 next(err, flowModel, es._id);
             });
@@ -112,7 +117,6 @@ class FlowModel {
             ES.update(values, (err, result) => {
 
                 if (err) {
-                    console.error(err);
                     return next(err);
                 }
                 updatedFlow.id = result._id;
@@ -126,16 +130,26 @@ class FlowModel {
             parameters._id = updatedFlow.id;
             NodeRED.flow.update(updatedFlow.nodeRedId, JSON.parse(template(parameters)), (err) => {
 
+                if (err) {
+                    console.error(new Error(err));
+                    return next(err);
+                }
                 next(err, updatedFlow);
             });
         };
 
-        const callback = (err, result) => {
+        const rollbackCreateES = (flow, next) => {
 
-            if (err) {
-                console.error(err);
-                return cb(err);
-            }
+            const values = {
+                index: esIndex,
+                type: 'default',
+                id: flow.id
+            };
+            ES.delete(values, next);
+        };
+
+        const callback = () => {
+
             return this.findByName(flowModel.name, (err, flow) => {
 
                 if (err) {
@@ -155,12 +169,22 @@ class FlowModel {
                 }
             }
             if (!result) {
-                console.log('save');
                 Async.waterfall([
                     saveES.bind(null, flowModel),
                     saveNR,
                     updateES
-                ], callback);
+                ], (error) => {
+
+                    if (error) {
+                        console.log('rollback create');
+                        return rollbackCreateES(flowModel, (deleteError) => {
+
+                            return cb(deleteError || error); // return error during rollback or original error
+                        });
+
+                    }
+                    return callback();
+                });
             }
             else {
                 console.log('update');
@@ -170,7 +194,18 @@ class FlowModel {
                 Async.waterfall([
                     updateES.bind(null, flowModel, result.id),
                     updateNR
-                ], callback);
+                ], (error) => {
+
+                    if (error) {
+                        console.log('rollback update');
+                        return updateES(flowModel, flowModel.id, (updateError) => {
+
+                            return cb(updateError || error); // return error during rollback or original error
+                        });
+
+                    }
+                    return callback();
+                });
             }
         });
 
