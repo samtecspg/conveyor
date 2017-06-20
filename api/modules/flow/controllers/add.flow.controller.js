@@ -20,7 +20,6 @@ module.exports = (request, reply) => {
         const callback = (err, result) => {
 
             if (err) {
-                console.log(new Error(err));
                 const message = Boom.badRequest('Invalid Flow Template Id or Parameter array supplied');
                 return reply(message);
             }
