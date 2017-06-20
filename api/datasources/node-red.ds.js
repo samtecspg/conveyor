@@ -6,6 +6,17 @@ const Wreck = require('wreck').defaults({
     json: true
 });
 /* $lab:coverage:on$ */
+
+const errorHandler = (err) => {
+
+    if (process.env.NODE_ENV !== 'test') {
+        console.error(err);
+    }
+    else {
+        console.log(err.message);
+    }
+};
+
 const datasource = {
     flow: {
         save: (flow, cb) => {
@@ -13,11 +24,11 @@ const datasource = {
             const wreck = Wreck.defaults({
                 payload: flow
             });
-            wreck.post('/flow', (error, response, body) => {
+            wreck.post('/flow', (err, response, body) => {
 
-                if (error || body.error) {
-                    console.log(error);
-                    return cb(error || body);
+                if (err) {
+                    errorHandler(new Error(err));
+                    return cb(err);
                 }
                 return cb(null, body.id);
             });
@@ -27,33 +38,33 @@ const datasource = {
             const wreck = Wreck.defaults({
                 payload: flow
             });
-            wreck.put(`/flow/${id}`, (error, response, body) => {
+            wreck.put(`/flow/${id}`, (err, response, body) => {
 
-                if (error || (body && body.error)) {
-                    console.log(error);
-                    return cb(error || body);
+                if (err) {
+                    errorHandler(new Error(err));
+                    return cb(err);
                 }
                 return cb(null, body);
             });
         },
         findById: (id, cb) => {
 
-            Wreck.get(`/flow/${id}`, (error, response, body) => {
+            Wreck.get(`/flow/${id}`, (err, response, body) => {
 
-                if (error || body.error) {
-                    console.log(error);
-                    return cb(error || body);
+                if (err) {
+                    errorHandler(new Error(err));
+                    return cb(err);
                 }
                 return cb(null, body);
             });
         },
         findAll: (cb) => {
 
-            Wreck.get('/flows', (error, response, body) => {
+            Wreck.get('/flows', (err, response, body) => {
 
-                if (error || body.error) {
-                    console.log(error);
-                    return cb(error || body);
+                if (err) {
+                    errorHandler(new Error(err));
+                    return cb(err);
                 }
                 return cb(null, body);
             });

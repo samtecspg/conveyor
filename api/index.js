@@ -15,7 +15,17 @@ module.exports = (callback) => {
             cors: true
         }
     });
+    server.register({
+        register: require('h2o2')
+    }, (err) => {
 
+        if (err) {
+            console.error('Failed to load h2o2');
+        }
+        else {
+            console.log('Loaded h2o2');
+        }
+    });
     for (const route in Routes) {
         if (Routes.hasOwnProperty(route)) {
             server.route(Routes[route]);
@@ -23,6 +33,7 @@ module.exports = (callback) => {
     }
 
     server.register({ register: Blipp, options: {} });
+
     callback(null, server);
     /* $lab:coverage:on$ */
 };
