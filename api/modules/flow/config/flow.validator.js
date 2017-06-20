@@ -26,22 +26,23 @@ class FlowValidate {
             query: (() => {
 
                 return {
-                    size: Joi.number()
+                    size: Joi.number().description('Number of objects to be returned (default:10)')
                 };
             })()
         };
         this.add = {
             payload: (() => {
 
-                return {
+                return Joi.object({
                     template: FlowSchema.template.required(),
                     name: FlowSchema.name.required(),
                     description: FlowSchema.description.required(),
-                    parameters: Joi.array().items({
-                        key: ParameterSchema.key.required(),
-                        value: ParameterSchema.value.required()
-                    }).required()
-                };
+                    parameters: Joi.array().items(
+                        Joi.object({
+                            key: ParameterSchema.key.required(),
+                            value: ParameterSchema.value.required()
+                        }).label('Parameter Model')) .required().description('Number of objects to be returned (default:10)')
+                }).label('Flow Model');
             })()
         };
     }

@@ -2,6 +2,7 @@
 
 const FlowTemplateSchema = require('../../../models/index').FlowTemplate.schema;
 const NodeRedFlowModel = require('../../../models/index').NodeRedFlowModel.schema;
+const Joi = require('joi');
 
 class FlowTemplateValidate {
     constructor() {
@@ -22,7 +23,14 @@ class FlowTemplateValidate {
                 };
             })()
         };
-        this.findAll = {};
+        this.findAll = {
+            query: (() => {
+
+                return {
+                    size: Joi.number().description('Number of objects to be returned (default:10)')
+                };
+            })()
+        };
         this.add = {
             payload: (() => {
 
