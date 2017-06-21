@@ -7,16 +7,16 @@ const Async = require('async');
 const esIndex = process.env.ES_INDEX;
 
 const schema = {
-    id: Joi.string(),
-    version: Joi.number(),
+    id: Joi.string().description('Id on Elasticsearch'),
+    version: Joi.number().description('Version on Elasticsearch'),
     deprecated: Joi.boolean(),
-    name: Joi.string(),
-    description: Joi.string(),
-    parameters: Joi.array().items(Joi.string()),
+    name: Joi.string().description('Name of the Flow (this is unique)'),
+    description: Joi.string().description('Description of the Flow Template'),
+    parameters: Joi.array().items(Joi.string()).description('List of Parameters'),
     flow: Joi.object().keys({
         label: Joi.string(),
         nodes: Joi.array().items(Joi.object())
-    })
+    }).description('Node-RED flow object')
 };
 
 class FlowTemplateModel {

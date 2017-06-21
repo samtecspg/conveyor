@@ -11,14 +11,14 @@ const ES = require('../datasources').Elasticsearch;
 const esIndex = process.env.ES_INDEX;
 
 const schema = {
-    id: Joi.string(),
-    nodeRedId: Joi.number(),
-    version: Joi.number(),
-    template: Joi.string(),
-    templateVersion: Joi.string(),
-    name: Joi.string(),
-    description: Joi.string(),
-    parameters: Joi.array().items(ParameterModel.schema)
+    id: Joi.string().description('Id on Elasticsearch'),
+    nodeRedId: Joi.number().description('Id on Node-RED'),
+    version: Joi.number().description('Version on Elasticsearch'),
+    template: Joi.string().description('Name of the Flow Template'),
+    templateVersion: Joi.string().description('Flow Template version used'),
+    name: Joi.string().description('Name of the Flow (this is unique)'),
+    description: Joi.string().description('Description of the Flow'),
+    parameters: Joi.array().items(ParameterModel.schema).description('List of Parameters, must match with Flow Template\'s parameters')
 };
 
 const parseEStoModel = (document) => {

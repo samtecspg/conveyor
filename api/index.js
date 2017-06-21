@@ -4,6 +4,10 @@ require('dotenv').config({ path: '../.env' });
 const Hapi = require('hapi');
 const Routes = require('./config/routes');
 const Blipp = require('blipp');
+const Inert = require('inert');
+const Vision = require('vision');
+const HapiSwagger = require('hapi-swagger');
+const Pack = require('./package');
 
 module.exports = (callback) => {
     /* $lab:coverage:off$ */
@@ -31,9 +35,30 @@ module.exports = (callback) => {
             server.route(Routes[route]);
         }
     }
+    server.register([
+        Inert,
+        Vision,
+        {
+            register: HapiSwagger,
+            options: {
+                info: {
+                    title: Pack.description,
+                    version: Pack.version,
+                    contact: {
+                        name: 'Smart Platform Group'
+                    }
+                }
+            }
+        },
+        {
+            register: Blipp,
+            options: {}
+        }
+    ], (err) => {
 
-    server.register({ register: Blipp, options: {} });
+        callback(err, server);
+    });
 
-    callback(null, server);
+
     /* $lab:coverage:on$ */
 };
