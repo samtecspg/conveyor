@@ -6,6 +6,8 @@ const flowRoutes = [
         method: '*',
         path: `/flow/{name}/${suffix}`,
         config: {
+            description: 'Proxy for Node-RED flows',
+            tags: ['api', 'flow', 'node-red'],
             handler: NodeRedController.all,
             payload: {
                 output: 'stream',
