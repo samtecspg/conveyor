@@ -27,6 +27,7 @@
         "boom": "^4.3.1",
         "dotenv": "^4.0.0",
         "elasticsearch": "^13.0.1",
+        "h2o2": "^5.4.0",
         "handlebars": "^4.0.8",
         "hapi": "^16.1.1",
         "hapi-swagger": "^7.7.0",
