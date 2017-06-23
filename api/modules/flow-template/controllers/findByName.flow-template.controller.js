@@ -4,8 +4,9 @@ const Boom = require('boom');
 
 module.exports = (request, reply) => {
 
-    return FlowTemplate.findByName(request.params.name, (err, flowTemplate) => {
+    return FlowTemplate.findByName(request.params.name, (err, flowTemplate, metrics) => {
 
+        request.addMetrics(metrics);
         if (err) {
 
             return reply(Boom.badRequest('ES Request error'));

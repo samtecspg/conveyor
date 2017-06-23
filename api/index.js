@@ -8,7 +8,7 @@ const Inert = require('inert');
 const Vision = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
-
+const MetricsLogger = require('./plugins/metrics-logger.plugin');
 module.exports = (callback) => {
     /* $lab:coverage:off$ */
     const server = new Hapi.Server();
@@ -36,6 +36,7 @@ module.exports = (callback) => {
         }
     }
     server.register([
+
         Inert,
         Vision,
         {
@@ -53,12 +54,15 @@ module.exports = (callback) => {
         {
             register: Blipp,
             options: {}
+        },
+        {
+            register: MetricsLogger,
+            options: {}
         }
     ], (err) => {
 
         callback(err, server);
     });
-
 
     /* $lab:coverage:on$ */
 };

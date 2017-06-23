@@ -5,6 +5,7 @@ const Wreck = require('wreck').defaults({
     baseUrl: process.env.NODE_RED_URL,
     json: true
 });
+const Metrics = require('../lib/metrics.lib');
 /* $lab:coverage:on$ */
 
 const errorHandler = (err) => {
@@ -24,13 +25,15 @@ const datasource = {
             const wreck = Wreck.defaults({
                 payload: flow
             });
+            const metrics = new Metrics('Node-RED', 'save', flow);
             wreck.post('/flow', (err, response, body) => {
 
+                metrics.stop();
                 if (err) {
                     errorHandler(new Error(err));
-                    return cb(err);
+                    return cb(err, metrics);
                 }
-                return cb(null, body.id);
+                return cb(null, body.id, metrics);
             });
         },
         update: (id, flow, cb) => {
@@ -38,35 +41,41 @@ const datasource = {
             const wreck = Wreck.defaults({
                 payload: flow
             });
+            const metrics = new Metrics('Node-RED', 'update', flow);
             wreck.put(`/flow/${id}`, (err, response, body) => {
 
+                metrics.stop();
                 if (err) {
                     errorHandler(new Error(err));
-                    return cb(err);
+                    return cb(err, metrics);
                 }
-                return cb(null, body);
+                return cb(null, body, metrics);
             });
         },
         findById: (id, cb) => {
 
+            const metrics = new Metrics('Node-RED', 'findById', { id });
             Wreck.get(`/flow/${id}`, (err, response, body) => {
 
+                metrics.stop();
                 if (err) {
                     errorHandler(new Error(err));
-                    return cb(err);
+                    return cb(err, metrics);
                 }
-                return cb(null, body);
+                return cb(null, body, metrics);
             });
         },
         findAll: (cb) => {
 
+            const metrics = new Metrics('Node-RED', 'findAll', {});
             Wreck.get('/flows', (err, response, body) => {
 
+                metrics.stop();
                 if (err) {
                     errorHandler(new Error(err));
-                    return cb(err);
+                    return cb(err, metrics);
                 }
-                return cb(null, body);
+                return cb(null, body, metrics);
             });
         }
     }

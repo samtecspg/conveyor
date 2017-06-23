@@ -40,11 +40,13 @@ class FlowTemplateModel {
 
     static save(payload, cb) {
 
+        const allMetrics = [];
         Async.waterfall([
             (next) => { //Search for template
 
-                this.findByName(payload.name, (err, result) => {
+                this.findByName(payload.name, (err, result, metrics) => {
 
+                    allMetrics.push(metrics);
                     if (err) {
                         if (err.statusCode === 404) {
                             return next(null, null);
@@ -69,8 +71,9 @@ class FlowTemplateModel {
                         type: 'default',
                         document: flowTemplate
                     };
-                    ES.save(values, (err, result) => {
+                    ES.save(values, (err, result, metrics) => {
 
+                        allMetrics.push(metrics);
                         if (err) {
                             console.error(err);
                             return next(err);
@@ -87,8 +90,9 @@ class FlowTemplateModel {
                         id: template.id,
                         document: flowTemplate
                     };
-                    ES.update(values, (err, result) => {
+                    ES.update(values, (err, result, metrics) => {
 
+                        allMetrics.push(metrics);
                         if (err) {
                             console.error(err);
                             return next(err);
@@ -99,7 +103,13 @@ class FlowTemplateModel {
                     });
                 }
             }
-        ], cb);
+        ], (err, result) => {
+
+            if (err) {
+                return cb(err, null, allMetrics);
+            }
+            return cb(null, result, allMetrics);
+        });
     };
 
     static  findById(id, cb) {
@@ -109,7 +119,7 @@ class FlowTemplateModel {
             type: 'default',
             id
         };
-        ES.findById(values, (err, result) => {
+        ES.findById(values, (err, result, metrics) => {
 
             if (err) {
                 console.error(err);
@@ -124,7 +134,7 @@ class FlowTemplateModel {
             );
             flowTemplate.id = result._id;
             flowTemplate.version = result._version;
-            cb(null, flowTemplate);
+            cb(null, flowTemplate, metrics);
         });
     };
 
@@ -135,7 +145,7 @@ class FlowTemplateModel {
             type: 'default',
             size
         };
-        ES.findAll(values, (err, results) => {
+        ES.findAll(values, (err, results, metrics) => {
 
             if (err) {
                 console.error(err);
@@ -156,7 +166,7 @@ class FlowTemplateModel {
                 response.push(flowTemplate);
             });
 
-            cb(null, response);
+            cb(null, response, metrics);
         });
     }
 
@@ -178,15 +188,15 @@ class FlowTemplateModel {
             }
 
         };
-        ES.searchByQuery(values, (err, result) => {
+        ES.searchByQuery(values, (err, result, metrics) => {
 
             if (err) {
                 console.error(err);
-                return cb(err);
+                return cb(err, null, metrics);
             }
 
             if (result.hits.total === 0) {
-                return cb(null, null);
+                return cb(null, null, metrics);
             }
             if (result.hits.total > 1) {
                 const msg = {
@@ -194,7 +204,7 @@ class FlowTemplateModel {
                     msg: `Multiple instances found of flow template ${name}`
                 };
                 console.error(msg);
-                return cb(msg);
+                return cb(msg, null, metrics);
             }
             result = result.hits.hits[0];
             const flowTemplate = new FlowTemplateModel(
@@ -206,7 +216,7 @@ class FlowTemplateModel {
             );
             flowTemplate.id = result._id;
             flowTemplate.version = result._version;
-            return cb(null, flowTemplate);
+            return cb(null, flowTemplate, metrics);
         });
     };
 }
