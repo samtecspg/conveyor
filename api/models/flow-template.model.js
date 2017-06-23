@@ -12,7 +12,7 @@ const schema = {
     deprecated: Joi.boolean(),
     name: Joi.string().description('Name of the Flow (this is unique)'),
     description: Joi.string().description('Description of the Flow Template'),
-    parameters: Joi.array().items(Joi.string()).description('List of Parameters'),
+    parameters: Joi.array().items(Joi.string().regex(/^[^_].+/, 'allowed parameter name')).description('List of Parameters'),
     flow: Joi.object().keys({
         label: Joi.string(),
         nodes: Joi.array().items(Joi.object())
@@ -167,13 +167,9 @@ class FlowTemplateModel {
             type: 'default',
             body: {
                 'query': {
-                    'match': {
-                        'name': {
-                            'query': name,
-                            'operator': 'and'
-                        }
+                    'term': {
+                        'name.keyword': name
                     }
-
                 }
             }
 

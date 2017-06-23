@@ -3,10 +3,10 @@
 const ES = require('../../datasources').Elasticsearch;
 const _ = require('lodash');
 const defaultData = {
-    'name': 'anduin-executions',
+    'name': 'test-template',
     'description': 'Anduin Executions can be posted here for storage and use in Samson',
-    'parameters': ['channelName', 'url'],
-    'flow': '{"label":"flow-{{channelName}}-{{_id}}","nodes":[{"id":"{{channelName}}-1-{{_id}}","type":"http in","z":"96c7bac4.7985d8","name":"","url":"/{{url}}","method":"post","swaggerDoc":"","x":356,"y":455,"wires":[["{{channelName}}-3-{{_id}}","{{channelName}}-4-{{_id}}"]]},{"id":"{{channelName}}-2-{{_id}}","type":"http response","z":"96c7bac4.7985d8","name":"","x":646,"y":455,"wires":[]},{"id":"{{channelName}}-3-{{_id}}","type":"function","z":"96c7bac4.7985d8","name":"","func":"msg.payload = \\"Test Channel1\\";\\n\\nreturn msg;","outputs":1,"noerr":0,"x":506,"y":427,"wires":[["{{channelName}}-2-{{_id}}"]]},{"id":"{{channelName}}-4-{{_id}}","type":"debug","z":"96c7bac4.7985d8","name":"debug","active":true,"console":"false","complete":"true","x":513.5,"y":514,"wires":[]}]}',
+    'parameters': ['message'],
+    'flow': '{"label":"flow-{{_name}}-{{_id}}","nodes":[{"id":"{{_name}}-1-{{_id}}","type":"http in","z":"96c7bac4.7985d8","name":"","url":"/{{_url}}","method":"post","swaggerDoc":"","x":356,"y":455,"wires":[["{{_name}}-3-{{_id}}","{{_name}}-4-{{_id}}"]]},{"id":"{{_name}}-2-{{_id}}","type":"http response","z":"96c7bac4.7985d8","name":"","x":646,"y":455,"wires":[]},{"id":"{{_name}}-3-{{_id}}","type":"function","z":"96c7bac4.7985d8","name":"","func":"msg.payload = \\"Test Channel1\\";\\n\\nreturn msg;","outputs":1,"noerr":0,"x":506,"y":427,"wires":[["{{_name}}-2-{{_id}}"]]},{"id":"{{_name}}-4-{{_id}}","type":"debug","z":"96c7bac4.7985d8","name":"debug","active":true,"console":"false","complete":"true","x":513.5,"y":514,"wires":[]}]}',
     'version': 1
 };
 

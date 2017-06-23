@@ -80,6 +80,10 @@ class FlowModel {
             return cb(error);
         }
 
+        //include system parameters
+        parameters._url = encodeURIComponent(flowModel.name);
+        parameters._name = flowModel.name;
+
         const saveES = (newFlow, next) => {
 
             const values = {
@@ -258,13 +262,9 @@ class FlowModel {
             type: 'default',
             body: {
                 'query': {
-                    'match': {
-                        'name': {
-                            'query': name,
-                            'operator': 'and'
-                        }
+                    'term': {
+                        'name.keyword': name
                     }
-
                 }
             }
 

@@ -1,15 +1,16 @@
 'use strict';
 
 const ES = require('../../datasources').Elasticsearch;
+const NR = require('../../datasources').NodeRED;
 const _ = require('lodash');
 const defaultData =
     {
         'version': 1,
-        'template': 'AVyCPw5pizmIbsE8o-4r',
+        'template': '',
         'templateVersion': 1,
-        'name': 'anduin-executions-channel',
+        'name': 'test-helper',
         'description': 'Anduin Executions can be posted here for storage and use in Samson',
-        'parameters': [{ 'key': 'channelName', 'value': 'test name' }, { 'key': 'url', 'value': 'url-path' }]
+        'parameters': [{ 'key': 'message', 'value': 'test message' }]
     };
 
 const helper = {
@@ -31,13 +32,24 @@ const helper = {
             return cb(null, result);
         });
     },
-    'delete': (id, cb) => {
+    'deleteES': (id, cb) => {
 
         ES.delete({
             index: process.env.ES_INDEX,
             type: 'default',
             id
         }, (err) => {
+
+            if (err) {
+                return cb(err);
+            }
+
+            return cb();
+        });
+    },
+    'deleteNR': (id, cb) => {
+
+        NR.flow.delete(id, (err) => {
 
             if (err) {
                 return cb(err);
