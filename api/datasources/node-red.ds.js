@@ -77,6 +77,17 @@ const datasource = {
                 }
                 return cb(null, body, metrics);
             });
+        },
+        'delete': (id, cb) => {
+
+            Wreck.delete(`/flow/${id}`, (err, response, body) => {
+
+                if (err) {
+                    errorHandler(new Error(err));
+                    return cb(err);
+                }
+                return cb(null, body);
+            });
         }
     }
 };

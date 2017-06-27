@@ -1,6 +1,5 @@
 'use strict';
 const Boom = require('boom');
-const _ = require('lodash');
 const Flow = require('../../../models').Flow;
 module.exports = (request, reply) => {
 
@@ -15,9 +14,8 @@ module.exports = (request, reply) => {
             console.log(new Error('Flow not found'));
             return reply(Boom.badRequest('Flow Template not found'));
         }
-        const urlParameter = _.find(flow.parameters, ['key', 'url']);
         return reply.proxy({
-            uri: `${process.env.NODE_RED_URL}/${urlParameter.value}`
+            uri: `${process.env.NODE_RED_URL}/${encodeURI(flow.name)}`
         });
     });
 };

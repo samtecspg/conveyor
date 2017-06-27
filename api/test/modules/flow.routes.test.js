@@ -68,7 +68,8 @@ after((done) => {
 
     Async.parallel([
         (cb) => FlowTemplateHelper.delete(testData.flowTemplate._id, cb),
-        (cb) => FlowHelper.delete(testData.flow._id, cb)
+        (cb) => FlowHelper.deleteES(testData.flow._id, cb),
+        (cb) => FlowHelper.deleteNR(testData.flow.nodeRedId, cb)
 
     ], done);
 
@@ -111,12 +112,12 @@ suite('/flow', () => {
         test('should respond with 404 Flow not found', (done) => {
 
             const data = {
-                id: '-1'
+                name: 'test-helper'
             };
 
             const options = {
                 method: 'GET',
-                url: `/flow/${data.id}`
+                url: `/flow/${data.name}`
             };
 
             server.inject(options, (res) => {
@@ -138,11 +139,8 @@ suite('/flow', () => {
                 description: 'Anduin Executions can be posted here for storage and use in Samson',
                 parameters: [
                     {
-                        key: 'channelName',
-                        value: 'testname'
-                    }, {
-                        key: 'url',
-                        value: 'url-path'
+                        key: 'message',
+                        value: 'test message'
                     }
                 ]
             };
@@ -156,7 +154,11 @@ suite('/flow', () => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.be.an.object();
-                FlowHelper.delete(res.result.id, done);
+
+                Async.parallel([
+                    (cb) => FlowHelper.deleteES(res.result.id, cb),
+                    (cb) => FlowHelper.deleteNR(res.result.nodeRedId, cb)
+                ], done);
             });
         });
 
@@ -267,4 +269,5 @@ suite('/flow', () => {
             });
         });
     });
+
 });

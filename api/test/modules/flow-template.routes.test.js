@@ -1,3 +1,4 @@
+
 'use strict';
 require('dotenv').config({ path: '../../../.env' });
 const Code = require('code');
@@ -221,6 +222,34 @@ suite('/flowTemplate', () => {
                 done();
             });
         });
+
+        test('should respond with 400 Bad Request of using and invalid parameter name with _', (done) => {
+
+            const data = {
+                name: `${FlowTemplateHelper.defaultData.name}-1-${testData.key}`,
+                description: 'Anduin Executions can be posted here for storage and use in Samson',
+                parameters: ['_url'],
+                flow: {
+                    label: 'Test',
+                    nodes: [
+                        {
+                            test: 'Test'
+                        }
+                    ]
+                }
+            };
+            const options = {
+                method: 'POST',
+                url: '/flowTemplate',
+                payload: data
+            };
+
+            server.inject(options, (res) => {
+
+                expect(res.statusCode).to.equal(400);
+                expect(res.result.error).to.equal('Bad Request');
+                done();
+            });
+        });
     });
 });
-
