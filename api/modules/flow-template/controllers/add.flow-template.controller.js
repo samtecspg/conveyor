@@ -4,8 +4,9 @@ const Boom = require('boom');
 
 module.exports = (request, reply) => {
 
-    const callback = (err, result) => {
+    const callback = (err, result, metrics) => {
 
+        request.addMetrics(metrics);
         if (err) {
             const message = Boom.badRequest('Invalid data  supplied');
             return reply(message);

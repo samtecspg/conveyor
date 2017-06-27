@@ -4,8 +4,9 @@ const Flow = require('../../../models').Flow;
 
 module.exports = (request, reply) => {
 
-    return Flow.findByName(request.params.name, (err, flow) => {
+    return Flow.findByName(request.params.name, (err, flow, metrics) => {
 
+        request.addMetrics(metrics);
         if (err) {
             return reply(Boom.badRequest('ES Request error'));
         }

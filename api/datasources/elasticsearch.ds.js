@@ -6,6 +6,8 @@ const Client = new Elasticsearch.Client({
     log: process.env.ELASTIC_SEARCH_LOG_LEVEL || 'error',
     httpAuth: process.env.ELASTIC_SEARCH_HTTP_AUTH || ''
 });
+const Metrics = require('../lib/metrics.lib');
+
 /* $lab:coverage:on$ */
 
 const errorHandler = (err) => {
@@ -17,119 +19,141 @@ const errorHandler = (err) => {
         console.log(err.message);
     }
 };
+
 const datasource = {
 
     save: (params, cb) => {
 
-        Client.index({
+        const query = {
             index: params.index,
             type: params.type,
             body: params.document
-        }, (err, response) => {
+        };
+        const metrics = new Metrics('Elasticsearch', 'save', query);
+        Client.index(query, (err, response) => {
 
+            metrics.stop();
             if (err) {
                 errorHandler(new Error(err));
-                return cb(err);
+                return cb(err, metrics);
             }
-            return cb(null, response);
+            return cb(null, response, metrics);
         });
     },
     update: (params, cb) => {
 
-        Client.update({
+        const query = {
             index: params.index,
             type: params.type,
             id: params.id,
             body: {
                 doc: params.document
             }
-        }, (err, response) => {
+        };
+        const metrics = new Metrics('Elasticsearch', 'update', query);
+        Client.update(query, (err, response) => {
 
+            metrics.stop();
             if (err) {
                 errorHandler(new Error(err));
-                return cb(err);
+                return cb(err, metrics);
             }
-            return cb(null, response);
+            return cb(null, response, metrics);
         });
     },
     findById: (params, cb) => {
 
-        Client.get({
+        const query = {
             index: params.index,
             type: params.type,
             id: params.id
-        }, (err, response) => {
+        };
+        const metrics = new Metrics('Elasticsearch', 'findById', query);
+        Client.get(query, (err, response) => {
 
+            metrics.stop();
             if (err) {
                 errorHandler(new Error(err));
-                return cb(err);
+                return cb(err, metrics);
             }
-            return cb(null, response);
+            return cb(null, response, metrics);
         });
 
     },
     findAll: (params, cb) => {
 
-        Client.search({
+        const query = {
             index: params.index,
             type: params.type,
             body: { query: { match_all: {} } },
             size: params.size ? params.size : 10
-        }, (err, response) => {
+        };
+        const metrics = new Metrics('Elasticsearch', 'findAll', query);
+        Client.search(query, (err, response) => {
 
+            metrics.stop();
             if (err) {
                 errorHandler(new Error(err));
-                return cb(err);
+                return cb(err, metrics);
             }
-            return cb(null, response);
+            return cb(null, response, metrics);
         });
     },
     findOne: (params, cb) => {
 
-        Client.search({
+        const query = {
             index: params.index,
             type: params.type,
             body: { query: { match_all: {} } },
             size: 1
-        }, (err, response) => {
+        };
+        const metrics = new Metrics('Elasticsearch', 'findOne', query);
+        Client.search(query, (err, response) => {
 
+            metrics.stop();
             if (err) {
                 errorHandler(new Error(err));
-                return cb(err);
+                return cb(err, metrics);
             }
-            return cb(null, response);
+            return cb(null, response, metrics);
         });
     },
     'delete': (params, cb) => {
 
-        Client.delete({
+        const query = {
             index: params.index,
             type: params.type,
             id: params.id
-        }, (err, response) => {
+        };
+        const metrics = new Metrics('Elasticsearch', 'delete', query);
+        Client.delete(query, (err, response) => {
 
+            metrics.stop();
             if (err) {
                 errorHandler(new Error(err));
-                return cb(err);
+                return cb(err, metrics);
             }
-            return cb(null, response);
+            return cb(null, response, metrics);
         });
     },
     searchByQuery: (params, cb) => {
 
-        Client.search({
+        const query = {
             version: true,
             index: params.index,
             type: params.type,
             body: params.body,
             size: params.size ? params.size : 10
-        }, (err, response) => {
+        };
+        const metrics = new Metrics('Elasticsearch', 'searchByQuery', query);
+        Client.search(query, (err, response) => {
 
+            metrics.stop();
             if (err) {
                 errorHandler(new Error(err));
-                return cb(err);
+                return cb(err, metrics);
             }
-            return cb(null, response);
+            return cb(null, response, metrics);
         });
     }
 };

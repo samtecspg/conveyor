@@ -5,8 +5,10 @@ const Boom = require('boom');
 
 module.exports = (request, reply) => {
 
-    FlowTemplate.findByName(request.payload.template, (err, flowTemplate) => {
+    // TODO: Move this to flow model
+    FlowTemplate.findByName(request.payload.template, (err, flowTemplate, metrics) => {
 
+        request.addMetrics(metrics);
         if (err) {
             console.log(new Error(err));
             const message = Boom.badRequest('Error finding Flow Template');
@@ -17,8 +19,9 @@ module.exports = (request, reply) => {
             const err = Boom.badRequest('Flow Template not found');
             return reply(err);
         }
-        const callback = (err, result) => {
+        const callback = (err, result, resultMetrics) => {
 
+            request.addMetrics(resultMetrics);
             if (err) {
                 const message = Boom.badRequest('Invalid Flow Template Id or Parameter array supplied');
                 return reply(message);

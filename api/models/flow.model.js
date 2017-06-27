@@ -62,6 +62,7 @@ class FlowModel {
 
     static save(payload, flowTemplate, cb) {
 
+        const allMetrics = [];
         const flowModel = new FlowModel(null, null, flowTemplate.name, flowTemplate.version, payload.name, payload.description, payload.parameters);
         const template = Handlebars.compile(flowTemplate.flow);
         const parameters = {};
@@ -87,16 +88,23 @@ class FlowModel {
                 type: 'default',
                 document: newFlow
             };
-            ES.save(values, next);
+            ES.save(values, (err, result, metrics) => {
+
+                allMetrics.push(metrics);
+                if (err) {
+                    return next(err);
+                }
+                next(null, result);
+            });
         };
 
         const saveNR = (es, next) => {
-
             //Use ES id in template to keep reference between both services
             parameters._id = es._id;
             flowModel.id = es._id;
-            NodeRED.flow.save(JSON.parse(template(parameters)), (err, id) => {
+            NodeRED.flow.save(JSON.parse(template(parameters)), (err, id, metrics) => {
 
+                allMetrics.push(metrics);
                 if (err) {
                     console.error(new Error(err));
                     return next(err);
@@ -114,8 +122,9 @@ class FlowModel {
                 id,
                 document: updatedFlow
             };
-            ES.update(values, (err, result) => {
+            ES.update(values, (err, result, metrics) => {
 
+                allMetrics.push(metrics);
                 if (err) {
                     return next(err);
                 }
@@ -128,8 +137,9 @@ class FlowModel {
 
             //Use ES id in template to keep reference between bot services
             parameters._id = updatedFlow.id;
-            NodeRED.flow.update(updatedFlow.nodeRedId, JSON.parse(template(parameters)), (err) => {
+            NodeRED.flow.update(updatedFlow.nodeRedId, JSON.parse(template(parameters)), (err, id, metrics) => {
 
+                allMetrics.push(metrics);
                 if (err) {
                     console.error(new Error(err));
                     return next(err);
@@ -145,24 +155,33 @@ class FlowModel {
                 type: 'default',
                 id: flow.id
             };
-            ES.delete(values, next);
+            ES.delete(values, (err, result, metrics) => {
+
+                allMetrics.push(metrics);
+                if (err) {
+                    return next(err);
+                }
+                return next(null, result);
+            });
         };
 
         const callback = () => {
 
-            return this.findByName(flowModel.name, (err, flow) => {
+            return this.findByName(flowModel.name, (err, flow, metrics) => {
 
+                allMetrics.push(metrics);
                 if (err) {
                     console.error(err);
-                    return cb(err);
+                    return cb(err, null, allMetrics);
                 }
                 flowModel.version = flow.version;
-                return cb(null, flowModel);
+                return cb(null, flowModel, allMetrics);
             });
         };
 
-        this.findByName(payload.name, (err, result) => {
+        this.findByName(payload.name, (err, result, findMetrics) => {
 
+            allMetrics.push(findMetrics);
             if (err) {
                 if (err.statusCode !== 404) {
                     return cb(err);
@@ -177,9 +196,10 @@ class FlowModel {
 
                     if (error) {
                         console.log('rollback create');
-                        return rollbackCreateES(flowModel, (deleteError) => {
+                        return rollbackCreateES(flowModel, (deleteError, metrics) => {
 
-                            return cb(deleteError || error); // return error during rollback or original error
+                            allMetrics.push(metrics);
+                            return cb(deleteError || error, allMetrics); // return error during rollback or original error
                         });
 
                     }
@@ -187,7 +207,6 @@ class FlowModel {
                 });
             }
             else {
-                console.log('update');
                 flowModel.nodeRedId = result.nodeRedId;
                 flowModel.id = result.id;
                 flowModel.version = result.version;
@@ -198,9 +217,10 @@ class FlowModel {
 
                     if (error) {
                         console.log('rollback update');
-                        return updateES(flowModel, flowModel.id, (updateError) => {
+                        return updateES(flowModel, flowModel.id, (updateError, metrics) => {
 
-                            return cb(updateError || error); // return error during rollback or original error
+                            allMetrics.push(metrics);
+                            return cb(updateError || error, allMetrics); // return error during rollback or original error
                         });
 
                     }
@@ -218,13 +238,13 @@ class FlowModel {
             type: 'default',
             id
         };
-        ES.findById(values, (err, result) => {
+        ES.findById(values, (err, result, metrics) => {
 
             if (err) {
                 console.error(err);
-                return cb(err);
+                return cb(err, metrics);
             }
-            cb(null, parseEStoModel(result));
+            cb(null, parseEStoModel(result), metrics);
         });
     };
 
@@ -235,11 +255,11 @@ class FlowModel {
             type: 'default',
             size
         };
-        ES.findAll(values, (err, results) => {
+        ES.findAll(values, (err, results, metrics) => {
 
             if (err) {
                 console.error(err);
-                return cb(err);
+                return cb(err, metrics);
             }
             const response = [];
             _(results.hits.hits).each((value) => {
@@ -247,7 +267,7 @@ class FlowModel {
                 response.push(parseEStoModel(value));
             });
 
-            cb(null, response);
+            cb(null, response, metrics);
         });
     }
 
@@ -269,15 +289,15 @@ class FlowModel {
             }
 
         };
-        ES.searchByQuery(values, (err, result) => {
+        ES.searchByQuery(values, (err, result, metrics) => {
 
             if (err) {
                 console.error(err);
-                return cb(err);
+                return cb(err, null, metrics);
             }
 
             if (result.hits.total === 0) {
-                return cb(null, null);
+                return cb(null, null, metrics);
             }
             if (result.hits.total > 1) {
                 const msg = {
@@ -285,10 +305,10 @@ class FlowModel {
                     msg: `Multiple instances found of flow ${name}`
                 };
                 console.error(msg);
-                return cb(msg);
+                return cb(msg, null, metrics);
             }
             result = result.hits.hits[0];
-            cb(null, parseEStoModel(result));
+            cb(null, parseEStoModel(result), metrics);
         });
     };
 }

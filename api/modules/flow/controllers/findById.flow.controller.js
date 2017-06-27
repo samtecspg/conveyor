@@ -4,8 +4,9 @@ const Flow = require('../../../models').Flow;
 
 module.exports = (request, reply) => {
 
-    return Flow.findById(request.params.id, (err, flow) => {
+    return Flow.findById(request.params.id, (err, flow, metrics) => {
 
+        request.addMetrics(metrics);
         if (err) {
             if (err.statusCode === 404) {
                 return reply(Boom.notFound('Flow not found'));
