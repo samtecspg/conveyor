@@ -12,8 +12,15 @@
         "prepush": "npm run git:hook",
         "git:hook": "lab --lint"
     },
-    "keywords": [],
-    "author": "Luis Malavé",
+    "keywords": [
+        "nodejs",
+        "hapi",
+        "elasticsearch",
+        "kibana",
+        "ingest",
+        "api"
+    ],
+    "author": "Luis Malavé <luis.malave@samtec.com> (https://github.com/malave)",
     "license": "SEE LICENSE IN LICENSE.md",
     "devDependencies": {
         "code": "^4.0.0",

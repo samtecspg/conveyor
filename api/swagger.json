@@ -1,0 +1,361 @@
+{
+    "swagger": "2.0",
+    "host": "localhost:4000",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "info": {
+        "title": "Ingest API",
+        "version": "0.0.1",
+        "contact": {
+            "name": "Smart Platform Group"
+        }
+    },
+    "tags": [],
+    "paths": {
+        "/flow": {
+            "get": {
+                "summary": "Find all instances of the Flow model",
+                "operationId": "getFlow",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Number of objects to be returned (default:10)",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "flow"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Creates a new instance of a Flow model or updates an existing one. The update uses the name to search for an existing Flow",
+                "operationId": "postFlow",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Flow Model"
+                        }
+                    }
+                ],
+                "tags": [
+                    "flow"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            }
+        },
+        "/flowTemplate": {
+            "get": {
+                "summary": "Find all instances of the Flow Template model",
+                "operationId": "getFlowtemplate",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Number of objects to be returned (default:10)",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "tags": [
+                    "flowTemplate"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Creates a new instance of a Flow Template model or updates an existing one. The update uses the name to search for an existing Flow Template",
+                "operationId": "postFlowtemplate",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Model 3"
+                        }
+                    }
+                ],
+                "tags": [
+                    "flowTemplate"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            }
+        },
+        "/flow/{name}": {
+            "get": {
+                "summary": "Find a single instance of the Flow model based on the name",
+                "operationId": "getFlowName",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the Flow (this is unique)",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "flow"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            }
+        },
+        "/flowTemplate/{name}": {
+            "get": {
+                "summary": "Find a single instance of the Flow Template model based on the name",
+                "operationId": "getFlowtemplateName",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the Flow (this is unique)",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "flowTemplate"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            }
+        },
+        "/flow/{name}/data": {
+            "get": {
+                "summary": "Proxy for Node-RED flows",
+                "operationId": "getFlowNameData",
+                "tags": [
+                    "flow"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Proxy for Node-RED flows",
+                "operationId": "postFlowNameData",
+                "tags": [
+                    "flow"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Proxy for Node-RED flows",
+                "operationId": "putFlowNameData",
+                "tags": [
+                    "flow"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Proxy for Node-RED flows",
+                "operationId": "patchFlowNameData",
+                "tags": [
+                    "flow"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Proxy for Node-RED flows",
+                "operationId": "deleteFlowNameData",
+                "tags": [
+                    "flow"
+                ],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Successful"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Parameter Model": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ]
+        },
+        "parameters": {
+            "type": "array",
+            "description": "Number of objects to be returned (default:10)",
+            "items": {
+                "$ref": "#/definitions/Parameter Model",
+                "type": "object"
+            }
+        },
+        "Flow Model": {
+            "type": "object",
+            "properties": {
+                "template": {
+                    "type": "string",
+                    "description": "Name of the Flow Template"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the Flow (this is unique)"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the Flow"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/parameters",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "template",
+                "name",
+                "description",
+                "parameters"
+            ]
+        },
+        "Model 1": {
+            "type": "object"
+        },
+        "nodes": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Model 1",
+                "type": "object"
+            }
+        },
+        "flow": {
+            "type": "object",
+            "description": "Node-RED flow object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "$ref": "#/definitions/nodes",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "label",
+                "nodes"
+            ]
+        },
+        "Model 2": {
+            "type": "array",
+            "description": "List of Parameters",
+            "items": {
+                "type": "string",
+                "pattern": "/^[^_].+/"
+            }
+        },
+        "Model 3": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the Flow (this is unique)"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the Flow Template"
+                },
+                "flow": {
+                    "$ref": "#/definitions/flow",
+                    "type": "object"
+                },
+                "parameters": {
+                    "$ref": "#/definitions/Model 2",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "name",
+                "description",
+                "flow",
+                "parameters"
+            ]
+        }
+    }
+}
