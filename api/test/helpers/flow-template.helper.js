@@ -1,5 +1,6 @@
 'use strict';
 
+const AppConstants = require('../../config/app-constants');
 const ES = require('../../datasources').Elasticsearch;
 const _ = require('lodash');
 const defaultData = {
@@ -17,7 +18,7 @@ const helper = {
         const data = _.clone(defaultData);
         _.extend(data, { name: `${data.name}-${key}` });
         ES.save({
-            index: process.env.ES_INDEX + 'template',
+            index: AppConstants.ES_INDEX + 'template',
             type: 'default',
             document: data
         }, (err, result) => {
@@ -31,7 +32,7 @@ const helper = {
     'delete': (id, cb) => {
 
         ES.delete({
-            index: process.env.ES_INDEX + 'template',
+            index: AppConstants.ES_INDEX + 'template',
             type: 'default',
             id
         }, (err) => {

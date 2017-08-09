@@ -1,8 +1,9 @@
 'use strict';
 /* $lab:coverage:off$ */
+const AppConstants = require('../config/app-constants');
 const Wreck = require('wreck').defaults({
     headers: { 'content-type': 'application/json' },
-    baseUrl: process.env.NODE_RED_URL,
+    baseUrl: AppConstants.NODE_RED_URL,
     json: true
 });
 const Metrics = require('../lib/metrics.lib');
@@ -10,7 +11,7 @@ const Metrics = require('../lib/metrics.lib');
 
 const errorHandler = (err) => {
 
-    if (process.env.NODE_ENV !== 'test') {
+    if (AppConstants.NODE_ENV !== 'test') {
         console.error(err);
     }
     else {

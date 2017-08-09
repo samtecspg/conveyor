@@ -1,5 +1,6 @@
 'use strict';
-require('dotenv').config({ path: '../../../.env' });
+
+const AppConstants = require('../../config/app-constants');
 const Code = require('code');
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
@@ -19,6 +20,7 @@ const testData = {
 before((done) => {
 
     require('../../index')((err) => {
+
 
         if (err) {
             return done(err);
@@ -54,7 +56,7 @@ suite('ES', () => {
         test('findById should respond with the correct flowTemplate', (done) => {
 
             const data = {
-                index: 'flowtemplate',
+                index: `${AppConstants.ES_INDEX}template`,
                 type: 'default',
                 id: testData.flowTemplate._id
             };
@@ -71,7 +73,7 @@ suite('ES', () => {
             const defaultData = _.clone(FlowTemplateHelper.defaultData);
             _.extend(defaultData, { name: `${defaultData.name}-${testData.key}` });
             const data = {
-                index: 'flowtemplate',
+                index: `${AppConstants.ES_INDEX}template`,
                 type: 'default',
                 document: defaultData
             };
@@ -86,7 +88,7 @@ suite('ES', () => {
         test('findAll should respond with an array', (done) => {
 
             const data = {
-                index: 'flowtemplate',
+                index: `${AppConstants.ES_INDEX}template`,
                 type: 'default'
             };
             ES.findAll(data, (err, response) => {
@@ -100,7 +102,7 @@ suite('ES', () => {
         test('findAll with size 1 should respond with an array of lenght 1', (done) => {
 
             const data = {
-                index: 'flowtemplate',
+                index: `${AppConstants.ES_INDEX}template`,
                 type: 'default',
                 size: 1
             };
@@ -118,7 +120,7 @@ suite('ES', () => {
         test('findById should return error with invalid id', (done) => {
 
             const data = {
-                index: 'flowtemplate',
+                index: `${AppConstants.ES_INDEX}template`,
                 type: 'default',
                 id: 'mustfail'
             };
@@ -134,7 +136,7 @@ suite('ES', () => {
         test('save flowTemplate', (done) => {
 
             const data = {
-                index: 'flowtemplate',
+                index: `${AppConstants.ES_INDEX}template`,
                 type: 'default',
                 document: null
             };

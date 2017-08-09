@@ -1,5 +1,6 @@
 'use strict';
 
+const AppConstants = require('../config/app-constants');
 const Joi = require('joi');
 const ParameterModel = require('./parameter.model');
 const Async = require('async');
@@ -8,7 +9,6 @@ const _ = require('lodash');
 const NodeRED = require('../datasources').NodeRED;
 const ES = require('../datasources').Elasticsearch;
 
-const esIndex = process.env.ES_INDEX;
 
 const schema = {
     id: Joi.string().description('Id on Elasticsearch'),
@@ -88,7 +88,7 @@ class FlowModel {
         const saveES = (newFlow, next) => {
 
             const values = {
-                index: esIndex,
+                index: AppConstants.ES_INDEX,
                 type: 'default',
                 document: newFlow
             };
@@ -121,7 +121,7 @@ class FlowModel {
         const updateES = (updatedFlow, id, next) => {
 
             const values = {
-                index: esIndex,
+                index: AppConstants.ES_INDEX,
                 type: 'default',
                 id,
                 document: updatedFlow
@@ -155,7 +155,7 @@ class FlowModel {
         const rollbackCreateES = (flow, next) => {
 
             const values = {
-                index: esIndex,
+                index: AppConstants.ES_INDEX,
                 type: 'default',
                 id: flow.id
             };
@@ -238,7 +238,7 @@ class FlowModel {
     static  findById(id, cb) {
 
         const values = {
-            index: esIndex,
+            index: AppConstants.ES_INDEX,
             type: 'default',
             id
         };
@@ -255,7 +255,7 @@ class FlowModel {
     static  findAll(size, cb) {
 
         const values = {
-            index: esIndex,
+            index: AppConstants.ES_INDEX,
             type: 'default',
             size
         };
@@ -278,7 +278,7 @@ class FlowModel {
     static  findByName(name, cb) {
 
         const values = {
-            index: esIndex,
+            index: AppConstants.ES_INDEX,
             type: 'default',
             body: {
                 'query': {

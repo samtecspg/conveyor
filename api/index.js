@@ -1,6 +1,6 @@
 'use strict';
 
-require('dotenv').config({ path: '../.env' });
+const AppConstants = require('./config/app-constants');
 const Hapi = require('hapi');
 const Routes = require('./config/routes');
 const Blipp = require('blipp');
@@ -9,12 +9,13 @@ const Vision = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
 const MetricsLogger = require('./plugins/metrics-logger.plugin');
+
 module.exports = (callback) => {
     /* $lab:coverage:off$ */
     const server = new Hapi.Server();
 
     server.connection({
-        port: process.env.PORT || 80,
+        port: AppConstants.PORT,
         routes: {
             cors: true
         }

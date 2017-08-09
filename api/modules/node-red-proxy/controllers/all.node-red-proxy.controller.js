@@ -1,7 +1,8 @@
 'use strict';
 const Boom = require('boom');
 const Flow = require('../../../models').Flow;
-module.exports = (request, reply) => {
+const AppConstants = require('../../../config/app-constants');
+module.exports = (request, reply, suffix) => {
 
     Flow.findByName(request.params.name, (err, flow) => {
 
@@ -14,8 +15,7 @@ module.exports = (request, reply) => {
             console.log(new Error('Flow not found'));
             return reply(Boom.badRequest('Flow Template not found'));
         }
-        return reply.proxy({
-            uri: `${process.env.NODE_RED_URL}/${encodeURI(flow.name)}`
-        });
+        const uri = request.params.paths ? `${AppConstants.NODE_RED_URL}/${encodeURI(flow.name)}/${suffix}/${request.params.paths}` : `${AppConstants.NODE_RED_URL}/${encodeURI(flow.name)}/${suffix}`;
+        return reply.proxy({ uri });
     });
 };

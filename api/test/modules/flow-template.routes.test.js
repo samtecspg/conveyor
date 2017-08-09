@@ -1,6 +1,5 @@
-
 'use strict';
-require('dotenv').config({ path: '../../../.env' });
+
 const Code = require('code');
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();

@@ -1,5 +1,5 @@
 'use strict';
-require('dotenv').config({ path: '../../../.env' });
+
 const Async = require('async');
 const Code = require('code');
 const Lab = require('lab');

@@ -1,10 +1,11 @@
 'use strict';
 /* $lab:coverage:off$ */
+const AppConstants = require('../config/app-constants');
 const Elasticsearch = require('elasticsearch');
 const Client = new Elasticsearch.Client({
-    host: process.env.ELASTIC_SEARCH_URL,
-    log: process.env.ELASTIC_SEARCH_LOG_LEVEL || 'error',
-    httpAuth: process.env.ELASTIC_SEARCH_HTTP_AUTH || ''
+    host: AppConstants.ELASTIC_SEARCH_URL,
+    log: AppConstants.ELASTIC_SEARCH_LOG_LEVEL,
+    httpAuth: AppConstants.ELASTIC_SEARCH_HTTP_AUTH
 });
 const Metrics = require('../lib/metrics.lib');
 
@@ -12,7 +13,7 @@ const Metrics = require('../lib/metrics.lib');
 
 const errorHandler = (err) => {
 
-    if (process.env.NODE_ENV !== 'test') {
+    if (AppConstants.NODE_ENV !== 'test') {
         console.error(err);
     }
     else {

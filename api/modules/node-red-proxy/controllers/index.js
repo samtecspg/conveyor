@@ -1,8 +1,8 @@
 'use strict';
-const FindByIdController = require('./all.node-red-proxy.controller');
+const ProxyController = require('./all.node-red-proxy.controller');
 
 const NodeRedController = {
-    all: FindByIdController
+    all: ProxyController
 };
 
 module.exports = NodeRedController;

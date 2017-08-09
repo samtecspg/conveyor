@@ -4,7 +4,7 @@ const Joi = require('joi');
 const ES = require('../datasources').Elasticsearch;
 const _ = require('lodash');
 const Async = require('async');
-const esIndex = process.env.ES_INDEX;
+const AppConstants = require('../config/app-constants');
 
 const schema = {
     id: Joi.string().description('Id on Elasticsearch'),
@@ -67,7 +67,7 @@ class FlowTemplateModel {
                 );
                 if (!template) { // save a new template
                     const values = {
-                        index: esIndex + 'template',
+                        index: AppConstants.ES_INDEX + 'template',
                         type: 'default',
                         document: flowTemplate
                     };
@@ -85,7 +85,7 @@ class FlowTemplateModel {
                 }
                 else {
                     const values = {
-                        index: esIndex + 'template',
+                        index: AppConstants.ES_INDEX + 'template',
                         type: 'default',
                         id: template.id,
                         document: flowTemplate
@@ -115,7 +115,7 @@ class FlowTemplateModel {
     static  findById(id, cb) {
 
         const values = {
-            index: esIndex + 'template',
+            index: AppConstants.ES_INDEX + 'template',
             type: 'default',
             id
         };
@@ -141,7 +141,7 @@ class FlowTemplateModel {
     static  findAll(size, cb) {
 
         const values = {
-            index: esIndex + 'template',
+            index: AppConstants.ES_INDEX + 'template',
             type: 'default',
             size
         };
@@ -173,7 +173,7 @@ class FlowTemplateModel {
     static  findByName(name, cb) {
 
         const values = {
-            index: esIndex + 'template',
+            index: AppConstants.ES_INDEX + 'template',
             type: 'default',
             body: {
                 'query': {
