@@ -1,0 +1,56 @@
+
+.primary-card {
+  border: 1px solid @border-color;
+  position: relative;
+  background-color: @white;
+  border-radius: 3px;
+
+}
+
+.main-content {
+  ul {
+    display: -webkit-flex;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: -2%;
+    .card {
+      width: 32%;
+      margin-top: 2%;
+
+    }
+  }
+}
+
+#import-card {
+  display: -webkit-flex;
+  display: flex;
+  border: 1.7px dashed @primary-color;
+  box-sizing: border-box;
+  div {
+    margin: auto;
+  }
+  .group {
+    text-align: center;
+
+    i {
+      font-size: 70px;
+      color: @accent-color;
+    }
+    p {
+      font-weight: 400;
+      span {
+        color: @accent-color;
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .main-content ul > .card {
+    width: 100%;
+
+  }
+}

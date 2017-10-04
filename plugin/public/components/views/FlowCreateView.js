@@ -1,0 +1,230 @@
+import React from 'react';
+import {FlowActions} from '../../actions/flow-actions';
+import PropTypes from 'prop-types';
+import {Content, ContentBody, ContentHeader, ContentFooter} from '../global';
+import {DynamicForm} from '../dynamic';
+import {Text} from '../dynamic/type';
+import {SourceActions} from '../../actions/source-actions';
+import {AppActions} from '../../actions/app-actions';
+import {ObjectTypes} from '../../../lib/common/object-types';
+import Divider from 'material-ui/Divider';
+import {ContentSubHeader} from '../global/content/ContentSubHeader';
+import {withStyles} from 'material-ui/styles';
+import Typography from 'material-ui/Typography';
+import Grid from 'material-ui/Grid';
+import Button from 'material-ui/Button';
+
+const styles = theme => ({
+    primaryButton: theme.custom.form.button.primary,
+    secondaryButton: theme.custom.form.button.secondary
+});
+
+class _FlowCreateView extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            isFormValid: true,
+            errorMessage: undefined,
+            form: {
+                name: {},
+                description: {}
+            },
+            currentDescriptionHelper: undefined
+        };
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.saveFlow = this.saveFlow.bind(this);
+        this.handleOnSubmit = this.handleOnSubmit.bind(this);
+        this.handleValidateInput = this.handleValidateInput.bind(this);
+        this.validate = this.validate.bind(this);
+        this.handleDescriptionHelperUpdate = this.handleDescriptionHelperUpdate.bind(this);
+    }
+
+    componentDidMount() {
+        SourceActions.fetchByName(this.props.sourceName);
+    }
+
+    validate(cb) {
+        const results = _(this.state.form)
+            .map((parameterValidator) => {
+                if (_.isFunction(parameterValidator.validator)) {
+                    return parameterValidator.validator();
+                }
+                console.error('Invalid validation function');
+                return false;
+            });
+        const isValid = results.indexOf(false) < 0;
+        this.setState({ isFormValid: isValid });
+        if (isValid) {
+            return cb()
+        }
+    }
+
+    saveFlow() {
+        const { source } = this.props;
+        const { form } = this.state;
+        const parameters = _(source.parameters).without('name', 'description').map((parameter) => {
+            const parameterValue = form[parameter.name];
+            return {
+                key: parameter.name,
+                value: parameterValue ? parameterValue.value : null
+            }
+        }).value();
+        FlowActions
+            .completeCreateFlow({
+                template: this.props.source.name,
+                    name: form.name.value,
+                    description: form.description.value,
+                    parameters
+                }
+            )
+            .then(() => AppActions.changeLocation(`/${ObjectTypes.CHANNEL}`))
+            .catch(error => this.setState({ errorMessage: error }));
+    }
+
+    handleOnSubmit(e) {
+        e.preventDefault();
+        this.validate(this.saveFlow);
+    }
+
+    handleValidateInput(name, validator) {
+        this.setState((prevState) => {
+            const newValue = { ...prevState.form[name], ...{ validator } };
+            const newForm = { ...prevState.form, ...{ [name]: newValue } };
+            return { form: newForm };
+        });
+    }
+
+    handleInputChange(name, value) {
+        this.setState((prevState) => {
+            const newValue = { ...prevState.form[name], ...{ value } };
+            const newForm = { ...prevState.form, ...{ [name]: newValue } };
+            return { form: newForm };
+        });
+    }
+
+    handleDescriptionHelperUpdate(name) {
+        this.setState({
+            currentDescriptionHelper: name
+        })
+    }
+
+    render() {
+        const { source, classes } = this.props;
+        if (!source) {
+            return (<div>Source not found [{this.props.sourceName}]</div>)
+        }
+        return (
+            <Content>
+                <ContentHeader title={<div>+ Create Channel: <strong>{source.name}</strong></div>}>{source.description}</ContentHeader>
+                <Divider light/>
+                <ContentSubHeader>
+                    <Typography type="title" gutterBottom>Basic information</Typography>
+                    <Typography type="body1" gutterBottom>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere voluptatibus accusantium magni expedita et dicta.</Typography>
+                    <Grid container>
+                        <Grid item xs={7}>
+                            <Text
+                                name={'name'}
+                                label={'Name'}
+                                placeholder={''}
+                                description={''}
+                                isRequired={true}
+                                handleInputChange={this.handleInputChange}
+                                handleValidateInput={this.handleValidateInput}
+                            />
+
+                        </Grid>
+                        {/* <Grid item xs hidden={!parameter.description}>
+                            <DescriptionHelper
+
+                                name={parameter.name}
+                                label={parameter.label}
+                                description={parameter.description}
+                                currentDescriptionHelper={this.props.currentDescriptionHelper}
+                            />
+                        </Grid>*/}
+
+                    </Grid>
+                    <Grid container>
+                        <Grid item xs={7}>
+                            <Text
+                                name={'description'}
+                                label={'Description'}
+                                placeholder={''}
+                                description={''}
+                                isRequired={true}
+                                handleInputChange={this.handleInputChange}
+                                handleValidateInput={this.handleValidateInput}
+                            />
+
+                        </Grid>
+                        {/* <Grid item xs hidden={!parameter.description}>
+                            <DescriptionHelper
+
+                                name={parameter.name}
+                                label={parameter.label}
+                                description={parameter.description}
+                                currentDescriptionHelper={this.props.currentDescriptionHelper}
+                            />
+                        </Grid>*/}
+
+                    </Grid>
+
+                </ContentSubHeader>
+                <Divider light/>
+                <ContentBody>
+                    <DynamicForm
+                        handleInputChange={this.handleInputChange}
+                        parameters={source.parameters}
+                        groups={source.groups}
+                        handleValidateInput={this.handleValidateInput}
+                        handleDescriptionHelperUpdate={this.handleDescriptionHelperUpdate}
+                        currentDescriptionHelper={this.state.currentDescriptionHelper}
+                    />
+                </ContentBody>
+                <Divider light/>
+                <ContentFooter>
+                    <Grid
+                        container
+                        justify={'flex-end'}
+                        spacing={24}
+                    >
+                        <Grid item>
+                            <Button color="accent"
+                                    className={classes.secondaryButton}
+                                    onClick={() => AppActions.changeLocation(`/${ObjectTypes.SOURCE}`)}
+
+                                    classes={{
+                                        label: 'button-label'
+                                    }}
+                            >
+                                <Typography type="button">Cancel</Typography>
+
+                            </Button>
+                        </Grid>
+
+                        <Grid item>
+                            <Button color="primary"
+                                    className={classes.primaryButton}
+                                    onClick={this.handleOnSubmit}
+                                    classes={{
+                                        label: 'button-label'
+                                    }}
+                            >
+                                <Typography type="button">Finish</Typography>
+
+                            </Button>
+                        </Grid>
+
+                    </Grid>
+                </ContentFooter>
+            </Content>
+        );
+    }
+}
+
+_FlowCreateView.propTypes = {
+    source: PropTypes.object,
+    sourceName: PropTypes.string
+};
+
+export const FlowCreateView = withStyles(styles)(_FlowCreateView);
