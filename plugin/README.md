@@ -1,4 +1,4 @@
-# Kibana Ingest Plugin
+# Kibana Conveyor Plugin
 
 > An awesome Kibana plugin
 
@@ -26,24 +26,9 @@ For more information about any of these commands run `npm run ${task} -- --help`
 
 ## Installation
 
-### Private Repo
-Wee need to first copy the file locally to our kibana instance since this repo is currently private.
-
-<dl>
-  <dt><code>curl -o /tmp/react-examples-{kibana_version}.zip -u {github_user}:{github_token} https://raw.githubusercontent.com/samtecspg/kibana-ingest-plugin/develop/build/react-examples-{kibana_version}.zip</code></dt>
-  <dd>Copy plugin locally</dd>
-
-  <dt><code>bin/kibana-plugin install file:///tmp/react-examples-{kibana_version}.zip</code></dt>
-  <dd>Use kibana's [plugin command line](https://www.elastic.co/guide/en/kibana/current/_installing_plugins.html) to install</dd>
-
-
-</dl>
-
-### Public Repo
-
 <dl>
 
-  <dt><code>bin/kibana-plugin install https://raw.githubusercontent.com/samtecspg/kibana-ingest-plugin/develop/build/react-examples-{kibana_version}.zip</code></dt>
+  <dt><code>bin/kibana-plugin install https://raw.githubusercontent.com/samtecspg/conveyor/plugin/develop/build/react-examples-{kibana_version}.zip</code></dt>
   <dd>We can specify the URL of the zip file directly</dd>
 </dl>
 
