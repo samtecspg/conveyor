@@ -219,10 +219,13 @@ export default {
                 root: {
                     'border': global.border,
                     'border-radius': global.borderRadius,
-                    'padding': '0 20px ',
+                    'padding': '5px 10px ',
                     'transition': global.hoverTransition,
                     '&:hover': {
                         'border-color': primary[500]
+                    },
+                    '& .input': {
+                        'padding': '1px'
                     }
                 },
                 underline: { //reset of the original style

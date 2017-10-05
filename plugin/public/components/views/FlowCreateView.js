@@ -119,7 +119,9 @@ class _FlowCreateView extends React.Component {
                 <Divider light/>
                 <ContentSubHeader>
                     <Typography type="title" gutterBottom>Basic information</Typography>
+{/*
                     <Typography type="body1" gutterBottom>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere voluptatibus accusantium magni expedita et dicta.</Typography>
+*/}
                     <Grid container>
                         <Grid item xs={7}>
                             <Text

@@ -52,7 +52,7 @@ class _FlowListView extends React.Component {
         }
         return (
             <Content>
-                <ContentHeader title="+ Create">This are your existing channels.</ContentHeader>
+                <ContentHeader title="Channels">This are your existing channels.</ContentHeader>
                 <Divider light/>
                 {/*<ContentSubHeader>
                     <Grid container>
