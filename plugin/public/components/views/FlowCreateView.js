@@ -16,7 +16,8 @@ import Button from 'material-ui/Button';
 
 const styles = theme => ({
     primaryButton: theme.custom.form.button.primary,
-    secondaryButton: theme.custom.form.button.secondary
+    secondaryButton: theme.custom.form.button.secondary,
+    box: theme.custom.form.box
 });
 
 class _FlowCreateView extends React.Component {
@@ -122,6 +123,8 @@ class _FlowCreateView extends React.Component {
 {/*
                     <Typography type="body1" gutterBottom>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere voluptatibus accusantium magni expedita et dicta.</Typography>
 */}
+                <div className={classes.box}>
+
                     <Grid container>
                         <Grid item xs={7}>
                             <Text
@@ -170,7 +173,7 @@ class _FlowCreateView extends React.Component {
                         </Grid>*/}
 
                     </Grid>
-
+                </div>
                 </ContentSubHeader>
                 <Divider light/>
                 <ContentBody>

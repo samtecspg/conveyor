@@ -68,7 +68,7 @@ class _List extends React.Component {
         const { description, name, label, handleDescriptionHelper, classes } = this.props;
 
         return (
-            <div className={classes.box}>
+            <divx>
                 <FormControl
                     error={!this.state.isValid}
                     required={this.props.isRequired}
@@ -89,7 +89,7 @@ class _List extends React.Component {
 
                     <FormHelperText>{this.state.isValid ? ' ' : 'Error'}</FormHelperText>
                 </FormControl>
-            </div>
+            </divx>
         );
     }
 }

@@ -9,7 +9,8 @@ import Grid from 'material-ui/Grid';
 
 const styles = theme => {
     return {
-        root: theme.custom.form.group
+        root: theme.custom.form.group,
+        box: theme.custom.form.box
     }
 };
 
@@ -80,8 +81,10 @@ class _Group extends React.Component {
                     classes={{
                         root: classes.description
                     }}>{description}</Typography>
-                {_.map(parameters, this.renderParameter)}
-                {_.map(subGroups, this.renderSubGroup)}
+                <div className={classes.box}>
+                    {_.map(parameters, this.renderParameter)}
+                    {_.map(subGroups, this.renderSubGroup)}
+                </div>
             </div>
         );
     }

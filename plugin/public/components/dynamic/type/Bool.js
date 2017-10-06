@@ -36,7 +36,7 @@ class _Bool extends React.Component {
     render() {
         const { description, label, name, handleDescriptionHelper, classes } = this.props;
         return (
-            <div className={classes.box}>
+            <div>
                 <Typography type="subheading">
                     {label}<span hidden={!this.props.isRequired}>&nbsp;*</span><InputHelper hidden={!description} referenceName={name} onDescriptionHelperUpdate={handleDescriptionHelper}/>
                     <Switch

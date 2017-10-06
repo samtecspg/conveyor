@@ -145,6 +145,9 @@ export default {
                 '&:hover .action p': {
                     'color': '#ffffff'
 
+                },
+                '& action':{
+
                 }
             },
             gridItem: {
@@ -171,7 +174,7 @@ export default {
                 },
                 text: {
                     'opacity': '1',
-                    'line-height': '3',
+                    'line-height': '2.5',
                     'color': secondary[500],
                     'font-weight': 500
                 }

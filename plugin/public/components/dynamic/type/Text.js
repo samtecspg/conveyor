@@ -50,7 +50,7 @@ class _Text extends React.Component {
     render() {
         const { description, name, label, placeholder, handleDescriptionHelper, classes } = this.props;
         return (
-            <div className={classes.box}>
+            <div>
                 <FormControl
                     error={!this.state.isValid}
                     required={this.props.isRequired}
