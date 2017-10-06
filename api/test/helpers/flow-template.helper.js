@@ -9,7 +9,7 @@ const defaultData = {
     'groups': [
         {
             'key': 'main',
-            'tittle': 'Main',
+            'title': 'Main',
             'description': 'Main group description'
         }],
     'parameters': [{

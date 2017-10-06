@@ -14,7 +14,7 @@ const schema = {
     parameters: Joi.array().items(Joi.object()).description('List of Parameters'),
     groups: Joi.array().items(Joi.object().keys({
         key: Joi.string(),
-        tittle: Joi.string(),
+        title: Joi.string(),
         description: Joi.string()
     })).description('List of Groups'),
     flow: Joi.object().keys({

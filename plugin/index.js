@@ -11,7 +11,7 @@ export default function (kibana) {
 
         uiExports: {
             app: {
-                title: AppConstants.APP_TITTLE,
+                title: AppConstants.APP_TITLE,
                 description: AppConstants.APP_DESCRIPTION,
                 main: `plugins/${AppConstants.APP_NAME}/app`,
                 icon: `plugins/${AppConstants.APP_NAME}/icon.svg`,

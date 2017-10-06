@@ -21,7 +21,7 @@ export class DynamicForm extends React.Component {
         return <Group
             key={group._key}
             groupKey={group._key}
-            tittle={group._tittle}
+            title={group._title}
             description={group._description}
             parameters={group._parameters}
             subGroups={subGroups}
@@ -43,7 +43,7 @@ export class DynamicForm extends React.Component {
         _.forEach(groups, (group) => {
             _.set(groupsAndParameters, group.key, {
                 '_key': group.key,
-                '_tittle': group.tittle,
+                '_title': group.title,
                 '_description': group.description,
                 '_parameters': groupedParameters[group.key]
             })

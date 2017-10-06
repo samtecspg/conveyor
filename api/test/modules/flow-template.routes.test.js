@@ -134,7 +134,7 @@ suite('/flowTemplate', () => {
                 'groups': [
                     {
                         'key': 'main',
-                        'tittle': 'Main',
+                        'title': 'Main',
                         'description': 'Main group description'
                     }],
                 'parameters': [{
@@ -191,7 +191,7 @@ suite('/flowTemplate', () => {
                 'groups': [
                     {
                         'key': 'main',
-                        'tittle': 'Main',
+                        'title': 'Main',
                         'description': 'Main group description'
                     }],
                 'parameters': [{

@@ -19,10 +19,10 @@ class _SubGroup extends React.Component {
     }
 
     render() {
-        const { tittle, description, groupKey, parameters, classes } = this.props;
+        const { title, description, groupKey, parameters, classes } = this.props;
         return (
             <div className={classes.root} data-group={groupKey}>
-                <Typography type="title" gutterBottom>{tittle}</Typography>
+                <Typography type="title" gutterBottom>{title}</Typography>
                 <Typography type="body1" gutterBottom>{description}</Typography>
                 {_.map(parameters, this.props.renderParameter)}
             </div>
@@ -32,7 +32,7 @@ class _SubGroup extends React.Component {
 
 _SubGroup.propTypes = {
     groupKey: PropTypes.string.isRequired,
-    tittle: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     parameters: PropTypes.array.isRequired,
     renderParameter: PropTypes.func.isRequired,

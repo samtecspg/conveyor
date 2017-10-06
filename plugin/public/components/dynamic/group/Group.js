@@ -60,7 +60,7 @@ class _Group extends React.Component {
         return <SubGroup
             key={subGroup._key}
             groupKey={subGroup._key}
-            tittle={subGroup._tittle}
+            title={subGroup._title}
             description={subGroup._description}
             parameters={subGroup._parameters}
             renderParameter={this.renderParameter}
@@ -68,12 +68,12 @@ class _Group extends React.Component {
     }
 
     render() {
-        const { tittle, description, groupKey, parameters, subGroups, classes } = this.props;
+        const { title, description, groupKey, parameters, subGroups, classes } = this.props;
 
         return (
             <div className={classes.root} data-group={groupKey}>
 
-                <Typography type="title" gutterBottom>{tittle}</Typography>
+                <Typography type="title" gutterBottom>{title}</Typography>
                 <Typography
                     type="body1"
                     gutterBottom
@@ -89,7 +89,7 @@ class _Group extends React.Component {
 
 _Group.propTypes = {
     groupKey: PropTypes.string.isRequired,
-    tittle: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     parameters: PropTypes.array.isRequired,
     subGroups: PropTypes.array.isRequired,
