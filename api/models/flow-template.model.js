@@ -17,10 +17,7 @@ const schema = {
         title: Joi.string(),
         description: Joi.string()
     })).description('List of Groups'),
-    flow: Joi.object().keys({
-        label: Joi.string(),
-        nodes: Joi.array().items(Joi.object())
-    }).description('Node-RED flow object')
+    flow: Joi.string().description('Node-RED flow object')
 };
 
 class FlowTemplateModel {
@@ -69,7 +66,8 @@ class FlowTemplateModel {
                     payload.name,
                     payload.description,
                     payload.parameters,
-                    JSON.stringify(payload.flow),
+                   // JSON.stringify(payload.flow),
+                    payload.flow,
                     payload.groups
                 );
                 if (!template) { // save a new template

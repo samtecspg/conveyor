@@ -145,14 +145,7 @@ suite('/flowTemplate', () => {
                     'placeholder':'Message field',
                     'description':'This is a message'
                 }],
-                flow: {
-                    label: 'Test',
-                    nodes: [
-                        {
-                            test: 'Test'
-                        }
-                    ]
-                }
+                flow: '{"label":"Test","nodes":[{"test":"Test"}]}'
             };
             const options = {
                 method: 'POST',

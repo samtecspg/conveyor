@@ -152,7 +152,6 @@ suite('/flow', () => {
 
             server.inject(options, (res) => {
 
-                console.log('DEBUUUUUUUUG');
                 console.log(options);
                 console.log(data);
                 expect(res.statusCode).to.equal(200);

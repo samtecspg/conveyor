@@ -8,7 +8,7 @@ const Handlebars = require('handlebars');
 const _ = require('lodash');
 const NodeRED = require('../datasources').NodeRED;
 const ES = require('../datasources').Elasticsearch;
-
+const ParameterConvert = require('../lib/parameter-convert.lib');
 const schema = {
     id: Joi.string().description('Id on Elasticsearch'),
     nodeRedId: Joi.number().description('Id on Node-RED'),
@@ -111,7 +111,7 @@ class FlowModel {
                 }
             }
 
-            parameters[templateParameter.name] = value;
+            parameters[templateParameter.name] = ParameterConvert(templateParameter.type, value);
 
         });
         return { parameters, errors };
@@ -123,7 +123,6 @@ class FlowModel {
         const newFlowModel = new FlowModel(null, null, flowTemplate.name, flowTemplate.version, payload.name, payload.description, payload.parameters);
         const template = Handlebars.compile(flowTemplate.flow);
         const parsedParameters = FlowModel.validateParameters(flowTemplate.parameters, newFlowModel.parameters);
-
         if (parsedParameters.errors.length > 0) {
             const error = new Error(`The following parameters didn't pass validation:\n${parsedParameters.errors.join('\n')}`);
             console.error(error);
