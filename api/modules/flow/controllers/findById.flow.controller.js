@@ -11,7 +11,8 @@ module.exports = (request, reply) => {
             if (err.statusCode === 404) {
                 return reply(Boom.notFound('Flow not found'));
             }
-            return reply(Boom.badRequest('ES Request error'));
+            const message = Boom.badRequest(err.message);
+            return reply(message);
         }
         return reply(flow);
     });

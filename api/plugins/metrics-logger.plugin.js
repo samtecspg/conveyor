@@ -60,6 +60,8 @@ exports.register = function (server, options, next) {
     const addMetricsHandler = function (metrics) {
 
         metrics = _.isArray(metrics) ? metrics : [metrics];
+        metrics = _.compact(metrics);
+
         this.plugins.metrics.other.push.apply(this.plugins.metrics.other, metrics);
     };
 

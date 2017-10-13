@@ -11,7 +11,7 @@ module.exports = (request, reply) => {
             if (err.statusCode === 404) {
                 return reply(Boom.notFound('Flow Template not found'));
             }
-            return reply(Boom.badRequest('ES Request error'));
+            return reply(Boom.badRequest(err.message));
         }
         return reply(flowTemplate);
     });

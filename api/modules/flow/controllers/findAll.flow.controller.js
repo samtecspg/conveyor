@@ -8,7 +8,8 @@ module.exports = (request, reply) => {
 
         request.addMetrics(metrics);
         if (err) {
-            return reply(Boom.badRequest('ES Request error'));
+            const message = Boom.badRequest(err.message);
+            return reply(message);
         }
         return reply(flows);
     });

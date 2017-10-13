@@ -10,8 +10,7 @@ module.exports = (request, reply) => {
 
         request.addMetrics(metrics);
         if (err) {
-            console.log(new Error(err));
-            const message = Boom.badRequest('Error finding Flow Template');
+            const message = Boom.badRequest(err.message);
             return reply(message);
         }
         if (!flowTemplate) {
