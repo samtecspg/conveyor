@@ -40,6 +40,7 @@
     "bluebird": "^3.3.5",
     "boom": "^5.2.0",
     "color": "^2.0.0",
+    "dashify": "^0.2.2",
     "del": "^3.0.0",
     "es6-promise": "^4.1.1",
     "flot-charts": "^0.8.3",
@@ -80,9 +81,9 @@
     "redux-thunk": "^2.0.1",
     "typeface-rubik": "^0.0.35"
   },
-    "keywords": [
-        "kibana",
-        "kibana-plugin"
-    ],
-    "license": "Apache-2.0"
+  "keywords": [
+    "kibana",
+    "kibana-plugin"
+  ],
+  "license": "Apache-2.0"
 }

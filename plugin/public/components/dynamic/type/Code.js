@@ -48,7 +48,7 @@ class _Code extends React.Component {
     }
 
     render() {
-        const { description, name, label, handleDescriptionHelper, classes } = this.props;
+        const { description, name, label, handleDescriptionHelper, value, classes } = this.props;
         return (
             <div>
                 <FormControl
@@ -61,6 +61,7 @@ class _Code extends React.Component {
 
                     <Input
                         id={name}
+                        value={value}
                         onChange={this.handleOnChange}
                         onBlur={this.validate}
                         type={this.props.type}
@@ -86,6 +87,7 @@ class _Code extends React.Component {
 _Code.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
+    value: PropTypes.string,
     description: PropTypes.string,
     handleInputChange: PropTypes.func.isRequired,
     handleDescriptionHelper: PropTypes.func,

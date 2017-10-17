@@ -137,6 +137,7 @@ suite('/flow', () => {
                 template: `${FlowTemplateHelper.defaultData.name}-${testData.key}`,
                 name: `${FlowHelper.defaultData.name}-1-${testData.key}`,
                 description: 'test description',
+                index:'test-index',
                 parameters: [
                     {
                         key: 'message',
