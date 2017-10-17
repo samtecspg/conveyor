@@ -13,6 +13,8 @@ import {withStyles} from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
+import dashify from 'dashify';
+import {DescriptionHelper} from '../dynamic/helpers/DescriptionHelper';
 
 const styles = theme => ({
     primaryButton: theme.custom.form.button.primary,
@@ -72,7 +74,7 @@ class _FlowCreateView extends React.Component {
         }).value();
         FlowActions
             .completeCreateFlow({
-                template: this.props.source.name,
+                    template: this.props.source.name,
                     name: form.name.value,
                     description: form.description.value,
                     parameters
@@ -116,29 +118,30 @@ class _FlowCreateView extends React.Component {
         }
         return (
             <Content>
-                <ContentHeader title={<div>+ Create Channel: <strong>{source.name}</strong></div>}>{source.description}</ContentHeader>
+                <ContentHeader title={<div>+ Create Channel: <strong>{source.name}</strong>
+                </div>}>{source.description}</ContentHeader>
                 <Divider light/>
                 <ContentSubHeader>
                     <Typography type="title" gutterBottom>Basic information</Typography>
-{/*
+                    {/*
                     <Typography type="body1" gutterBottom>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere voluptatibus accusantium magni expedita et dicta.</Typography>
 */}
-                <div className={classes.box}>
+                    <div className={classes.box}>
 
-                    <Grid container>
-                        <Grid item xs={7}>
-                            <Text
-                                name={'name'}
-                                label={'Name'}
-                                placeholder={''}
-                                description={''}
-                                isRequired={true}
-                                handleInputChange={this.handleInputChange}
-                                handleValidateInput={this.handleValidateInput}
-                            />
+                        <Grid container>
+                            <Grid item xs={7}>
+                                <Text
+                                    name={'name'}
+                                    label={'Name'}
+                                    placeholder={''}
+                                    description={''}
+                                    isRequired={true}
+                                    handleInputChange={this.handleInputChange}
+                                    handleValidateInput={this.handleValidateInput}
+                                />
 
-                        </Grid>
-                        {/* <Grid item xs hidden={!parameter.description}>
+                            </Grid>
+                            {/* <Grid item xs hidden={!parameter.description}>
                             <DescriptionHelper
 
                                 name={parameter.name}
@@ -148,21 +151,21 @@ class _FlowCreateView extends React.Component {
                             />
                         </Grid>*/}
 
-                    </Grid>
-                    <Grid container>
-                        <Grid item xs={7}>
-                            <Text
-                                name={'description'}
-                                label={'Description'}
-                                placeholder={''}
-                                description={''}
-                                isRequired={true}
-                                handleInputChange={this.handleInputChange}
-                                handleValidateInput={this.handleValidateInput}
-                            />
-
                         </Grid>
-                        {/* <Grid item xs hidden={!parameter.description}>
+                        <Grid container>
+                            <Grid item xs={7}>
+                                <Text
+                                    name={'description'}
+                                    label={'Description'}
+                                    placeholder={''}
+                                    description={''}
+                                    isRequired={true}
+                                    handleInputChange={this.handleInputChange}
+                                    handleValidateInput={this.handleValidateInput}
+                                />
+
+                            </Grid>
+                            {/* <Grid item xs hidden={!parameter.description}>
                             <DescriptionHelper
 
                                 name={parameter.name}
@@ -172,8 +175,34 @@ class _FlowCreateView extends React.Component {
                             />
                         </Grid>*/}
 
-                    </Grid>
-                </div>
+                        </Grid>
+                        <Grid container>
+                            <Grid item xs={7}>
+                                <Text
+                                    name={'index'}
+                                    label={'Index'}
+                                    placeholder={''}
+                                    description="Elasticsearch index name"
+                                    isRequired={true}
+                                    handleInputChange={this.handleInputChange}
+                                    handleValidateInput={this.handleValidateInput}
+                                    handleDescriptionHelper={this.handleDescriptionHelperUpdate}
+                                    value={dashify(source.name)}
+                                />
+
+                            </Grid>
+                            <Grid item xs>
+                                <DescriptionHelper
+
+                                    name="index"
+                                    label="Index"
+                                    description="Elasticsearch index name"
+                                    currentDescriptionHelper={this.state.currentDescriptionHelper}
+                                />
+                            </Grid>
+
+                        </Grid>
+                    </div>
                 </ContentSubHeader>
                 <Divider light/>
                 <ContentBody>

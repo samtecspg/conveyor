@@ -11,6 +11,7 @@ const defaultData =
         'templateVersion': 1,
         'name': 'test-helper',
         'description': 'Test description',
+        'index': 'testindex',
         'parameters': [{ 'key': 'message', 'value': 'test message' }]
     };
 

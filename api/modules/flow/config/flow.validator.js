@@ -38,6 +38,7 @@ class FlowValidate {
                     template: FlowSchema.template.required(),
                     name: FlowSchema.name.required(),
                     description: FlowSchema.description.required(),
+                    index: FlowSchema.index.required(),
                     parameters: Joi.array().items(
                         Joi.object({
                             key: ParameterSchema.key.required(),

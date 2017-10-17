@@ -17,6 +17,7 @@ const schema = {
     templateVersion: Joi.string().description('Flow Template version used'),
     name: Joi.string().description('Name of the Flow (this is unique)'),
     description: Joi.string().description('Description of the Flow'),
+    index: Joi.string().description('Name of index used by Elasticsearch'),
     parameters: Joi.array().items(ParameterModel.schema).description('List of Parameters, must match with Flow Template\'s parameters')
 };
 
@@ -132,6 +133,7 @@ class FlowModel {
         //include system parameters
         parsedParameters.parameters._url = encodeURIComponent(newFlowModel.name);
         parsedParameters.parameters._name = newFlowModel.name;
+        parsedParameters.parameters._index = newFlowModel.index;
 
         const saveES = (newFlow, next) => {
 
