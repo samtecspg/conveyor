@@ -77,6 +77,7 @@ class _FlowCreateView extends React.Component {
                     template: this.props.source.name,
                     name: form.name.value,
                     description: form.description.value,
+                    index: form.index.value,
                     parameters
                 }
             )

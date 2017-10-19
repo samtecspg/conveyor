@@ -72,6 +72,7 @@ class _FlowListView extends React.Component {
                                     ? <FlowList
                                         flows={flows}
                                         onClick={this.onSelectFlow}
+                                        basePath={this.props.basePath}
                                     />
                                     : <div>Nothing found</div>
                             }
@@ -85,6 +86,7 @@ class _FlowListView extends React.Component {
 }
 
 _FlowListView.propTypes = {
+    basePath: PropTypes.string,
     flows: PropTypes.array
 };
 

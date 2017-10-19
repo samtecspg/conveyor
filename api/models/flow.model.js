@@ -30,6 +30,7 @@ const parseEStoModel = (document) => {
         document._source.templateVersion,
         document._source.name,
         document._source.description,
+        document._source.index,
         document._source.parameters
     );
     flow.nodeRedId = document._source.nodeRedId;
@@ -44,6 +45,7 @@ class FlowModel {
                 templateVersion,
                 name,
                 description,
+                index,
                 parameters) {
 
         this.id = id;
@@ -52,6 +54,7 @@ class FlowModel {
         this.templateVersion = templateVersion;
         this.name = name;
         this.description = description;
+        this.index = index;
         this.parameters = parameters;
     }
 
@@ -121,7 +124,7 @@ class FlowModel {
     static save(payload, flowTemplate, cb) {
 
         const allMetrics = [];
-        const newFlowModel = new FlowModel(null, null, flowTemplate.name, flowTemplate.version, payload.name, payload.description, payload.parameters);
+        const newFlowModel = new FlowModel(null, null, flowTemplate.name, flowTemplate.version, payload.name, payload.description, payload.index, payload.parameters);
         const template = Handlebars.compile(flowTemplate.flow);
         const parsedParameters = FlowModel.validateParameters(flowTemplate.parameters, newFlowModel.parameters);
         if (parsedParameters.errors.length > 0) {
