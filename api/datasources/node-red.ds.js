@@ -81,13 +81,15 @@ const datasource = {
         },
         'delete': (id, cb) => {
 
+            const metrics = new Metrics('Node-RED', 'delete', {});
             Wreck.delete(`/flow/${id}`, (err, response, body) => {
 
+                metrics.stop();
                 if (err) {
                     errorHandler(new Error(err));
-                    return cb(err);
+                    return cb(err, metrics);
                 }
-                return cb(null, body);
+                return cb(null, body, metrics);
             });
         }
     }

@@ -47,6 +47,14 @@ class FlowValidate {
                 }).label('Flow Model');
             })()
         };
+        this.delete = {
+            params: (() => {
+
+                return {
+                    name: FlowSchema.name.required()
+                };
+            })()
+        };
     }
 }
 

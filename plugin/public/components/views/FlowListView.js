@@ -4,11 +4,10 @@ import {ObjectTypes} from '../../../lib/common/object-types';
 import {FlowList} from '../list/FlowList';
 import {FlowActions} from '../../actions/flow-actions';
 import PropTypes from 'prop-types';
-import {Content, ContentBody, ContentHeader, ContentSubHeader} from '../global';
+import {Content, ContentBody, ContentHeader} from '../global';
 import {withStyles} from 'material-ui/styles';
 import Divider from 'material-ui/Divider';
-import {SearchInput} from '../global/form/SearchInput';
-import Grid from 'material-ui/Grid';
+import {AppActions} from '../../actions/app-actions';
 
 const styles = theme => {
     return {
@@ -25,6 +24,7 @@ class _FlowListView extends React.Component {
     constructor() {
         super();
         this.onSelectFlow = this.onSelectFlow.bind(this);
+        this.deleteFlow = this.deleteFlow.bind(this);
 
     }
 
@@ -38,6 +38,14 @@ class _FlowListView extends React.Component {
 
     componentDidMount() {
         FlowActions.fetchFlows();
+    }
+
+    deleteFlow(name) {
+        FlowActions
+            .deleteFlow(name
+            )
+            .then(() => AppActions.changeLocation(`/${ObjectTypes.CHANNEL}`))
+            .catch(error => this.setState({ errorMessage: error }));
     }
 
     render() {
@@ -73,6 +81,7 @@ class _FlowListView extends React.Component {
                                         flows={flows}
                                         onClick={this.onSelectFlow}
                                         basePath={this.props.basePath}
+                                        onDeleteFlow={this.deleteFlow}
                                     />
                                     : <div>Nothing found</div>
                             }

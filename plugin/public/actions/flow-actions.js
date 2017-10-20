@@ -40,4 +40,13 @@ export class FlowActions {
             });
     }
 
+    static deleteFlow(flowName, body) {
+        const headers = Api.getGetHeader(appStore.getState().kbnVersion, 'DELETE', body);
+        return fetch(`${Api.getPathForType(ObjectTypes.CHANNEL)}\\${flowName}`, headers)
+            .then(handleApiResponse)
+            .then(json => {
+                dispatch({ type: FlowActionTypes.COMPLETE_CREATE_FLOW, json });
+            });
+    }
+
 }

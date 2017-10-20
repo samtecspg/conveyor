@@ -41,9 +41,16 @@ class _FlowList extends React.Component {
     menuOptions = [
         {
             label: 'Discover',
-            action: (index) => {
+            action: (item) => {
                 this.handleOptionRequestClose();
-                window.location = `${this.props.basePath}/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:${index},interval:auto,query:'')`
+                window.location = `${this.props.basePath}/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:${item.index},interval:auto,query:'')`
+            }
+        },
+        {
+            label: 'Delete',
+            action: (item) => {
+                this.handleOptionRequestClose();
+                this.props.onDeleteFlow(item.name);
             }
         }
     ];
@@ -79,7 +86,7 @@ class _FlowList extends React.Component {
                         onRequestClose={this.handleOptionRequestClose}
                     >
                         {this.menuOptions.map(option => (
-                            <MenuItem key={option} onClick={option.action.bind(this, item.index)}>
+                            <MenuItem key={option.label} onClick={option.action.bind(this, item)}>
                                 {option.label}
                             </MenuItem>
                         ))}
@@ -116,7 +123,8 @@ class _FlowList extends React.Component {
 _FlowList.propTypes = {
     flows: PropTypes.array,
     onClick: PropTypes.func,
-    basePath: PropTypes.string
+    basePath: PropTypes.string,
+    onDeleteFlow: PropTypes.func
 };
 
 export const FlowList = withStyles(styles)(_FlowList);
