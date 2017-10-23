@@ -1,0 +1,119 @@
+{
+  "name": "SQL Server Scheduled Query",
+  "description": "With this flow you can populate an ES index with SQL Server data. Truncate/Reload and Incremental Updates are supported.",
+  "groups": [
+    {
+      "key": "connectionInformation",
+      "tittle": "Server Connection Information",
+      "description": "Below provide the information required to connect to your server."
+    },
+    {
+      "key": "connectionCredential",
+      "tittle": "Server Connection Credentials",
+      "description": "Now that we know how to connect to your SQL Server, let's make sure we have the permission to do so."
+    },
+    {
+      "key": "queryDetails",
+      "tittle": "Query Details",
+      "description": "Great, we are connected and down to business. Specify how often you want to update your data and the query you want to use"
+    },
+    {
+      "key": "indexInfo",
+      "tittle": "Elasticsearch Index Details",
+      "description": "This is information on how we're going to manage the Elasticsearch Index."
+    }
+  ],
+  "parameters": [
+    {
+      "type": "text",
+      "group": "connectionInformation",
+      "name": "server",
+      "label": "Server",
+      "description": "Server",
+      "required": true
+    },
+    {
+      "type": "text",
+      "group": "connectionInformation",
+      "name": "database",
+      "label": "Database",
+      "description": "Database"
+    },
+    {
+      "type": "text",
+      "group": "connectionCredential",
+      "name": "userName",
+      "label": "Username",
+      "required": true
+    },
+    {
+      "type": "password",
+      "group": "connectionCredential",
+      "name": "password",
+      "label": "Password",
+      "description": "Password",
+      "required": true
+    },
+    {
+      "type": "text",
+      "group": "connectionCredential",
+      "name": "domain",
+      "label": "Domain",
+      "description": "Domain"
+    },
+    {
+      "type": "text",
+      "group": "queryDetails",
+      "name": "updateFrequency",
+      "label": "Update Frequency",
+      "placeholder": "ex: Every 5 minutes",
+      "description": "Specify the frequency of update in fairly natural language. Here are some examples<ul><li>\"every 15 minutes\"</li><li>\"on the last day of the month\"</li><li>\"at 5:00pm from Monday trought Friday\"</li></ul><br\\>For more examples click <a>here</a>.",
+      "required": true
+    },
+    {
+      "type": "boolean",
+      "group": "queryDetails",
+      "name": "truncate",
+      "label": "Truncate Before Load",
+      "default": false,
+      "description": "If this is set to true the ES index will be cleared before new data is inserted.",
+      "required": false
+    },
+    {
+      "type": "text",
+      "group": "queryDetails",
+      "name": "uniqueField",
+      "label": "Unique Field",
+      "description": "Specifying a unique field with truncate turned off allows for incremental loads of data. The unique field will prevent duplicates and allow updates. This also exposes the parameter latestUniqueField to the query. Use it star the query at the right spot.",
+      "required": false
+    },
+    {
+      "type": "text",
+      "group": "queryDetails",
+      "name": "uniqueFieldStart",
+      "label": "Unique Field Starting Position",
+      "default": "0",
+      "description": "Generally speaking you're going to set a value here where the query should start and it will work incrementally up from that point.",
+      "required": false
+    },
+    {
+      "type": "code",
+      "group": "queryDetails",
+      "name": "query",
+      "label": "Query",
+      "placeholder": "Query",
+      "description": "Query",
+      "required": true
+    },
+    {
+      "type": "text",
+      "group": "indexInfo",
+      "name": "index",
+      "label": "Elasticsearch Index",
+      "placeholder": "Index Name",
+      "description": "This will be the name of the index inside of Elasticsearch.",
+      "required": true
+    }
+  ],
+  "flow": "{label:\"{{_name}}\",nodes:[{id:\"{{_id}}-1\",type:\"inject\",name:\"Inject on Startup\",topic:\"\",payload:\"Fail\",payloadType:\"str\",repeat:\"\",crontab:\"\",once:!0,x:130,y:40,wires:[[\"{{_id}}-2\"]]},{id:\"{{_id}}-3\",type:\"later\",name:\"\",schedule:\"{{updateFrequency}}\",x:510,y:40,wires:[[\"{{_id}}-4\"]]},{id:\"{{_id}}-5\",type:\"debug\",name:\"These Are Errors!\",active:!0,console:\"false\",complete:\"true\",x:1171,y:34,wires:[]},{id:\"{{_id}}-2\",type:\"function\",name:\"\",func:\"flow.set('index', '{{index}}')\\nflow.set('truncate', '{{truncate}}')\\nflow.set('uniqueField', '{{uniqueField}}')\\nflow.set('latestUniqueField', '{{uniqueFieldStart}}')\\n\\nreturn msg;\",outputs:1,noerr:0,x:330,y:40,wires:[[\"{{_id}}-3\"]]},{id:\"{{_id}}-6\",type:\"template\",name:\"Query\",field:\"payload\",fieldType:\"msg\",format:\"handlebars\",syntax:\"mustache\",template:\"{{{query}}}\",output:\"str\",x:130,y:240,wires:[[\"{{_id}}-7\"]]},{id:\"{{_id}}-7\",type:\"MSSQL\",mssqlCN:\"{{_id}}-8\",name:\"\",query:\"\",outField:\"payload\",x:270,y:240,wires:[[\"{{_id}}-9\"]]},{id:\"{{_id}}-4\",type:\"function\",name:\"Verify Later Parse\",func:\"if (msg.later) {\\n    msg.payload = 'True'\\n    \\n    return [null, msg]\\n} else {\\n    return [msg, null];\\n}\",outputs:\"2\",noerr:0,x:690,y:40,wires:[[\"{{_id}}-5\"],[\"{{_id}}-10\"]]},{id:\"{{_id}}-11\",type:\"function\",name:\"\",func:\"var index = flow.get('index')\\nvar operation = {\\n    \\\"_index\\\": index,\\n    \\\"_type\\\": \\\"default\\\"\\n    }\\n    \\nvar uniqueField = flow.get('uniqueField')\\n\\nif (uniqueField && uniqueField !== '' && msg.payload[uniqueField]) {\\n    operation['_id'] = msg.payload[uniqueField]\\n    \\n    if (msg.parts.index == msg.parts.count - 1) {\\n        flow.set('latestUniqueField', msg.payload[uniqueField])\\n    }\\n}\\n\\nvar msg1 = {\\n    payload: JSON.stringify({index: operation})\\n}\\n\\nvar msg2 = {\\n    payload: JSON.stringify(msg.payload)\\n}\\n\\nif (msg.parts.index == (msg.parts.count - 1)) {\\n    msg2.complete = true\\n}\\n\\nreturn [[msg1,msg2]];\",outputs:\"1\",noerr:0,x:550,y:240,wires:[[\"{{_id}}-12\"]]},{id:\"{{_id}}-9\",type:\"split\",name:\"\",splt:\"\\\\n\",x:410,y:240,wires:[[\"{{_id}}-11\"]]},{id:\"{{_id}}-12\",type:\"join\",name:\"\",mode:\"custom\",build:\"string\",property:\"payload\",propertyType:\"msg\",key:\"topic\",joiner:\"\\\\n\",timeout:\"\",count:\"1000\",x:690,y:240,wires:[[\"{{_id}}-13\"]]},{id:\"{{_id}}-14\",type:\"http request\",name:\"\",method:\"POST\",ret:\"obj\",url:\"elasticsearch:9200\/_bulk\",tls:\"\",x:1090,y:240,wires:[[\"{{_id}}-15\"]]},{id:\"{{_id}}-13\",type:\"function\",name:\"Add Trailing New Line\",func:'msg.payload += \"\\\\n\"\\nreturn msg;',outputs:1,noerr:0,x:880,y:240,wires:[[\"{{_id}}-14\"]]},{id:\"{{_id}}-15\",type:\"debug\",name:\"\",active:!0,console:\"false\",complete:\"false\",x:1270,y:240,wires:[]},{id:\"{{_id}}-16\",type:\"link out\",name:\"Truncate\",links:[\"{{_id}}-17\"],x:987.5,y:99,wires:[]},{id:\"{{_id}}-17\",type:\"link in\",name:\"Truncate In\",links:[\"{{_id}}-16\"],x:35,y:140,wires:[[\"{{_id}}-18\"]]},{id:\"{{_id}}-19\",type:\"comment\",name:\"Truncate Existing Data\",info:\"\",x:120,y:100,wires:[]},{id:\"{{_id}}-20\",type:\"http request\",name:\"\",method:\"POST\",ret:\"obj\",url:\"elasticsearch:9200\/{{index}}\/_delete_by_query\",tls:\"\",x:610,y:140,wires:[[\"{{_id}}-21\"]]},{id:\"{{_id}}-22\",type:\"link out\",name:\"Query\",links:[\"{{_id}}-23\"],x:951,y:199,wires:[]},{id:\"{{_id}}-23\",type:\"link in\",name:\"Query In\",links:[\"{{_id}}-22\"],x:35,y:240,wires:[[\"{{_id}}-6\"]]},{id:\"{{_id}}-24\",type:\"comment\",name:\"Query New Data\",info:\"\",x:100,y:200,wires:[]},{id:\"{{_id}}-21\",type:\"function\",name:\"\",func:\"if (msg.statusCode && msg.statusCode == 200) {\\n    return [null, msg]\\n} else {\\n    return [msg, null]\\n}\",outputs:\"2\",noerr:0,x:770,y:140,wires:[[\"{{_id}}-5\"],[\"{{_id}}-22\"]]},{id:\"{{_id}}-25\",type:\"function\",name:\"\",func:'if (msg.statusCode == 200) {\\n    var newMsg = {\\n        payload: {\\n            \"query\": {\\n                \"match_all\": {}\\n            }\\n        }\\n    }\\n    return [newMsg, null]\\n} else {\\n    return [null, {}]    \\n}',outputs:\"2\",noerr:0,x:450,y:140,wires:[[\"{{_id}}-20\"],[\"{{_id}}-22\"]]},{id:\"{{_id}}-26\",type:\"http request\",name:\"\",method:\"use\",ret:\"txt\",url:\"elasticsearch:9200\/{{index}}\",tls:\"\",x:290,y:140,wires:[[\"{{_id}}-25\"]]},{id:\"{{_id}}-18\",type:\"function\",name:\"\",func:\"msg.method = 'HEAD'\\nreturn msg;\",outputs:1,noerr:0,x:130,y:140,wires:[[\"{{_id}}-26\"]]},{id:\"{{_id}}-10\",type:\"switch\",name:\"\",property:\"truncate\",propertyType:\"flow\",rules:[{t:\"eq\",v:\"false\",vt:\"str\"},{t:\"eq\",v:\"true\",vt:\"str\"}],checkall:\"false\",outputs:2,x:845.5,y:81,wires:[[\"{{_id}}-22\"],[\"{{_id}}-16\"]]},{id:\"{{_id}}-8\",type:\"MSSQL-CN\",name:\"Connection for {{_name}}\",server:\"{{server}}\",encyption:!1,database:\"{{database}}\",credentials:{username:\"{{userName}}\",password:\"{{password}}\",domain:\"{{domain}}\"}}]}"
+}
