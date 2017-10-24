@@ -1,0 +1,83 @@
+{
+  "name": "Twitter Streaming API Source",
+  "description": "Use this source to pull tweets into Elasticsearch. You can stream specific user's tweets or search topics.",
+  "groups": [
+    {
+      "key": "connectionInformation",
+      "tittle": "Twitter Development Credentials",
+      "description": "Provide the details below, which come from your Twitter development account. Go to https://apps.twitter.com to manage yours."
+    },
+    {
+      "key": "searchInformation",
+      "tittle": "Twitter Search Information",
+      "description": "Provide a comma delimited list of users or topics to follow. You must provide at least one user or topic. "
+    },
+    {
+      "key": "elasticIndexInfo",
+      "tittle": "Elasticsearch Index Information",
+      "description": "Fow now this is just specifying the ES index. Soon we'll specify the indexing method as well."
+    }
+  ],
+  "parameters": [
+    {
+      "type": "text",
+      "group": "connectionInformation",
+      "name": "consumerKey",
+      "label": "Consumer Key",
+      "description": "The Consumer Key from the Twitter dev portal.",
+      "required": true
+    },
+    {
+      "type": "text",
+      "group": "connectionInformation",
+      "name": "consumerSecret",
+      "label": "Consumer Secret",
+      "description": "The Consumer Secret from the Twitter dev portal.",
+      "required": true
+    },
+    {
+      "type": "text",
+      "group": "connectionInformation",
+      "name": "accessToken",
+      "label": "Access Token",
+      "description": "The Access Token from the Twitter dev portal.",
+      "required": true
+    },
+    {
+      "type": "text",
+      "group": "connectionInformation",
+      "name": "accessSecret",
+      "label": "Access Secret",
+      "description": "The Access Secret from the Twitter dev portal.",
+      "required": true
+    },
+    {
+      "type": "text",
+      "group": "elasticIndexInfo",
+      "name": "index",
+      "label": "Elasticsearch Index",
+      "placeholder": "Index Name",
+      "description": "This will be the name of the index inside of Elasticsearch.",
+      "required": true
+    },
+    {
+      "type": "text",
+      "group": "searchInformation",
+      "name": "users",
+      "label": "Users to Follow",
+      "placeholder": "users",
+      "description": "Follow multiple users by providing a comma seperated list.",
+      "required": false
+    },
+    {
+      "type": "text",
+      "group": "searchInformation",
+      "name": "topics",
+      "label": "Topics to Follow",
+      "placeholder": "topics",
+      "description": "Follow multiple topics by providing a comma seperated list.",
+      "required": false
+    }
+  ],
+  "flow": "{label:\"{{_name}}\",nodes:[{id:\"{{_id}}-1\",type:\"flat\",name:\"\",safe:!1,x:250,y:40,wires:[[\"{{_id}}-2\"]]},{id:\"{{_id}}-2\",type:\"function\",name:\"\",func:'var index = \"{{index}}\"\\n\\nvar createdAt = msg.payload[\\'created_at\\']\\nmsg.payload[\\'created_at\\'] = new Date(Date.parse(createdAt.replace(\/( \\\\+)\/, \\' UTC$1\\')));\\n\\nvar operation = {\\n    \"_index\": index,\\n    \"_type\": \"default\"\\n    }\\n\\nvar msg1 = {\\n    payload: JSON.stringify({\"index\": operation})\\n}\\n\\nvar msg2 = {\\n    payload: JSON.stringify(msg.payload)\\n}\\n\\nreturn [[msg1,msg2]];',outputs:\"1\",noerr:0,x:390,y:40,wires:[[\"{{_id}}-3\"]]},{id:\"{{_id}}-3\",type:\"join\",name:\"\",mode:\"custom\",build:\"string\",property:\"payload\",propertyType:\"msg\",key:\"topic\",joiner:\"\\\\n\",joinerType:\"str\",accumulate:!1,timeout:\"\",count:\"1000\",x:530,y:40,wires:[[\"{{_id}}-4\"]]},{id:\"{{_id}}-4\",type:\"function\",name:\"Add Trailing New Line\",func:'msg.payload += \"\\\\n\"\\nreturn msg;',outputs:1,noerr:0,x:720,y:40,wires:[[\"{{_id}}-5\"]]},{id:\"{{_id}}-5\",type:\"http request\",name:\"\",method:\"POST\",ret:\"obj\",url:\"elasticsearch:9200\/_bulk\",tls:\"\",x:930,y:40,wires:[[]]},{id:\"{{_id}}-6\",type:\"trigger\",op1:\"\",op2:\"true\",op1type:\"nul\",op2type:\"bool\",duration:\"2\",extend:!0,units:\"s\",reset:\"\",name:\"\",x:240,y:100,wires:[[\"{{_id}}-7\"]]},{id:\"{{_id}}-7\",type:\"function\",name:\"\",func:\"delete msg.payload\\nmsg.complete = true\\n\\nreturn msg;\",outputs:1,noerr:0,x:410,y:100,wires:[[\"{{_id}}-3\"]]},{id:\"{{_id}}-8\",type:\"Twitter Stream\",connection:\"{{_id}}-9\",follow:\"{{users}}\",topics:\"{{topics}}\",tweetLimit:\"0\",onlyVerified:!1,topicRetweets:!1,loadImages:!1,topicLanguage:\"en\",debug:!1,name:\"\",x:90,y:40,wires:[[\"{{_id}}-1\",\"{{_id}}-6\"]]},{id:\"{{_id}}-9\",type:\"twitter-api-connection\",consumerKey:\"{{consumerKey}}\",consumerSecret:\"{{consumerSecret}}\",accessToken:\"{{accessToken}}\",accessSecret:\"{{accessSecret}}\"}]}"
+}

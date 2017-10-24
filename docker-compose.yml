@@ -58,5 +58,13 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
+  channel-load:
+    build: channel-sources
+    networks: ['conveyor-net']
+    depends_on:
+      - elasticsearch
+      - node-red
+      - api
+      - kibana 
 networks:
   conveyor-net:
