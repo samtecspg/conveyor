@@ -15,7 +15,7 @@ const styles = theme => {
         underline: theme.custom.form.text.underline,
         inkbar: theme.custom.form.text.inkbar,
         focused: theme.custom.form.text.focused,
-        error: theme.custom.form.text.error,
+        error: theme.custom.form.text.error
     };
 };
 
@@ -31,13 +31,18 @@ class _Text extends React.Component {
     }
 
     handleOnChange(e) {
-        const value = this.props.type === "number" ? parseFloat(InputParser(e)) : InputParser(e);
+        const value = this.props.type === 'number' ? parseFloat(InputParser(e)) : InputParser(e);
         this.setState({ value });
         this.props.handleInputChange(this.props.name, value);
     }
 
     componentDidMount() {
-        this.props.handleValidateInput(this.props.name, this.validate);
+        const { name, value } = this.props;
+        this.props.handleValidateInput(name, this.validate);
+        if (value) {
+            this.setState({ value });
+            this.props.handleInputChange(name, value);
+        }
 
     }
 
@@ -48,7 +53,8 @@ class _Text extends React.Component {
     }
 
     render() {
-        const { description, name, label, placeholder, handleDescriptionHelper, classes } = this.props;
+        const { description, name, label, placeholder, handleDescriptionHelper, value, classes } = this.props;
+
         return (
             <div>
                 <FormControl
@@ -69,13 +75,14 @@ class _Text extends React.Component {
                         onBlur={this.validate}
                         type={this.props.type}
                         className={classes.root}
+                        defaultValue={value}
                         classes={{
                             input: 'input',
                             underline: classes.underline,
                             inkbar: classes.inkbar,
                             error: classes.error,
                             focused: classes.focused,
-                            disabled:'input-disabled'
+                            disabled: 'input-disabled'
                         }}
                     />
                     <FormHelperText>{this.state.isValid ? ' ' : 'Error'}</FormHelperText>
@@ -89,6 +96,7 @@ class _Text extends React.Component {
 _Text.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
+    value: PropTypes.string,
     placeholder: PropTypes.string,
     description: PropTypes.string,
     isRequired: PropTypes.bool,
@@ -101,7 +109,8 @@ _Text.propTypes = {
 
 _Text.defaultProps = {
     isRequired: false,
-    type: 'text'
+    type: 'text',
+    value: ''
 };
 
 export const Text = withStyles(styles)(_Text);

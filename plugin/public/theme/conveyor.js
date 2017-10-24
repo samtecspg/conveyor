@@ -146,9 +146,7 @@ export default {
                     'color': '#ffffff'
 
                 },
-                '& action':{
-
-                }
+                '& action': {}
             },
             gridItem: {
                 display: 'grid'
@@ -188,7 +186,16 @@ export default {
                     'padding': '15px 10px',
                     'border-right': global.border
                 }
+            },
+            columns: {
+                description: {
+                    'border-right': 'none !important'
+                },
+                options: {
+
+                }
             }
+
         },
         appBar: {
             root: {

@@ -34,13 +34,14 @@ class _Bool extends React.Component {
     }
 
     render() {
-        const { description, label, name, handleDescriptionHelper, classes } = this.props;
+        const { description, label, name, handleDescriptionHelper, value, classes } = this.props;
         return (
             <div>
                 <Typography type="subheading">
                     {label}<span hidden={!this.props.isRequired}>&nbsp;*</span><InputHelper hidden={!description} referenceName={name} onDescriptionHelperUpdate={handleDescriptionHelper}/>
                     <Switch
                         onChange={this.handleOnChange}
+                        value={value}
                         classes={{
                             checked: classes.checked,
                             bar: classes.bar
@@ -54,6 +55,7 @@ class _Bool extends React.Component {
 
 _Bool.propTypes = {
     name: PropTypes.string.isRequired,
+    value: PropTypes.bool,
     label: PropTypes.string.isRequired,
     description: PropTypes.string,
     handleInputChange: PropTypes.func.isRequired,

@@ -17,6 +17,7 @@ const schema = {
     templateVersion: Joi.string().description('Flow Template version used'),
     name: Joi.string().description('Name of the Flow (this is unique)'),
     description: Joi.string().description('Description of the Flow'),
+    index: Joi.string().description('Name of index used by Elasticsearch'),
     parameters: Joi.array().items(ParameterModel.schema).description('List of Parameters, must match with Flow Template\'s parameters')
 };
 
@@ -29,6 +30,7 @@ const parseEStoModel = (document) => {
         document._source.templateVersion,
         document._source.name,
         document._source.description,
+        document._source.index,
         document._source.parameters
     );
     flow.nodeRedId = document._source.nodeRedId;
@@ -43,6 +45,7 @@ class FlowModel {
                 templateVersion,
                 name,
                 description,
+                index,
                 parameters) {
 
         this.id = id;
@@ -51,6 +54,7 @@ class FlowModel {
         this.templateVersion = templateVersion;
         this.name = name;
         this.description = description;
+        this.index = index;
         this.parameters = parameters;
     }
 
@@ -120,7 +124,7 @@ class FlowModel {
     static save(payload, flowTemplate, cb) {
 
         const allMetrics = [];
-        const newFlowModel = new FlowModel(null, null, flowTemplate.name, flowTemplate.version, payload.name, payload.description, payload.parameters);
+        const newFlowModel = new FlowModel(null, null, flowTemplate.name, flowTemplate.version, payload.name, payload.description, payload.index, payload.parameters);
         const template = Handlebars.compile(flowTemplate.flow);
         const parsedParameters = FlowModel.validateParameters(flowTemplate.parameters, newFlowModel.parameters);
         if (parsedParameters.errors.length > 0) {
@@ -132,6 +136,7 @@ class FlowModel {
         //include system parameters
         parsedParameters.parameters._url = encodeURIComponent(newFlowModel.name);
         parsedParameters.parameters._name = newFlowModel.name;
+        parsedParameters.parameters._index = newFlowModel.index;
 
         const saveES = (newFlow, next) => {
 
@@ -362,6 +367,97 @@ class FlowModel {
             result = result.hits.hits[0];
             cb(null, parseEStoModel(result), metrics);
         });
+    };
+
+    static deleteByName(name, cb) {
+
+        const allMetrics = [];
+
+        const deleteES = (id, next) => {
+
+            const values = {
+                index: AppConstants.ES_INDEX,
+                type: 'default',
+                id
+            };
+            ES.delete(values, (err, result, metrics) => {
+
+                allMetrics.push(metrics);
+                if (err) {
+                    console.error(`ES Delete ${id}`);
+                    console.error(new Error(err));
+                    return next(err);
+                }
+                return next(null, result);
+            });
+        };
+
+        const deleteNodeRed = (id, next) => {
+
+            NodeRED.flow.delete(id, (err, response, metrics) => {
+
+                allMetrics.push(metrics);
+                if (err) {
+                    console.error(`Node-red Delete ${id}`);
+                    console.error(new Error(err));
+                    return next(err);
+                }
+                next(null, response);
+            });
+        };
+
+        const deleteESIndex = (index, next) => {
+
+            const values = {
+                index
+            };
+            ES.deleteIndex(values, (err, metrics) => {
+
+                allMetrics.push(metrics);
+
+                if (err) {
+                    if (err.statusCode === 404) {
+                        return next();
+                    }
+                    console.error(`ES Delete Index ${index}`);
+                    console.error(new Error(err));
+                    return next(err);
+                }
+                return next();
+            });
+        };
+
+        this.findByName(name, (err, result, findMetrics) => {
+
+            allMetrics.push(findMetrics);
+            if (err) {
+                if (err.statusCode !== 404) {
+                    return cb(err);
+                }
+            }
+            if (result) {
+                Async.series([
+                    deleteES.bind(null, result.id),
+                    deleteESIndex.bind(null, result.index),
+                    deleteNodeRed.bind(null, result.nodeRedId)
+                ], (error) => {
+
+                    if (error) {
+                        return cb(error, allMetrics);
+
+                    }
+                    return cb(null, allMetrics);
+                });
+            }
+            else {
+                const msg = {
+                    statusCode: 404
+                };
+                console.error(msg);
+                return cb(msg, null, allMetrics);
+            }
+        });
+
     };
 }
 

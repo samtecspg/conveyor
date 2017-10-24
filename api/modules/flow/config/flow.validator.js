@@ -38,12 +38,21 @@ class FlowValidate {
                     template: FlowSchema.template.required(),
                     name: FlowSchema.name.required(),
                     description: FlowSchema.description.required(),
+                    index: FlowSchema.index.required(),
                     parameters: Joi.array().items(
                         Joi.object({
                             key: ParameterSchema.key.required(),
                             value: ParameterSchema.value.optional()
                         }).label('Parameter Model')).required().description('Number of objects to be returned (default:10)')
                 }).label('Flow Model');
+            })()
+        };
+        this.delete = {
+            params: (() => {
+
+                return {
+                    name: FlowSchema.name.required()
+                };
             })()
         };
     }

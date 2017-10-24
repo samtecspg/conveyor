@@ -32,6 +32,16 @@ const flowRoutes = [
             validate: FlowValidator.add,
             handler: FlowController.add
         }
+    },
+    {
+        method: 'DELETE',
+        path: '/flow/{name}',
+        config: {
+            description: 'Delete a single instance of the Flow model based on the name',
+            tags: ['api', 'flow'],
+            validate: FlowValidator.delete,
+            handler: FlowController.delete
+        }
     }
 ];
 

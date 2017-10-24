@@ -156,6 +156,22 @@ const datasource = {
             }
             return cb(null, response, metrics);
         });
+    },
+    'deleteIndex': (params, cb) => {
+
+        const query = {
+            index: params.index
+        };
+        const metrics = new Metrics('Elasticsearch', 'deleteIndex', query);
+        Client.indices.delete(query, (err, response) => {
+
+            metrics.stop();
+            if (err) {
+                errorHandler(new Error(err));
+                return cb(err, metrics);
+            }
+            return cb(null, response, metrics);
+        });
     }
 };
 
