@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Bool, Code, List, Text} from './type';
+import {Bool, Code, List, Text, File} from './type';
 
 export class ParameterFactory extends React.Component {
     build(parameter) {
@@ -31,13 +31,13 @@ export class ParameterFactory extends React.Component {
                 return <List {...defaultProps} options={parameter.options}/>;
             case 'list-multiple':
                 return <List {...defaultProps} options={parameter.options} isMultiple={true}/>;
+            case 'file':
+                return <File {...defaultProps} options={parameter.options} isMultiple={true}/>;
             default:
                 return <div>Not a valid type [type:{parameter.type}]</div>;
         }
 
     }
-
-
 
     render() {
         return (

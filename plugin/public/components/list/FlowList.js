@@ -47,6 +47,12 @@ class _FlowList extends React.Component {
             }
         },
         {
+            label: 'Upload',
+            action: (item) => {
+                this.handleOptionRequestClose();
+            }
+        },
+        {
             label: 'Delete',
             action: (item) => {
                 this.handleOptionRequestClose();

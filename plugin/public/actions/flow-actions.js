@@ -6,6 +6,7 @@ import {FlowActionTypes} from './flow-action-types';
 import {Api} from '../common/api';
 import {ObjectTypes} from '../../lib/common/object-types';
 import {handleApiResponse} from '../common/api-response-handler';
+import {handleRawResponse} from '../common/raw-response-handler';
 
 export class FlowActions {
 
@@ -31,12 +32,20 @@ export class FlowActions {
             });
     }
 
-    static executeFlow(flowName, body) {
+    static postData(flowName, body) {
         const headers = Api.getGetHeader(appStore.getState().kbnVersion, 'POST', body);
-        return fetch(`${Api.getPathForType(ObjectTypes.CHANNEL)}\\${flowName}\\data`, headers)
-            .then(handleApiResponse)
-            .then(json => {
-                dispatch({ type: FlowActionTypes.COMPLETE_CREATE_FLOW, json });
+        let header2 = {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: body,
+            headers: {
+                'kbn-version': appStore.getState().kbnVersion
+            }
+        };
+        return fetch(`${Api.getPathForType(ObjectTypes.CHANNEL)}\\${flowName}\\data`, header2)
+            .then(handleRawResponse)
+            .then(response => {
+                dispatch({ type: FlowActionTypes.POST_DATA, response });
             });
     }
 

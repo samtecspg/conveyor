@@ -302,6 +302,14 @@ export default {
                     '& .button-label': {
                         'color': '#959595'
                     }
+                },
+                upload:{
+
+                }
+            },
+            file:{
+                root:{
+                    'display':'none'
                 }
             },
             group: {},
