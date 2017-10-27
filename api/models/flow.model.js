@@ -163,19 +163,12 @@ class FlowModel {
             //Use ES id in template to keep reference between both services
             parsedParameters.parameters._id = es._id;
             newFlowModel.id = es._id;
-            const parsedTempl = template(parsedParameters.parameters);
-            const parsedjson = JSON.parse(parsedTempl);
-            NodeRED.flow.save(parsedjson, (err, id, metrics) => {
+            NodeRED.flow.save(JSON.parse(template(parsedParameters.parameters)), (err, id, metrics) => {
 
                 allMetrics.push(metrics);
                 if (err) {
                     console.error(new Error(err));
                     return next(err);
-                }
-                if (!id) {
-                    const error = new Error('Error creating node-red flow');
-                    console.error(error);
-                    return next(error);
                 }
                 newFlowModel.nodeRedId = id;
                 next(err, newFlowModel, es._id);

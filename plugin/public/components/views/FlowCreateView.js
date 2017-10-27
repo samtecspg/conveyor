@@ -15,7 +15,6 @@ import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import dashify from 'dashify';
 import {DescriptionHelper} from '../dynamic/helpers/DescriptionHelper';
-import Async from 'async';
 
 const styles = theme => ({
     primaryButton: theme.custom.form.button.primary,
@@ -66,60 +65,24 @@ class _FlowCreateView extends React.Component {
     saveFlow() {
         const { source } = this.props;
         const { form } = this.state;
-        const parseForm = (parameter) => {
+        const parameters = _(source.parameters).without('name', 'description').map((parameter) => {
             const parameterValue = form[parameter.name];
             return {
                 key: parameter.name,
                 value: parameterValue ? parameterValue.value : null
             }
-        };
-        const parameters = _(source.parameters).reject({ 'type': 'file' }).map(parseForm).value();
-        const filesParameters = _(source.parameters).filter({ 'type': 'file' }).map(parseForm).value();
-        const saveFormData = (form, parameters, cb) => {
-            FlowActions
-                .completeCreateFlow({
-                        template: this.props.source.name,
-                        name: form.name.value,
-                        description: form.description.value,
-                        index: form.index.value,
-                        parameters
-                    }
-                )
-                .then(() => cb())
-                .catch(cb);
-        };
-
-        const uploadFiles = (form, files, cb) => {
-            if (files && files.length > 0) {
-                files.map((file) => {
-                    let data = new FormData();
-                    data.append(file.key, file.value);
-                    FlowActions
-                        .postData(form.name.value, data)
-                        .then(() => cb())
-                        .catch(cb);
-                });
-            }
-            else {
-                cb();
-            }
-
-        };
-
-        const handleResponse = (err) => {
-            if (err) {
-                this.setState({ errorMessage: error });
-            }
-            else {
-                AppActions.changeLocation(`/${ObjectTypes.CHANNEL}`);
-            }
-        };
-
-        Async.series([
-            saveFormData.bind(this, form, parameters),
-            uploadFiles.bind(this, form, filesParameters)
-        ], handleResponse);
-
+        }).value();
+        FlowActions
+            .completeCreateFlow({
+                    template: this.props.source.name,
+                    name: form.name.value,
+                    description: form.description.value,
+                    index: form.index.value,
+                    parameters
+                }
+            )
+            .then(() => AppActions.changeLocation(`/${ObjectTypes.CHANNEL}`))
+            .catch(error => this.setState({ errorMessage: error }));
     }
 
     handleOnSubmit(e) {

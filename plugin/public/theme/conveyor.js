@@ -191,7 +191,9 @@ export default {
                 description: {
                     'border-right': 'none !important'
                 },
-                options: {}
+                options: {
+
+                }
             }
 
         },
@@ -300,15 +302,6 @@ export default {
                     '& .button-label': {
                         'color': '#959595'
                     }
-                },
-                upload: {}
-            },
-            file: {
-                root: {
-                    'display': 'none'
-                },
-                label: {
-                    'font-weight': '400'
                 }
             },
             group: {},

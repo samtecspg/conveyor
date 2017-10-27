@@ -14,31 +14,20 @@ import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Menu, {MenuItem} from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
-import Input from 'material-ui/Input';
-import InputParser from '../../common/default-input-parser'
-import {FlowActions} from '../../actions/flow-actions';
-import Snackbar from 'material-ui/Snackbar';
-import CloseIcon from 'material-ui-icons/Close';
-import Button from 'material-ui/Button';
 
 const styles = theme => {
     return {
         gridItem: theme.custom.card.gridItem,
         table: theme.custom.table.root,
         columnDescription: theme.custom.table.columns.description,
-        columnOptions: theme.custom.table.columns.options,
-        file: theme.custom.form.file.root,
-        label: theme.custom.form.file.label
-
+        columnOptions: theme.custom.table.columns.options
     }
 };
 
 class _FlowList extends React.Component {
     state = {
-        anchorEl: [],
-        open: [],
-        snackbarOpen: false,
-        message: undefined
+        anchorEl: null,
+        open: false
     };
 
     constructor() {
@@ -47,75 +36,35 @@ class _FlowList extends React.Component {
         this.renderList = this.renderList.bind(this);
         this.handleOptionClick = this.handleOptionClick.bind(this);
         this.handleOptionRequestClose = this.handleOptionRequestClose.bind(this);
-        this.handleOnFileUploadChange = this.handleOnFileUploadChange.bind(this);
-        this.handleSnackbarOpen = this.handleSnackbarOpen.bind(this);
-        this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
     }
 
-    menuHandlerDiscover = (item) => {
-        this.handleOptionRequestClose(item);
-        window.location = `${this.props.basePath}/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:${item.index},interval:auto,query:'')`
-    };
-    menuHandlerUpload = (item) => {
-        this.handleOptionRequestClose(item);
-    };
-
-    handleOnFileUploadChange(item, e) {
-        const handleResponse = (err) => {
-            if (err) {
-                this.setState({ message: err });
+    menuOptions = [
+        {
+            label: 'Discover',
+            action: (item) => {
+                this.handleOptionRequestClose();
+                window.location = `${this.props.basePath}/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:${item.index},interval:auto,query:'')`
             }
-            else {
-                this.setState({ message: 'Upload successful' });
+        },
+        {
+            label: 'Delete',
+            action: (item) => {
+                this.handleOptionRequestClose();
+                this.props.onDeleteFlow(item.name);
             }
-            this.handleSnackbarOpen();
-
-        };
-        const value = InputParser(e);
-        let data = new FormData();
-        data.append('file', value); //TODO: will need to be changed to handle multiple files
-        FlowActions
-            .postData(item.name, data)
-            .then(() => handleResponse())
-            .catch(handleResponse);
-
-    }
-
-    menuHandlerDelete = (item) => {
-        this.handleOptionRequestClose(item);
-        this.props.onDeleteFlow(item.name);
-    };
-
-    handleOptionClick = (item, event) => {
-        const open = [...this.state.open];
-        const anchorEl = [...this.state.anchorEl];
-        open[item.id] = true;
-        anchorEl[item.id] = event.currentTarget;
-        this.setState({ open, anchorEl });
-    };
-
-    handleOptionRequestClose = (item) => {
-        const open = [...this.state.open];
-        open[item.id] = false;
-        this.setState({ open });
-    };
-
-    handleSnackbarOpen = () => {
-        this.setState({ snackbarOpen: true });
-    };
-    handleSnackbarClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
         }
+    ];
 
-        this.setState({ snackbarOpen: false, message: undefined });
+    handleOptionClick = event => {
+        this.setState({ open: true, anchorEl: event.currentTarget });
+    };
+
+    handleOptionRequestClose = () => {
+        this.setState({ open: false });
     };
 
     renderItem(item) {
-        const { sources, classes } = this.props;
-        const source = _.find(sources, { 'name': item.template });
-        const hideUpload = source ? _.filter(source.parameters, { 'type': 'file' }).length > 0 ? 'show' : 'hide' : 'hide';
-
+        const { classes } = this.props;
         return (
             <TableRow key={item.id}>
                 <TableCell><Typography type="body1">{item.name}</Typography></TableCell>
@@ -126,33 +75,22 @@ class _FlowList extends React.Component {
                         aria-label="More"
                         aria-owns={this.state.open ? 'long-menu' : null}
                         aria-haspopup="true"
-                        onClick={this.handleOptionClick.bind(null, item)}
+                        onClick={this.handleOptionClick}
                     >
                         <MoreVertIcon/>
                     </IconButton>
                     <Menu
 
-                        anchorEl={this.state.anchorEl[item.id]}
-                        open={this.state.open[item.id]}
-                        onRequestClose={this.handleOptionRequestClose.bind(null, item)}
+                        anchorEl={this.state.anchorEl}
+                        open={this.state.open}
+                        onRequestClose={this.handleOptionRequestClose}
                     >
-                        <MenuItem onClick={this.menuHandlerDiscover.bind(this, item)}>Discover</MenuItem>
-                        <MenuItem className={hideUpload} onClick={this.menuHandlerUpload.bind(this, item)}>
-
-                            <label
-                                className={classes.label}
-                                htmlFor={item.id}>
-                                Upload
-                            </label>
-                        </MenuItem>
-                        <MenuItem onClick={this.menuHandlerDelete.bind(this, item)}>Delete</MenuItem>
+                        {this.menuOptions.map(option => (
+                            <MenuItem key={option.label} onClick={option.action.bind(this, item)}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
                     </Menu>
-                    <Input
-                        id={item.id}
-                        type="file"
-                        className={classes.file}
-                        onChange={this.handleOnFileUploadChange.bind(null, item)}
-                    />
                 </TableCell>
             </TableRow>);
     }
@@ -165,55 +103,25 @@ class _FlowList extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <div>
-
-                <Table className={classes.table}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell><Typography type="caption">Name</Typography></TableCell>
-                            <TableCell><Typography type="caption">Source</Typography></TableCell>
-                            <TableCell className={classes.columnDescription}><Typography type="caption">Description</Typography></TableCell>
-                            <TableCell className={classes.columnOptions}>&nbsp;
-                                <input type="file" ref="fileUploader" style={{ display: 'none' }}/>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {this.renderList()}
-                    </TableBody>
-                </Table>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left'
-                    }}
-                    open={this.state.snackbarOpen}
-                    autoHideDuration={6000}
-                    onRequestClose={this.handleSnackbarClose}
-                    SnackbarContentProps={{
-                        'aria-describedby': 'message-id'
-                    }}
-                    message={<span id="message-id">{this.state.message}</span>}
-                    action={[
-                        <IconButton
-                            key="close"
-                            aria-label="Close"
-                            color="inherit"
-                            className={classes.close}
-                            onClick={this.handleSnackbarClose}
-                        >
-                            <CloseIcon/>
-                        </IconButton>
-                    ]}
-                />
-            </div>)
+            <Table className={classes.table}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell><Typography type="caption">Name</Typography></TableCell>
+                        <TableCell><Typography type="caption">Source</Typography></TableCell>
+                        <TableCell className={classes.columnDescription}><Typography type="caption">Description</Typography></TableCell>
+                        <TableCell className={classes.columnOptions}>&nbsp;</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {this.renderList()}
+                </TableBody>
+            </Table>)
 
     }
 }
 
 _FlowList.propTypes = {
     flows: PropTypes.array,
-    sources: PropTypes.array,
     onClick: PropTypes.func,
     basePath: PropTypes.string,
     onDeleteFlow: PropTypes.func
