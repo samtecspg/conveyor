@@ -4,15 +4,17 @@ import {Container} from 'flux/utils';
 import {FlowListView} from '../views/FlowListView';
 import {flowStore} from '../../stores/flow-store';
 import {appStore} from '../../stores/app-store';
+import {sourceStore} from '../../stores/source-store';
 
 class FlowList extends React.Component {
     static getStores() {
-        return [flowStore];
+        return [flowStore, sourceStore];
     }
 
     static calculateState() {
         return {
             flowState: flowStore.getState(),
+            sourceState: sourceStore.getState(),
             appState: appStore.getState()
         };
     }
@@ -20,7 +22,10 @@ class FlowList extends React.Component {
     render() {
         return <div>
 
-            <FlowListView flows={this.state.flowState.flows} basePath={this.state.appState.basePath}/>
+            <FlowListView
+                flows={this.state.flowState.flows}
+                sources={this.state.sourceState.sources}
+                basePath={this.state.appState.basePath}/>
         </div>;
     }
 }
