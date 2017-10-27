@@ -3,6 +3,7 @@ import {Redirect} from 'react-router-dom';
 import {ObjectTypes} from '../../../lib/common/object-types';
 import {FlowList} from '../list/FlowList';
 import {FlowActions} from '../../actions/flow-actions';
+import {SourceActions} from '../../actions/source-actions';
 import PropTypes from 'prop-types';
 import {Content, ContentBody, ContentHeader} from '../global';
 import {withStyles} from 'material-ui/styles';
@@ -38,6 +39,7 @@ class _FlowListView extends React.Component {
 
     componentDidMount() {
         FlowActions.fetchFlows();
+        SourceActions.fetchAll();
     }
 
     deleteFlow(name) {
@@ -49,7 +51,7 @@ class _FlowListView extends React.Component {
     }
 
     render() {
-        const { flows } = this.props;
+        const { flows ,sources} = this.props;
         const { redirectToCreateFlow, selectedFlow } = this.state;
         if (redirectToCreateFlow) {
             return (
@@ -79,6 +81,7 @@ class _FlowListView extends React.Component {
                                 flows.length > 0
                                     ? <FlowList
                                         flows={flows}
+                                        sources={sources}
                                         onClick={this.onSelectFlow}
                                         basePath={this.props.basePath}
                                         onDeleteFlow={this.deleteFlow}
@@ -96,7 +99,8 @@ class _FlowListView extends React.Component {
 
 _FlowListView.propTypes = {
     basePath: PropTypes.string,
-    flows: PropTypes.array
+    flows: PropTypes.array,
+    sources: PropTypes.array
 };
 
 export const FlowListView = withStyles(styles)(_FlowListView);

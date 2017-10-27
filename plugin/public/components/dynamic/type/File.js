@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import InputParser from '../../../common/default-input-parser'
 import {InputHelper} from '../helpers/InputDescriptionHelper';
-import Switch from 'material-ui/Switch';
 import Typography from 'material-ui/Typography';
 import {withStyles} from 'material-ui/styles';
 import Input from 'material-ui/Input';
@@ -58,7 +57,6 @@ class _File extends React.Component {
                         <Input
                             id={name}
                             onChange={this.handleOnChange}
-                            onBlur={this.validate}
                             type="file"
                             className={classes.root}
                             classes={{

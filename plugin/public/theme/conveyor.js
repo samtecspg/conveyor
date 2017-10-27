@@ -191,9 +191,7 @@ export default {
                 description: {
                     'border-right': 'none !important'
                 },
-                options: {
-
-                }
+                options: {}
             }
 
         },
@@ -303,13 +301,14 @@ export default {
                         'color': '#959595'
                     }
                 },
-                upload:{
-
-                }
+                upload: {}
             },
-            file:{
-                root:{
-                    'display':'none'
+            file: {
+                root: {
+                    'display': 'none'
+                },
+                label: {
+                    'font-weight': '400'
                 }
             },
             group: {},
