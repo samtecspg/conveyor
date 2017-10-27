@@ -75,7 +75,6 @@
       "group": "queryDetails",
       "name": "truncate",
       "label": "Truncate Before Load",
-      "default": false,
       "description": "If this is set to true the ES index will be cleared before new data is inserted.",
       "required": false
     },
