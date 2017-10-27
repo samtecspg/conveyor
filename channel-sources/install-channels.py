@@ -50,8 +50,8 @@ def main(argv):
             with open(dirpath + "/" + dirname + "/def.json") as json_data:
                 body = json.load(json_data)
 
-            requests.post('http://api:80/flowTemplate', data=json.dumps(body)).status_code
-            print "Install of '" + dirname + "' conveyor channel COMPLETE"
+            postreturn = requests.post('http://api:80/flowTemplate', data=json.dumps(body)).status_code
+            print "Install of '" + dirname + "' conveyor channel COMPLETE with return of: " + str(postreturn)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
