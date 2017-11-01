@@ -57,7 +57,7 @@ conveyor.ingest.url: "http://localhost:4000"
 - [react](https://reactjs.org/) : Our main frontend frameworks
 - [material-ui](https://material-ui-next.com/): proved components to react for material design ui
 
-##Build
+## Build
 The plugin is distributed in a zip file, after you followed Kibana’s contributing guide you should be able to run this command:
 
 ```
