@@ -35,7 +35,9 @@ Once Kibana is green, your ready to go!
 Jump to http://localhost:5601 and enjoy Conveyor
 
 #### Shutting down
-Either ctrl-c in window you started Conveyor, or goto the Conveyor directory in another window and type ```docker-compose down``` (***Warning!*** this will delete all imported data)
+Either ctrl-c in window you started Conveyor, or goto the Conveyor directory in another window and type ```docker-compose down```
+
+*Note* The core database is presisted in the directory `helpers-stuff/es-data`, and the channel import logic is persisted in `helpers-stuff/node-red` so your data and configuration will be safe if you want to shutdown and restart later.   If you want to erase/reset then everything in both of those directories should be removed -- or you can just delete the whole conveyer tree and make a new clone
 
 ### Docker Conveyor/kibana connected to your ES
 

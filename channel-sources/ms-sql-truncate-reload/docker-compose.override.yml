@@ -1,0 +1,10 @@
+version: '3.0'
+
+services:
+  mssql:
+    image: microsoft/mssql-server-linux:2017-latest
+    ports: ['1401:1433']
+    environment:
+     - ACCEPT_EULA=Y
+     - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
+    networks: ['conveyor-net']
