@@ -49,6 +49,10 @@ def main(argv):
             body = {}
             with open(dirpath + "/" + dirname + "/def.json") as json_data:
                 body = json.load(json_data)
+                jsonFlow = body['flow']
+                stringFlow = json.dumps(json.dumps(jsonFlow))
+                body['flow'] = stringFlow
+
 
             postreturn = requests.post('http://api:80/flowTemplate', data=json.dumps(body)).status_code
             print "Install of '" + dirname + "' conveyor channel COMPLETE with return of: " + str(postreturn)

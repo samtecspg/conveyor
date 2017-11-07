@@ -65,6 +65,8 @@ services:
       - elasticsearch
       - node-red
       - api
-      - kibana 
+      - kibana
+    volumes:
+     - ${CHANNEL_FOLDER:-./channel-sources/}:/usr/src/app
 networks:
   conveyor-net:
