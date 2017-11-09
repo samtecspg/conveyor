@@ -7,6 +7,7 @@ import {withStyles} from 'material-ui/styles';
 import Input from 'material-ui/Input';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
+import FileUpload from 'material-ui-icons/FileUpload';
 
 const styles = theme => {
     return {
@@ -14,7 +15,12 @@ const styles = theme => {
         root: theme.custom.form.file.root,
         box: theme.custom.form.box,
         primaryButton: theme.custom.form.button.primary,
-        secondaryButton: theme.custom.form.button.secondary
+        secondaryButton: theme.custom.form.button.secondary,
+        uploadButton: theme.custom.form.button.upload,
+        underline: theme.custom.form.text.underline,
+        inkbar: theme.custom.form.text.inkbar,
+        focused: theme.custom.form.text.focused,
+        error: theme.custom.form.text.error
     };
 };
 
@@ -22,7 +28,8 @@ class _File extends React.Component {
     constructor() {
         super();
         this.state = {
-            value: undefined
+            value: undefined,
+            filename: undefined
         };
         this.handleOnChange = this.handleOnChange.bind(this);
     }
@@ -33,57 +40,63 @@ class _File extends React.Component {
 
     handleOnChange(e) {
         const value = InputParser(e);
-        this.setState({ value });
+        this.setState({
+            value,
+            filename: value ? value.name : undefined
+        });
         this.props.handleInputChange(this.props.name, value);
     }
 
     render() {
         const { description, label, name, handleDescriptionHelper, isRequired, classes } = this.props;
         return (
-            <div>
-                <Grid
-                    container
+            <Grid
+                container
+                spacing={24}
+                alignItems={'center'}
 
-                    spacing={24}>
-                    <Grid item>
-                        <Typography type="subheading">
-                            {label}<span hidden={!isRequired}>&nbsp;*</span>
-                            <InputHelper hidden={!description} referenceName={name} onDescriptionHelperUpdate={handleDescriptionHelper}/>
+            ><Grid item>
+                <Typography type="subheading">
+                    {label}<span hidden={!isRequired}>&nbsp;*</span>
+                    <InputHelper hidden={!description} referenceName={name} onDescriptionHelperUpdate={handleDescriptionHelper}/>
 
-                        </Typography>
-                    </Grid>
-
-                    <Grid item>
-                        <Input
-                            id={name}
-                            onChange={this.handleOnChange}
-                            type="file"
-                            className={classes.root}
-                            classes={{
-                                input: 'input',
-                                underline: classes.underline,
-                                inkbar: classes.inkbar,
-                                error: classes.error,
-                                focused: classes.focused,
-                                disabled: 'input-disabled'
-                            }}
-                        />
-                        <label htmlFor={name}>
-                            <Button component="span"
-                                    color="accent"
-                                    className={classes.secondaryButton}
-                                    classes={{
-                                        label: 'button-label'
-                                    }}
-                            >
-                                Upload
-                            </Button>
-                        </label>
-                    </Grid>
+                </Typography>
+            </Grid>
+                <Grid item>
+                    <Input
+                        id={name}
+                        onChange={this.handleOnChange}
+                        type="file"
+                        className={classes.root}
+                        classes={{
+                            input: 'input',
+                            underline: classes.underline,
+                            inkbar: classes.inkbar,
+                            error: classes.error,
+                            focused: classes.focused,
+                            disabled: 'input-disabled'
+                        }}
+                    />
 
                 </Grid>
-
-            </div>
+                <Grid item xs={4}>
+                    <Typography noWrap type="subheading">{this.state.filename}</Typography>
+                </Grid>
+                <Grid item>
+                    <label htmlFor={name}>
+                        <Button
+                            dense
+                            fab
+                            color="accent"
+                            component="span"
+                            className={classes.uploadButton}
+                            classes={{
+                                label: 'button-label'
+                            }}
+                        ><FileUpload/></Button>
+                    </label>
+                </Grid>
+            </Grid>
         );
     }
 }
