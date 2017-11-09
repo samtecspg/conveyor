@@ -30,6 +30,7 @@ export class _SourceListView extends React.Component {
 
     componentDidMount() {
         SourceActions.fetchAll();
+        AppActions.setTab(ObjectTypes.SOURCE);
     }
 
     render() {

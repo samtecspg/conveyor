@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {Container} from 'flux/utils';
-import {appStore} from '../../stores/app-store';
-import {HeaderView} from '../views/HeaderView';
+import { Container } from 'flux/utils';
+import { appStore } from '../../stores/app-store';
+import { HeaderView } from '../views/HeaderView';
 
 class Header extends React.Component {
     static getStores() {
@@ -9,12 +9,15 @@ class Header extends React.Component {
     }
 
     static calculateState() {
-        return {};
+        return {
+            appState: appStore.getState()
+        };
     }
 
     render() {
         return (
-            <HeaderView/>
+            <HeaderView appState={this.state.appState}
+            />
         );
     }
 }

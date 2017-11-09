@@ -301,7 +301,15 @@ export default {
                         'color': '#959595'
                     }
                 },
-                upload: {}
+                upload: {
+                    'background-color': secondary[500],
+                    'width': '36px',
+                    'height': '36px',
+                    '& .button-label': {
+                        'color': '#FFF'
+                    }
+
+                }
             },
             file: {
                 root: {

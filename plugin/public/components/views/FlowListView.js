@@ -1,14 +1,15 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
-import {ObjectTypes} from '../../../lib/common/object-types';
-import {FlowList} from '../list/FlowList';
-import {FlowActions} from '../../actions/flow-actions';
-import {SourceActions} from '../../actions/source-actions';
+import { Redirect } from 'react-router-dom';
+import { ObjectTypes } from '../../../lib/common/object-types';
+import { FlowList } from '../list/FlowList';
+import { FlowActions } from '../../actions/flow-actions';
+import { SourceActions } from '../../actions/source-actions';
 import PropTypes from 'prop-types';
-import {Content, ContentBody, ContentHeader} from '../global';
-import {withStyles} from 'material-ui/styles';
+import { Content, ContentBody, ContentHeader } from '../global';
+import { withStyles } from 'material-ui/styles';
 import Divider from 'material-ui/Divider';
-import {AppActions} from '../../actions/app-actions';
+import { AppActions } from '../../actions/app-actions';
+import Async from 'async';
 
 const styles = theme => {
     return {
@@ -29,6 +30,18 @@ class _FlowListView extends React.Component {
 
     }
 
+    reload(timeout) {
+        const func = () => {
+            FlowActions.fetchFlows();
+            SourceActions.fetchAll();
+        };
+        if (timeout) {
+            setTimeout(func, 2000);
+        } else {
+            func();
+        }
+    }
+
     onSelectFlow(source) {
         FlowActions.startCreateFlow(source);
         this.setState({
@@ -38,41 +51,33 @@ class _FlowListView extends React.Component {
     }
 
     componentDidMount() {
-        FlowActions.fetchFlows();
-        SourceActions.fetchAll();
+        this.reload();
+        AppActions.setTab(ObjectTypes.CHANNEL);
     }
 
     deleteFlow(name) {
         FlowActions
-            .deleteFlow(name
-            )
-            .then(() => AppActions.changeLocation(`/${ObjectTypes.CHANNEL}`))
+            .deleteFlow(name)
+            .then(() => {
+                this.reload(true)
+            })
             .catch(error => this.setState({ errorMessage: error }));
     }
 
     render() {
-        const { flows ,sources} = this.props;
+        const { flows, sources } = this.props;
         const { redirectToCreateFlow, selectedFlow } = this.state;
         if (redirectToCreateFlow) {
             return (
                 <div>
-                    <Redirect to={`/${ObjectTypes.CHANNEL}/${selectedFlow.name}/execute`}/>
+                    <Redirect to={`/${ObjectTypes.CHANNEL}/${selectedFlow.name}/execute`} />
                 </div>
             )
         }
         return (
             <Content>
                 <ContentHeader title="Channels">This are your existing channels.</ContentHeader>
-                <Divider light/>
-                {/*<ContentSubHeader>
-                    <Grid container>
-                        <Grid item xs={4}>
-                            <SearchInput onSearch={() => {
-                            }}/>
-                        </Grid>
-                    </Grid>
-                </ContentSubHeader>
-                <Divider light/>*/}
+                <Divider light />
                 <ContentBody>
                     <div>
 
