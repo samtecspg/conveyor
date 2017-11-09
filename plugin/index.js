@@ -31,8 +31,8 @@ export default function (kibana) {
             return Joi.object({
                 enabled: Joi.boolean().default(true),
                 index: Joi.string().default(AppConstants.APP_INDEX),
-                ingest: Joi.object({
-                    url: Joi.string().default(AppConstants.INGEST_URL)
+                api: Joi.object({
+                    url: Joi.string().default(AppConstants.API_URL)
                 }).default()
             }).default();
         },

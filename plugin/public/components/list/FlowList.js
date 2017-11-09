@@ -76,7 +76,7 @@ class _FlowList extends React.Component {
         data.append('file', value); //TODO: will need to be changed to handle multiple files
         FlowActions
             .postData(item.name, data)
-            .then(() => handleResponse())
+            .then(handleResponse)
             .catch(handleResponse);
 
     }

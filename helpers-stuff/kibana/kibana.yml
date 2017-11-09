@@ -16,4 +16,4 @@ xpack.ml.enabled: false
 xpack.graph.enabled: false
 xpack.reporting.enabled: false
 conveyor.enabled: true
-conveyor.ingest.url: "http://api"
+conveyor.api.url: "http://api"
