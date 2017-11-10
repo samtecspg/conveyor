@@ -57,6 +57,13 @@
       "description": "Domain"
     },
     {
+      "type": "boolean",
+      "group": "connectionCredential",
+      "name": "encrypt",
+      "label": "Encrypt the Connection?",
+      "description": "Set this to true if you need to encryp the connection, this is usually required for Azure."
+    },
+    {
       "type": "text",
       "group": "queryDetails",
       "name": "updateFrequency",
@@ -70,8 +77,7 @@
       "group": "queryDetails",
       "name": "truncate",
       "label": "Truncate Before Load",
-      "description": "If this is set to true the ES index will be cleared before new data is inserted.",
-      "required": false
+      "description": "If this is set to true the ES index will be cleared before new data is inserted."
     },
     {
       "type": "text",
@@ -154,7 +160,7 @@
         "name": "",
         "outputs": 1,
         "noerr": 0,
-        "func": "flow.set('index', '{{_index}}')\nflow.set('truncate', '{{truncate}}')\nflow.set('uniqueField', '{{uniqueField}}')\nflow.set('latestUniqueField', '{{uniqueFieldStart}}')\n\nreturn msg;",
+        "func": "flow.set('index', '{{_index}}')\nflow.set('truncate', {{truncate}})\nflow.set('uniqueField', '{{uniqueField}}')\nflow.set('latestUniqueField', '{{uniqueFieldStart}}')\n\nreturn msg;",
         "y": 40,
         "x": 330,
         "type": "function",
@@ -205,7 +211,7 @@
         "name": "Verify Later Parse",
         "outputs": "2",
         "noerr": 0,
-        "func": "if (msg.later) {\n    msg.payload = 'True'\n    \n    return [null, msg]\n} else {\n    return [msg, null];\n}",
+        "func": "if (msg.later) {\n    return [null, msg]\n} else {\n    return [msg, null];\n}",
         "y": 40,
         "x": 690,
         "type": "function",
@@ -467,14 +473,10 @@
         "name": "",
         "rules": [
           {
-            "vt": "str",
-            "t": "eq",
-            "v": "false"
+            "t": "false"
           },
           {
-            "vt": "str",
-            "t": "eq",
-            "v": "true"
+            "t": "true"
           }
         ],
         "outputs": 2,
@@ -489,7 +491,7 @@
         "name": "Connection for {{_name}}",
         "database": "{{database}}",
         "server": "{{server}}",
-        "encyption": false,
+        "encyption": "{{encrypt}}",
         "credentials": {
           "username": "{{userName}}",
           "domain": "{{domain}}",

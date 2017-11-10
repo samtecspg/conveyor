@@ -63,6 +63,20 @@
       "placeholder": "topics",
       "description": "Follow multiple topics by providing a comma seperated list.",
       "required": false
+    },
+    {
+      "type": "boolean",
+      "group": "searchInformation",
+      "name": "retweets",
+      "label": "Include Retweets?",
+      "description": "Set this to true if you want to include retweets. This can drastically increase your incoming tweet volume."
+    },
+    {
+      "type": "boolean",
+      "group": "searchInformation",
+      "name": "verified",
+      "label": "Verified Accounts Only?",
+      "description": "Set this to true if you want to include only tweets from verified accounts."
     }
   ],
   "flow": {
@@ -189,11 +203,11 @@
         "follow": "{{users}}",
         "topics": "{{topics}}",
         "tweetLimit": "0",
-        "onlyVerified": "!1",
-        "topicRetweets": "!1",
-        "loadImages": "!1",
+        "onlyVerified": "{{verified}}", 
+        "topicRetweets": "{{retweets}}",
+        "loadImages": false,
         "topicLanguage": "en",
-        "debug": "!1",
+        "debug": false,
         "name": "",
         "x": 90,
         "y": 40,

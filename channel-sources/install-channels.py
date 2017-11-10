@@ -49,9 +49,17 @@ def main(argv):
             body = {}
             with open(dirpath + "/" + dirname + "/def.json") as json_data:
                 body = json.load(json_data)
+                parameters = body['parameters']
                 jsonFlow = body['flow']
-                stringFlow = json.dumps(json.dumps(jsonFlow))
-                body['flow'] = stringFlow
+                stringFlow = json.dumps(jsonFlow)
+
+                for parameter in parameters:
+                    if parameter['type'] == 'boolean':
+                        findString = '\"{{' + parameter['name'] + '}}\"'
+                        replaceString = '{{' + parameter['name'] + '}}'
+                        stringFlow.replace(findString, replaceString)
+
+                body['flow'] = json.dumps(stringFlow)
 
 
             postreturn = requests.post('http://api:80/flowTemplate', data=json.dumps(body)).status_code
