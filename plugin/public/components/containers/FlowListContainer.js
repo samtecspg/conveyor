@@ -8,7 +8,7 @@ import {sourceStore} from '../../stores/source-store';
 
 class FlowList extends React.Component {
     static getStores() {
-        return [flowStore, sourceStore];
+        return [flowStore, sourceStore, appStore];
     }
 
     static calculateState() {

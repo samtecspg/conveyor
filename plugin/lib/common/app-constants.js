@@ -7,5 +7,5 @@ export const AppConstants = {
     APP_VERSION: pkg.version,
     APP_INDEX: `${pkg.name}.index`,
     BASE_API: `/api/${pkg.name}`,
-    INGEST_URL: 'http://localhost:4000'
+    API_URL: 'http://localhost:4000'
 };
