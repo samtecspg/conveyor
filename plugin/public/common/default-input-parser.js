@@ -7,6 +7,7 @@ export default function InputParser(event, callback) {
             break;
         case 'file':
             value = target.files[0];
+            target.value = null;
             break;
         default:
             value = target.value;

@@ -53,7 +53,7 @@ export class FlowActions {
         return fetch(`${Api.getPathForType(ObjectTypes.CHANNEL)}\\${flowName}`, headers)
             .then(handleApiResponse)
             .then(json => {
-                dispatch({ type: FlowActionTypes.COMPLETE_CREATE_FLOW, json });
+                dispatch({ type: FlowActionTypes.DELETE_FLOW, json });
             });
     }
 

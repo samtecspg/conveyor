@@ -53,7 +53,7 @@ class _File extends React.Component {
             <Grid
                 container
                 spacing={24}
-                alignItems={'center'}
+                align={'center'}
 
             ><Grid item>
                 <Typography type="subheading">
