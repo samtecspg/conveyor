@@ -52,6 +52,7 @@ class _FlowListView extends React.Component {
 
     componentDidMount() {
         this.reload();
+        AppActions.setTab(ObjectTypes.CHANNEL);
     }
 
     deleteFlow(name) {

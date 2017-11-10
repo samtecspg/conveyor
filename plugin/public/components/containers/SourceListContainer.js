@@ -1,13 +1,10 @@
 import * as React from 'react';
-import {Container} from 'flux/utils';
+import { Container } from 'flux/utils';
 
-import {SourceListView} from '../views/SourceListView';
-import {sourceStore} from '../../stores/source-store';
+import { SourceListView } from '../views/SourceListView';
+import { sourceStore } from '../../stores/source-store';
 
 class SourceList extends React.Component {
-    constructor(props) {
-        super();
-    }
 
     static getStores() {
         return [sourceStore];
