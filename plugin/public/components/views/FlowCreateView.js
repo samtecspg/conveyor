@@ -45,8 +45,10 @@ class _FlowCreateView extends React.Component {
 
     componentDidMount() {
         SourceActions.fetchByName(this.props.sourceName);
+        AppActions.setTab(ObjectTypes.SOURCE);
     }
-
+    
+    
     validate(cb) {
         const results = _(this.state.form)
             .map((parameterValidator) => {
@@ -108,7 +110,7 @@ class _FlowCreateView extends React.Component {
 
         const handleResponse = (err) => {
             if (err) {
-                this.setState({ errorMessage: error });
+                this.setState({ errorMessage: err });
             }
             else {
                 AppActions.changeLocation(`/${ObjectTypes.CHANNEL}`);

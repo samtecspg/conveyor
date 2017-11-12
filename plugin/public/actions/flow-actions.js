@@ -33,8 +33,7 @@ export class FlowActions {
     }
 
     static postData(flowName, body) {
-        const headers = Api.getGetHeader(appStore.getState().kbnVersion, 'POST', body);
-        let header2 = {
+        let header = {
             method: 'POST',
             credentials: 'same-origin',
             body: body,
@@ -42,7 +41,7 @@ export class FlowActions {
                 'kbn-version': appStore.getState().kbnVersion
             }
         };
-        return fetch(`${Api.getPathForType(ObjectTypes.CHANNEL)}\\${flowName}\\data`, header2)
+        return fetch(`${Api.getPathForType(ObjectTypes.CHANNEL)}\\${flowName}\\data`, header)
             .then(handleRawResponse)
             .then(response => {
                 dispatch({ type: FlowActionTypes.POST_DATA, response });
@@ -54,7 +53,7 @@ export class FlowActions {
         return fetch(`${Api.getPathForType(ObjectTypes.CHANNEL)}\\${flowName}`, headers)
             .then(handleApiResponse)
             .then(json => {
-                dispatch({ type: FlowActionTypes.COMPLETE_CREATE_FLOW, json });
+                dispatch({ type: FlowActionTypes.DELETE_FLOW, json });
             });
     }
 

@@ -70,6 +70,9 @@ class FlowModel {
         // Get parameters values, but only the required by the template
         _(templateParameters).forEach((templateParameter) => {
 
+            if (templateParameter.type === 'file') {
+                return;
+            }
             const parameter = _.find(newParameters, ['key', templateParameter.name]);
 
             const value = parameter ? parameter.value : null;

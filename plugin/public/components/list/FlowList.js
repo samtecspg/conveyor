@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import {withStyles} from 'material-ui/styles';
+import { withStyles } from 'material-ui/styles';
 import Table, {
     TableBody,
     TableCell,
@@ -12,11 +12,11 @@ import Table, {
 } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
-import Menu, {MenuItem} from 'material-ui/Menu';
+import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Input from 'material-ui/Input';
 import InputParser from '../../common/default-input-parser'
-import {FlowActions} from '../../actions/flow-actions';
+import { FlowActions } from '../../actions/flow-actions';
 import Snackbar from 'material-ui/Snackbar';
 import CloseIcon from 'material-ui-icons/Close';
 import Button from 'material-ui/Button';
@@ -76,7 +76,7 @@ class _FlowList extends React.Component {
         data.append('file', value); //TODO: will need to be changed to handle multiple files
         FlowActions
             .postData(item.name, data)
-            .then(() => handleResponse())
+            .then(handleResponse)
             .catch(handleResponse);
 
     }
@@ -128,7 +128,7 @@ class _FlowList extends React.Component {
                         aria-haspopup="true"
                         onClick={this.handleOptionClick.bind(null, item)}
                     >
-                        <MoreVertIcon/>
+                        <MoreVertIcon />
                     </IconButton>
                     <Menu
 
@@ -174,7 +174,7 @@ class _FlowList extends React.Component {
                             <TableCell><Typography type="caption">Source</Typography></TableCell>
                             <TableCell className={classes.columnDescription}><Typography type="caption">Description</Typography></TableCell>
                             <TableCell className={classes.columnOptions}>&nbsp;
-                                <input type="file" ref="fileUploader" style={{ display: 'none' }}/>
+                                <input type="file" ref="fileUploader" style={{ display: 'none' }} />
                             </TableCell>
                         </TableRow>
                     </TableHead>
@@ -202,7 +202,7 @@ class _FlowList extends React.Component {
                             className={classes.close}
                             onClick={this.handleSnackbarClose}
                         >
-                            <CloseIcon/>
+                            <CloseIcon />
                         </IconButton>
                     ]}
                 />
