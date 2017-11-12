@@ -1,0 +1,709 @@
+{
+    "name": "Data File Upload Source",
+    "description": "Use this source to upload files containing data records and store that data in ES. Files can be a variety of formats from JSON to CSV or TSVs.",
+    "groups": [
+        {
+            "key": "fileInformation",
+            "title": "Information about the uploaded files",
+            "description": "Specify here the format of the file or manually set the column names."
+        },
+        {
+            "key": "indexInformation",
+            "title": "Data Storage Options",
+            "description": "You can use the options below to configure whether the data should be cleared upon further uploads or if the new data should be merged with the old. Merging while using a unique field allows for incremental loading."
+        }
+    ],
+    "parameters": [
+        {
+            "type": "file",
+            "group": "fileInformation",
+            "name": "file",
+            "label": "File to Upload",
+            "description": "Upload a file below. For now only one file at a time."
+        },
+        {
+            "type": "list-single",
+            "group": "fileInformation",
+            "name": "fileType",
+            "label": "File Format",
+            "description": "Use this drop down to select the seperate for your file type.",
+            "options": [
+                {"value": "Comma Seperated", "label": "Comma Seperated"},
+                {"value": "Tab Seperated", "label": "Tab Seperated"},
+                {"value": "Space Seperated", "label": "Space Seperated"},
+                {"value": "Colon Seperated", "label": "Colon Seperated"},
+                {"value": "Semicolon Seperated", "label": "Semicolon Seperated"},
+                {"value": "Hashtag Seperated", "label": "Hashtag Seperated"},
+                {"value": "Other Seperator", "label": "Other Seperator"}
+            ],
+            "required": true
+        },
+        {
+            "type": "text",
+            "group": "fileInformation",
+            "name": "otherSeperator",
+            "label": "Custom Seperator",
+            "description": "Place a string here that seperates each column of data within a row."
+        },
+        {
+            "type": "boolean",
+            "group": "fileInformation",
+            "name": "firstRow",
+            "label": "First Row Header",
+            "description": "Does the first row of data contain the header?"
+        },
+        {
+            "type": "boolean",
+            "group": "indexInformation",
+            "name": "truncate",
+            "label": "Truncate before Load?",
+            "description": "Set this to true if you would like to delete all of the data for this source before loading new data. Setting this to true allows a 'truncate before load' leaving it false allows incremental loading."
+        },
+        {
+            "type": "text",
+            "group": "indexInformation",
+            "name": "uniqueField",
+            "label": "ID Field",
+            "description": "Set a field here to be used for the id of the record. Setting this allows for incremental loading and updating of existing records with the same ID."
+        }
+    ],
+    "flow": {
+        "label": "{{_name}}",
+        "nodes": [
+            {
+                "id": "{{_id}}-1",
+                "type": "httpInMultipart",
+                "name": "",
+                "url": "/{{_url}}/data",
+                "method": "post",
+                "fields": "[{\"name\": \"file\"}]",
+                "swaggerDoc": "",
+                "x": 110,
+                "y": 40,
+                "wires": [
+                    [
+                        "{{_id}}-2",
+                        "{{_id}}-3"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-2",
+                "type": "http response",
+                "name": "",
+                "x": 850,
+                "y": 40,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-3",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.req.files && msg.req.files.file) {\n    msg.payload = msg.req.files.file\n    return [null, msg]\n} else {\n    msg.payload = {\n        \"error\": 'No file found in payload.'\n    }\n    msg.statusCode = 404\n    return [msg, null]\n}",
+                "outputs": "2",
+                "noerr": 0,
+                "x": 270,
+                "y": 60,
+                "wires": [
+                    [
+                        "{{_id}}-2"
+                    ],
+                    [
+                        "{{_id}}-4"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-4",
+                "type": "split",
+                "name": "",
+                "splt": "\\n",
+                "x": 390,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-5"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-5",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.payload.originalname.split('.').length > 0) {\n    msg.payload.extension = msg.payload.originalname.split('.')[1]\n    msg.fileInfo = msg.payload\n    msg.filename = msg.payload.path\n    \n    return [null, msg]\n} else {\n    msg.statusCode = 404\n    msg.payload = {\n        \"error\": 'no extension found for file ' + msg.payload.originalname\n    }\n    \n    return [msg, null]\n}",
+                "outputs": "2",
+                "noerr": 0,
+                "x": 510,
+                "y": 100,
+                "wires": [
+                    [
+                        "{{_id}}-2"
+                    ],
+                    [
+                        "{{_id}}-6"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-7",
+                "type": "link in",
+                "name": "httpResponseLink",
+                "links": [],
+                "x": 715,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-2"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-8",
+                "type": "comment",
+                "name": "Try to parse file",
+                "info": "",
+                "x": 100,
+                "y": 240,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-9",
+                "type": "link in",
+                "name": "",
+                "links": [
+                    "{{_id}}-10"
+                ],
+                "x": 35,
+                "y": 280,
+                "wires": [
+                    [
+                        "{{_id}}-11"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-6",
+                "type": "file in",
+                "name": "",
+                "filename": "",
+                "format": "utf8",
+                "x": 630,
+                "y": 120,
+                "wires": [
+                    [
+                        "{{_id}}-12",
+                        "{{_id}}-10"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-12",
+                "type": "debug",
+                "name": "",
+                "active": true,
+                "console": "false",
+                "complete": "true",
+                "x": 850,
+                "y": 80,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-13",
+                "type": "csv",
+                "name": "tsv",
+                "sep": "\\t",
+                "hdrin": "{{firstRow}}",
+                "hdrout": "",
+                "multi": "mult",
+                "ret": "\\n",
+                "temp": "",
+                "x": 430,
+                "y": 200,
+                "wires": [
+                    [
+                        "{{_id}}-14"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-15",
+                "type": "split",
+                "name": "",
+                "splt": "\\n",
+                "x": 250,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-16"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-16",
+                "type": "function",
+                "name": "",
+                "func": "var operation = {\n    \"_index\": \"{{_index}}\",\n    \"_type\": \"default\"\n}\n    \nvar uniqueField = flow.get('uniqueField')\n\nif (uniqueField && uniqueField !== '' && msg.payload[uniqueField]) {\n    operation['_id'] = msg.payload[uniqueField]\n}\n\nvar msg1 = {\n    payload: JSON.stringify({index: operation})\n}\n\nvar msg2 = {\n    payload: JSON.stringify(msg.payload)\n}\n\nif (msg.parts.index == (msg.parts.count - 1)) {\n    msg2.complete = true\n}\n\nreturn [[msg1,msg2]];",
+                "outputs": "1",
+                "noerr": 0,
+                "x": 370,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-17"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-17",
+                "type": "join",
+                "name": "",
+                "mode": "custom",
+                "build": "string",
+                "property": "payload",
+                "propertyType": "msg",
+                "key": "topic",
+                "joiner": "\\n",
+                "timeout": "",
+                "count": "1000",
+                "x": 490,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-18"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-18",
+                "type": "function",
+                "name": "Add Trailing New Line",
+                "func": "msg.payload += \"\\n\"\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 660,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-19"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-19",
+                "type": "http request",
+                "name": "",
+                "method": "POST",
+                "ret": "obj",
+                "url": "elasticsearch:9200/_bulk",
+                "tls": "",
+                "x": 850,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-20"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-21",
+                "type": "comment",
+                "name": "Truncate Existing Data",
+                "info": "",
+                "x": 120,
+                "y": 460,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-22",
+                "type": "function",
+                "name": "",
+                "func": "msg.method = 'HEAD'\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 390,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-23"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-23",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "txt",
+                "url": "elasticsearch:9200/{{_index}}",
+                "tls": "",
+                "x": 530,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-24"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-24",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.statusCode == 200) {\n    msg.payload = {\n        payload: {\n            \"query\": {\n                \"match_all\": {}\n            }\n        }\n    }\n    return [msg, null]\n} else {\n    msg.statusCode = 200;\n    delete msg.method;\n    delete msg.headers;\n    \n    return [null, msg]    \n}",
+                "outputs": "2",
+                "noerr": 0,
+                "x": 670,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-25"
+                    ],
+                    [
+                        "{{_id}}-26"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-25",
+                "type": "http request",
+                "name": "",
+                "method": "POST",
+                "ret": "obj",
+                "url": "elasticsearch:9200/{{_index}}/_delete_by_query",
+                "tls": "",
+                "x": 810,
+                "y": 460,
+                "wires": [
+                    [
+                        "{{_id}}-26"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-27",
+                "type": "switch",
+                "name": "",
+                "property": "truncate",
+                "propertyType": "flow",
+                "rules": [
+                    {
+                        "t": "true"
+                    },
+                    {
+                        "t": "false"
+                    }
+                ],
+                "checkall": "false",
+                "outputs": 2,
+                "x": 250,
+                "y": 501,
+                "wires": [
+                    [
+                        "{{_id}}-22"
+                    ],
+                    [
+                        "{{_id}}-26"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-10",
+                "type": "link out",
+                "name": "fileOut",
+                "links": [
+                    "{{_id}}-9"
+                ],
+                "x": 815,
+                "y": 120,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-28",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.payload.length > 0) {\n    msg.fileData = msg.payload\n    return msg;\n}",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 130,
+                "y": 500,
+                "wires": [
+                    [
+                        "{{_id}}-27"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-29",
+                "type": "function",
+                "name": "",
+                "func": "if (flow.get('truncate') === false) {\n    msg.payload = msg.fileData;\n    delete msg.fileData\n    \n    return [null, msg]\n} else {\n    if (msg.statusCode && msg.statusCode == 200) {\n        msg.payload = msg.fileData;\n        delete msg.fileData\n        \n        return [null, msg]\n    } else {\n        return [msg, null]\n    }\n}",
+                "outputs": "2",
+                "noerr": 0,
+                "x": 130,
+                "y": 580,
+                "wires": [
+                    [],
+                    [
+                        "{{_id}}-15"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-30",
+                "type": "switch",
+                "name": "",
+                "property": "fileType",
+                "propertyType": "flow",
+                "rules": [
+                    {
+                        "t": "eq",
+                        "v": "Comma Seperated",
+                        "vt": "str"
+                    },
+                    {
+                        "t": "eq",
+                        "v": "Tab Seperated",
+                        "vt": "str"
+                    },
+                    {
+                        "t": "eq",
+                        "v": "Space Seperated",
+                        "vt": "str"
+                    },
+                    {
+                        "t": "eq",
+                        "v": "Colon Seperated",
+                        "vt": "str"
+                    },
+                    {
+                        "t": "eq",
+                        "v": "Semicolon Seperated",
+                        "vt": "str"
+                    },
+                    {
+                        "t": "eq",
+                        "v": "Hashtag Seperated",
+                        "vt": "str"
+                    },
+                    {
+                        "t": "eq",
+                        "v": "Other Seperator",
+                        "vt": "str"
+                    }
+                ],
+                "checkall": "false",
+                "outputs": 7,
+                "x": 270,
+                "y": 280,
+                "wires": [
+                    [
+                        "{{_id}}-31"
+                    ],
+                    [
+                        "{{_id}}-13"
+                    ],
+                    [
+                        "{{_id}}-32"
+                    ],
+                    [
+                        "{{_id}}-33"
+                    ],
+                    [
+                        "{{_id}}-34"
+                    ],
+                    [
+                        "{{_id}}-35"
+                    ],
+                    [
+                        "{{_id}}-36"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-11",
+                "type": "function",
+                "name": "",
+                "func": "flow.set('fileType', \"{{fileType}}\")\nflow.set('truncate', {{truncate}})\nflow.set('uniqueField', \"{{uniqueField}}\")\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 130,
+                "y": 280,
+                "wires": [
+                    [
+                        "{{_id}}-30"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-31",
+                "type": "csv",
+                "name": "",
+                "sep": ",",
+                "hdrin": "{{firstRow}}",
+                "hdrout": "",
+                "multi": "mult",
+                "ret": "\\n",
+                "temp": "",
+                "x": 410,
+                "y": 160,
+                "wires": [
+                    [
+                        "{{_id}}-14"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-32",
+                "type": "csv",
+                "name": "space",
+                "sep": " ",
+                "hdrin": "{{firstRow}}",
+                "hdrout": "",
+                "multi": "mult",
+                "ret": "\\n",
+                "temp": "",
+                "x": 450,
+                "y": 240,
+                "wires": [
+                    [
+                        "{{_id}}-14"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-33",
+                "type": "csv",
+                "name": "colon",
+                "sep": ":",
+                "hdrin": "{{firstRow}}",
+                "hdrout": "",
+                "multi": "mult",
+                "ret": "\\n",
+                "temp": "",
+                "x": 470,
+                "y": 280,
+                "wires": [
+                    [
+                        "{{_id}}-14"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-34",
+                "type": "csv",
+                "name": "semi",
+                "sep": ";",
+                "hdrin": "{{firstRow}}",
+                "hdrout": "",
+                "multi": "mult",
+                "ret": "\\n",
+                "temp": "",
+                "x": 450,
+                "y": 320,
+                "wires": [
+                    [
+                        "{{_id}}-14"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-35",
+                "type": "csv",
+                "name": "hash",
+                "sep": "#",
+                "hdrin": "{{firstRow}}",
+                "hdrout": "",
+                "multi": "mult",
+                "ret": "\\n",
+                "temp": "",
+                "x": 430,
+                "y": 360,
+                "wires": [
+                    [
+                        "{{_id}}-14"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-36",
+                "type": "csv",
+                "name": "other",
+                "sep": "{{otherSeperator}}",
+                "hdrin": "{{firstRow}}",
+                "hdrout": "",
+                "multi": "mult",
+                "ret": "\\n",
+                "temp": "",
+                "x": 390,
+                "y": 400,
+                "wires": [
+                    [
+                        "{{_id}}-14"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-14",
+                "type": "link out",
+                "name": "switchOut",
+                "links": [
+                    "{{_id}}-37"
+                ],
+                "x": 715,
+                "y": 280,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-37",
+                "type": "link in",
+                "name": "",
+                "links": [
+                    "{{_id}}-14"
+                ],
+                "x": 35,
+                "y": 500,
+                "wires": [
+                    [
+                        "{{_id}}-28"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-38",
+                "type": "link in",
+                "name": "",
+                "links": [
+                    "{{_id}}-26"
+                ],
+                "x": 35,
+                "y": 580,
+                "wires": [
+                    [
+                        "{{_id}}-29"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-26",
+                "type": "link out",
+                "name": "truncateOut",
+                "links": [
+                    "{{_id}}-38"
+                ],
+                "x": 935,
+                "y": 520,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-20",
+                "type": "debug",
+                "name": "",
+                "active": true,
+                "console": "false",
+                "complete": "false",
+                "x": 1010,
+                "y": 600,
+                "wires": []
+            }
+        ]
+    }
+}

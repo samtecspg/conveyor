@@ -57,7 +57,7 @@ def main(argv):
                     if parameter['type'] == 'boolean':
                         findString = '\"{{' + parameter['name'] + '}}\"'
                         replaceString = '{{' + parameter['name'] + '}}'
-                        stringFlow.replace(findString, replaceString)
+                        stringFlow = stringFlow.replace(findString, replaceString)
 
                 body['flow'] = json.dumps(stringFlow)
 

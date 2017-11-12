@@ -61,7 +61,7 @@
       "group": "connectionCredential",
       "name": "encrypt",
       "label": "Encrypt the Connection?",
-      "description": "Set this to true if you need to encryp the connection, this is usually required for Azure."
+      "description": "Set this to true if you need to encrypt the connection, this is usually required for Azure."
     },
     {
       "type": "text",
