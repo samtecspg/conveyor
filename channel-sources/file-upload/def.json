@@ -348,7 +348,7 @@
                 "id": "{{_id}}-24",
                 "type": "function",
                 "name": "",
-                "func": "if (msg.statusCode == 200) {\n    msg.payload = {\n        payload: {\n            \"query\": {\n                \"match_all\": {}\n            }\n        }\n    }\n    return [msg, null]\n} else {\n    msg.statusCode = 200;\n    delete msg.method;\n    delete msg.headers;\n    \n    return [null, msg]    \n}",
+                "func": "delete msg.method;\ndelete msg.headers;\ndelete msg.req;\ndelete msg.res;\n\nif (msg.statusCode == 200) {\n    msg.payload = {\n        \"query\": {\n            \"match_all\": {}\n        }\n    }\n    \n    return [msg, null];\n} else {\n    msg.statusCode = 200;\n    \n    return [null, msg]    \n}",
                 "outputs": "2",
                 "noerr": 0,
                 "x": 670,
