@@ -1,0 +1,50 @@
+// Top header styles
+
+#header {
+	width: 100%;
+	height: $header-height; // 70px
+	background-color: #fff;
+	position: absolute;
+	z-index: 100;
+
+	.wrapper {
+		height: inherit;
+	}
+
+	nav[role=navigation] {
+		float: right;
+	}
+
+	ul.nav-links {
+		line-height: $header-height;
+		margin: 0;
+		height: $header-height;
+
+		li {
+			display: inline-block;
+			height: inherit;
+			margin: 0 10px;
+			transition: all .2s ease-out;
+			&:hover{
+			border-bottom: 2px solid $primary-color;
+			}
+
+      a {
+        color: $primary-color;
+      }
+
+      .nav-btn {
+        color: white;
+      }
+		}
+
+		li:last-child {
+		margin-right: 0;
+		border: none;
+		}
+	}
+
+	.selected {
+		border-bottom: 2px solid $primary-color;
+	}
+}

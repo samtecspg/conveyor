@@ -1,0 +1,28 @@
+<menu id="sidenav">
+  <nav>
+    <ul>
+      <li class="text-label">Get Started</li>
+      <li class="{% if page.url == '/'%}is-selected{% endif %}"><a href="{{site.baseurl}}/index.html">Installation</a></li>
+      <li class="{% if page.url == '/using-conveyor.html'%}is-selected{% endif %}"><a href="{{ site.baseurl }}/conveyor-use.html">Using Conveyor</a></li>
+      <li class="{% if page.url == '/conveyor-add.html'%}is-selected{% endif %}"><a href="{{ site.baseurl }}/conveyor-add.html">Adding Connectors</a></li>
+    </ul>
+    <ul>
+      <li class="text-label">Connector Authoring</li>
+      <li><a href="#">Building Node-Red Flows</a></li>
+      <li><a href="#">Building def.json and depend.json</a></li>
+      <li><a href="#">Packaging</a></li>
+    </ul>
+    <ul>
+      <li class="text-label">UI Development</li>
+      <li><a href="#">Luis Defines</a></li>
+      <li><a href="#">Another</a></li>
+      <li><a href="#">Another</a></li>
+    </ul>
+    <ul>
+      <li class="text-label">API Documentation</li>
+      <li><a href="#">Info from Swagger</a></li>
+      <li><a href="#">More Swagger</a></li>
+      <li><a href="#">More Swagger</a></li>
+    </ul>
+  </nav>
+</menu>
