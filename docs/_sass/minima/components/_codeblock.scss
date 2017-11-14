@@ -1,0 +1,24 @@
+// Styles for the codeblock
+
+.highlighter-rouge .highlight {
+  background: #0e1635;
+  border-radius: 6px;
+  font-family: 'Cousine', monospace;
+  margin-bottom: 0;
+}
+
+.highlighter-rouge {
+  margin: 25px 0;
+}
+
+code {
+  background-color: #efefef;
+  border: 2px solid #e8e8e8;
+  padding: 3px 7px;
+  color:#0e1635;
+}
+
+pre.highlight > code {
+  color: #fff;
+  background-color: transparent;
+}
