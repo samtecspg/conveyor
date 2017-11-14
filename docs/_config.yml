@@ -29,6 +29,19 @@ theme: minima
 plugins:
   - jekyll-feed
 
+collections:
+  getting_started:
+    title: Getting Started
+    output: true
+    permalink: /:collection/:title
+
+defaults:
+  - scope:
+      path: ""
+      type: getting_started
+    values:
+      layout: default
+
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.

@@ -1,10 +1,16 @@
 <menu id="sidenav">
   <nav>
     <ul>
-      <li class="text-label">Get Started</li>
-      <li class="{% if page.url == '/'%}is-selected{% endif %}"><a href="{{site.baseurl}}/index.html">Installation</a></li>
-      <li class="{% if page.url == '/using-conveyor.html'%}is-selected{% endif %}"><a href="{{ site.baseurl }}/conveyor-use.html">Using Conveyor</a></li>
-      <li class="{% if page.url == '/conveyor-add.html'%}is-selected{% endif %}"><a href="{{ site.baseurl }}/conveyor-add.html">Adding Connectors</a></li>
+      <li class="text-label">Getting Started</li>
+      {% assign items = site.getting_started | sort: 'order' %}
+      {% for item in items %}
+        {% if page.url == item.url %}
+          <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
+        {% else %}
+          <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+
     </ul>
     <ul>
       <li class="text-label">Connector Authoring</li>
