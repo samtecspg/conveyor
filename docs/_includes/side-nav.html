@@ -1,0 +1,34 @@
+<menu id="sidenav">
+  <nav>
+    <ul>
+      <li class="text-label">Getting Started</li>
+      {% assign items = site.getting_started | sort: 'order' %}
+      {% for item in items %}
+        {% if page.url == item.url %}
+          <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
+        {% else %}
+          <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+
+    </ul>
+    <ul>
+      <li class="text-label">Connector Authoring</li>
+      <li><a href="#">Building Node-Red Flows</a></li>
+      <li><a href="#">Building def.json and depend.json</a></li>
+      <li><a href="#">Packaging</a></li>
+    </ul>
+    <ul>
+      <li class="text-label">UI Development</li>
+      <li><a href="#">Luis Defines</a></li>
+      <li><a href="#">Another</a></li>
+      <li><a href="#">Another</a></li>
+    </ul>
+    <ul>
+      <li class="text-label">API Documentation</li>
+      <li><a href="#">Info from Swagger</a></li>
+      <li><a href="#">More Swagger</a></li>
+      <li><a href="#">More Swagger</a></li>
+    </ul>
+  </nav>
+</menu>
