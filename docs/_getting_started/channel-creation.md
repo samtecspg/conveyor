@@ -1,4 +1,4 @@
 ---
-title: Create Your First Channel
+title: Create First Channel
 order: 2
 ---

@@ -13,13 +13,14 @@
   background: linear-gradient(135deg, rgb(124,228,251) 0%,rgb(37,100,211) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7ce4fb', endColorstr='#2564d3', GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
-  > nav {
-    margin-top: 40px;
-  }
-
   ul {
     margin-bottom: 18px;
     margin-left: 0;
+    padding-left: 0;
+  }
+
+  > nav {
+    margin-top: 40px;
   }
 
   li {
@@ -28,7 +29,7 @@
     a {
       color: $primary-color;
       opacity: .7;
-      transition: opacity .3s ease-out; 
+      transition: opacity .3s ease-out;
       &:hover {
         opacity: 1;
       }
