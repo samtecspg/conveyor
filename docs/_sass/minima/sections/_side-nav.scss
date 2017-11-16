@@ -6,6 +6,7 @@
   width: 300px;
   height: 100vh;
   margin: 0;
+  list-style-type: none;
   padding-top: $header-height;
   background: rgb(124,228,251); /* Old browsers */
   background: -moz-linear-gradient(-45deg, rgb(124,228,251) 0%, rgb(37,100,211) 100%); /* FF3.6-15 */
@@ -48,5 +49,24 @@
     a {
       font-weight: 500;
     }
+  }
+
+  @include media-query($content-width) {
+    width: 100%;
+    height: fit-content;
+    padding-bottom: 40px;
+    position: relative;
+
+    nav {
+      max-width: -webkit-calc(900px - (30px));
+      max-width: calc(900px - (30px));
+      padding-right: 25px;
+      padding-left: 25px;
+
+      li {
+        list-style-type: none;
+      }
+    }
+
   }
 } // -- end of #sidenav
