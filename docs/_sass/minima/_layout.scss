@@ -196,6 +196,15 @@
   > .wrapper {
     margin-top: 40px;
   }
+
+  @include media-query($content-width) {
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-bottom: 70px;
+
+  }
 }
 
 .page-heading {
