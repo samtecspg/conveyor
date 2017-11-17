@@ -19,7 +19,7 @@ if (!parsed) {
 
     values = Object.assign({}, values, {
         PORT: envValues.PORT || 4000,
-        ES_INDEX: envValues.ES_INDEX,
+        ES_INDEX: envValues.ES_INDEX || 'flow',
         NODE_RED_URL: envValues.NODE_RED_URL,
         ELASTIC_SEARCH_URL: envValues.ELASTIC_SEARCH_URL,
         ELASTIC_SEARCH_HTTP_AUTH: envValues.ELASTIC_SEARCH_HTTP_AUTH || '',

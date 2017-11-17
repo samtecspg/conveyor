@@ -1,8 +1,8 @@
-<footer class="site-footer page-content">
+
 
   <div class="wrapper">
 
-    <div class="flex credit">
+    <h2 class="footer-heading">{{ site.title | escape }}</h2>
 
 				<div class="credit-content">
 					<svg class="spg-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66.02 66.02">
@@ -35,6 +35,11 @@
 		</div>
 
     <p class="copyright">© 2017 All rights to Smart Platform Group</p>
+
+      <div class="footer-col footer-col-3">
+        <p>{{ site.description | escape }}</p>
+      </div>
+    </div>
 
   </div>
 
