@@ -2,8 +2,18 @@
   <nav>
     <ul>
       <li class="text-label">Getting Started</li>
-      {% assign items = site.getting_started | sort: 'order' %}
-      {% for item in items %}
+      {% assign gs_items = site.getting_started | sort: 'order' %}
+      {% for item in gs_items %}
+        {% if page.url == item.url %}
+          <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
+        {% else %}
+          <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      <li class="text-label">API</li>
+      {% assign api_items = site.api_endpoints | sort: 'order' %}
+      {% for item in api_items %}
         {% if page.url == item.url %}
           <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
         {% else %}

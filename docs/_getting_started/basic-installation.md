@@ -1,6 +1,7 @@
 ---
 title: Basic Installation
 permalink: /:collection/index.html
+layout: default
 order: 0
 ---
 

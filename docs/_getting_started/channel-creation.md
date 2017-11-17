@@ -1,9 +1,7 @@
 ---
 title: Create First Channel
+layout: default
 order: 2
-<<<<<<< Updated upstream
----
-=======
 ---
 
 # Create your first channel
@@ -25,4 +23,4 @@ Here's what my **+ Create** page looks like after everything is filled in:
 Once you click **Finish** you will be re-directed to the channels list page and you should see your newly created channel!
 
 ![Channel List showing our newly created channel]({{ "/img/conveyor-channels.png" | absolute_url }})
->>>>>>> Stashed changes
+

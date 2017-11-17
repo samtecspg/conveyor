@@ -34,13 +34,10 @@ collections:
     title: Getting Started
     output: true
     permalink: /:collection/:title
-
-defaults:
-  - scope:
-      path: ""
-      type: getting_started
-    values:
-      layout: default
+  api_endpoints:
+    title: API
+    output: true
+    permalink: /:collection/:title
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
