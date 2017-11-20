@@ -189,13 +189,25 @@
  */
 .page-content {
   padding: $spacing-unit 0;
-  margin-right: 20vh;
+  max-width: 960px;
   margin-left: 300px;
   padding-top: $header-height;
-  border-right: 1px solid $border-color;
 
   > .wrapper {
     margin-top: 40px;
+  }
+
+  p {
+    margin-bottom: 30px;
+  }
+
+  @include media-query($content-width) {
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-bottom: 70px;
+
   }
 }
 

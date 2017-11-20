@@ -10,16 +10,16 @@ $base-line-height: 1.5 !default;
 
 $spacing-unit:     30px !default;
 
-$text-color:       #111 !default;
+$text-color:       #3d65b0 !default;
 $background-color: #fdfdfd !default;
-$brand-color:      #2a7ae2 !default;
+$brand-color:      #58a1d8 !default;
 
 $grey-color:       #828282 !default;
 $grey-color-light: lighten($grey-color, 40%) !default;
 $grey-color-dark:  darken($grey-color, 25%) !default;
 
 // Width of the content area
-$content-width:    800px !default;
+$content-width:    900px !default;
 
 $on-palm:          600px !default;
 $on-laptop:        800px !default;
@@ -46,6 +46,6 @@ $on-laptop:        800px !default;
   "minima/base/1-module",
   "minima/layout",
   "minima/sections/1-module",
-  "minima/components/button",
-  "minima/syntax-highlighting"
+  "minima/syntax-highlighting",
+  "minima/components/1-module"
 ;
