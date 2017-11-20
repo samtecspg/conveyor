@@ -53,6 +53,12 @@ ul, ol, dl, figure,
 img {
   max-width: 100%;
   vertical-align: middle;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  -webkit-box-shadow: 0px 8px 48px -12px rgba(78,78,78,0.4);
+  -moz-box-shadow: 0px 8px 48px -12px rgba(78,78,78,0.4);
+  box-shadow: 0px 8px 48px -12px rgba(78,78,78,0.4);
+  margin: 10px 0 30px 0;
 }
 
 

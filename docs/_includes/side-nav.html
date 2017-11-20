@@ -10,7 +10,9 @@
           <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
         {% endif %}
       {% endfor %}
+    </ul>
 
+    <ul>
       <li class="text-label">API</li>
       {% assign api_items = site.api_endpoints | sort: 'order' %}
       {% for item in api_items %}
@@ -20,11 +22,9 @@
           <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
         {% endif %}
       {% endfor %}
-
+    </ul>
       <!-- {% for post in site.categories.Installation %}
         <li><a href="{{ post.url }}">{{ post.title }}</a></li>
       {% endfor %} -->
-
-    </ul>
   </nav>
 </menu>

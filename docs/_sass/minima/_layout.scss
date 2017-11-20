@@ -197,6 +197,10 @@
     margin-top: 40px;
   }
 
+  p {
+    margin-bottom: 30px;
+  }
+
   @include media-query($content-width) {
     margin-left: 0;
     padding-top: 0;

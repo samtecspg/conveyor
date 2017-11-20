@@ -60,8 +60,11 @@
     nav {
       max-width: -webkit-calc(900px - (30px));
       max-width: calc(900px - (30px));
-      padding-right: 25px;
-      padding-left: 25px;
+      padding: 0;
+      display: flex;
+      ul {
+        flex: 1;
+      }
 
       li {
         list-style-type: none;
