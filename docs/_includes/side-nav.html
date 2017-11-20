@@ -11,6 +11,30 @@
         {% endif %}
       {% endfor %}
     </ul>
+    
+    <ul>
+      <li class="text-label">Channel Documentation</li>
+      {% assign channel_docs = site.channel_documentation | sort: 'order' %}
+      {% for item in channel_docs %}
+        {% if page.url == item.url %}
+          <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
+        {% else %}
+          <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+
+    <ul>
+      <li class="text-label">Creating Channel Sources</li>
+      {% assign auth_items = site.channel_authoring | sort: 'order' %}
+      {% for item in auth_items %}
+        {% if page.url == item.url %}
+          <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
+        {% else %}
+          <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
 
     <ul>
       <li class="text-label">API</li>
@@ -23,8 +47,5 @@
         {% endif %}
       {% endfor %}
     </ul>
-      <!-- {% for post in site.categories.Installation %}
-        <li><a href="{{ post.url }}">{{ post.title }}</a></li>
-      {% endfor %} -->
   </nav>
 </menu>
