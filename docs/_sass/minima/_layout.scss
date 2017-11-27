@@ -188,7 +188,7 @@
  * Page content
  */
 .page-content {
-  padding: $spacing-unit 0;
+  padding: $spacing-unit 0 150px 0;
   max-width: 960px;
   margin-left: 300px;
   padding-top: $header-height;
@@ -206,7 +206,6 @@
     padding-top: 0;
     padding-right: 15px;
     padding-left: 15px;
-    padding-bottom: 70px;
 
   }
 }
