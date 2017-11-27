@@ -11,7 +11,7 @@ If you've made it here then you likely are already staring at Conveyor inside of
 ### The Sources Screen
 ![Starting screen for conveyor]({{ "/img/conveyor.png" | absolute_url }})
 
-The easiest way to get started is with the `Data File Upload` source, which expects a delimited text file, JSON, or XML file. Clicking on it will bring you to a screen with additional fields you need to fill in. One of thich in this source is a file upload. Fill out the form and choose a CSV file to upload. If you need some good examples download one of the files from [here](https://www.data.gov). I'm going to grab the [Air Quality Measurements Dataset](https://catalog.data.gov/dataset/air-quality-measures-on-the-national-environmental-health-tracking-network)
+The easiest way to get started is with the `Data File Upload` source, which expects a delimited text file, JSON, or XML file. Clicking on it will bring you to a screen with additional fields you need to fill in. One of which is a file upload. Fill out the form and choose a CSV file to upload. If you need some good examples download one of the files from [here](https://www.data.gov). I'm going to grab the [Air Quality Measurements Dataset](https://catalog.data.gov/dataset/air-quality-measures-on-the-national-environmental-health-tracking-network)
 
 ### The Create Screen
 Here's what my **+ Create** page looks like after everything is filled in:

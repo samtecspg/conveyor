@@ -5,7 +5,7 @@ order: 0
 ---
 
 # /flowtemplate
-As we discussed in the `How it Works` section on the first page, conveyor scripts Node-RED to create some extra ease of getting data into Elastic. Specifically we create Node-RED templates for typical data sources. These templates are stored in Elastisearch as Flow Templates and can created/read/updated/delete from the `/flowtemplate` endpoint.
+As we discussed in the [How it Works](../) section on the first page, conveyor scripts Node-RED to create some extra ease of getting data into Elastic. Specifically we create Node-RED templates for typical data sources. These templates are stored in Elastisearch as Flow Templates and can created/read/updated/delete from the `/flowtemplate` endpoint.
 
 ### Basic Structure
 The basic structure of a flow tempalte is shown below:
