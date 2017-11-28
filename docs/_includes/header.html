@@ -3,7 +3,7 @@
   <div class="wrapper">
     {% assign default_paths = site.pages | map: "path" %}
     {% assign page_paths = site.header_pages | default: default_paths %}
-    <a class="site-title" href="{{ "/" | relative_url }}">
+    <a class="site-title" href="https://spg.ai/projects/conveyor/">
 
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 188.6 70"><style type="text/css">
         .st0{fill:#4E4E4E;}
@@ -17,13 +17,7 @@
 
     <nav role="navigation">
     	<ul class="nav-links">
-        {% if page.url == "/" %}
-          <li class="selected"><a href="{{site.url}}{{site.baseurl}}/">Conveyor</a></li>
-          <li><a href="{{site.url}}{{site.baseurl}}/getting_started/">Docs</a></li>
-        {% else %}
-          <li><a href="{{site.url}}{{site.baseurl}}/">Conveyor</a></li>
-          <li class="selected"><a href="{{site.url}}{{site.baseurl}}/getting_started/">Docs</a></li>
-        {% endif %}
+        <li class="selected"><a href="{{site.url}}{{site.baseurl}}/getting_started/basic-installation">Docs</a></li>
     		<li><a class="nav-btn btn" href="https://github.com/samtecspg/conveyor">Git Started</a></li>
     	</ul>
     </nav>
