@@ -1,0 +1,75 @@
+version: '3.0'
+
+services:
+  sut:
+    build: test/
+    networks: ['conveyor-net']
+  api:
+    build: api/
+    ports: ['0.0.0.0:4000:80']
+    networks: ['conveyor-net']
+    # The following (crazy) block is about both:
+    # 1) setting default values for app parameteres
+    # 2) projecting any changes to those values set in the .env file
+    # a line should be added to this list for any env-var/param that the
+    # app might need, and its easiest to follow if the var name is kept the
+    # same for both the var thats projected into the app (the first name)
+    # and the name thats expected in the .env (the second name)
+    environment:
+      - PORT=80
+      - ELASTIC_SEARCH_URL=${ELASTIC_SEARCH_URL:-http://elasticsearch:9200}
+      - ES_BASIC_AUTH=${ES_BASIC_AUTH:-elastic:changeme}
+      - NODE_RED_URL=${NODE_RED_URL:-http://node-red:1880}
+      - ES_INDEX=${ES_INDEX:-flow}
+      - DEBUG=${DEBUG:-*}
+      - TEST_DATA_CHANNEL_TEMPLATE_ID_1
+      - TEST_DATA_CHANNEL_ID_1
+    depends_on:
+      - elasticsearch
+      - node-red
+  node-red:
+    image: nodered/node-red-docker:${NODERED_TAG-:-0.16.2}
+    ports: ['1880:1880']
+    volumes:
+      - ${NODERED_CONFIG:-./helpers-stuff/node-red}:/data
+    networks: ['conveyor-net']
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-5.4.0}
+    environment:
+     - ES_JAVA_OPTS=${ES_RAM:--Xmx1g -Xms1g}
+    ports: ['9200:9200']
+    networks: ['conveyor-net']
+    volumes:
+      - ${ES_CONFIG:-./helpers-stuff/elasticsearch/elasticsearch.yml}:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${ES_DATA:-./helpers-stuff/es-data}:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ['CMD', 'curl', '-f', '-u', '${ES_USER:-elastic}:${ES_PASSWORD:-changeme}', 'http://localhost:9200']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+  kibana:
+    build: plugin/
+    ports: ['5601:5601']
+    networks: ['conveyor-net']
+    volumes:
+      - ${KIBANA_CONFIG:-./helpers-stuff/kibana/kibana.yml}:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - elasticsearch
+      - api
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5601/login']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+  channel-load:
+    build: channel-sources
+    networks: ['conveyor-net']
+    depends_on:
+      - elasticsearch
+      - node-red
+      - api
+      - kibana
+    volumes:
+     - ${CHANNEL_FOLDER:-./channel-sources/}:/usr/src/app
+networks:
+  conveyor-net:
