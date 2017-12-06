@@ -5,7 +5,7 @@ services:
     build: test/
     networks: ['conveyor-net']
   api:
-    build: api/
+    build: ../api/
     ports: ['0.0.0.0:4000:80']
     networks: ['conveyor-net']
     # The following (crazy) block is about both:
@@ -48,7 +48,7 @@ services:
       timeout: 10s
       retries: 3
   kibana:
-    build: plugin/
+    build: ../plugin/
     ports: ['5601:5601']
     networks: ['conveyor-net']
     volumes:
