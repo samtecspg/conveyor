@@ -8,4 +8,6 @@
 #juLog -name="opentcp" nc -zv -w 10 daapd 3689
 
 
-echo "Non-zero responce!"
+#echo "Non-zero responce!"
+# ... the echo above didn't qualify as a non-zero return (to cause a fail), they must mean return code
+exit 1
