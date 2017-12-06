@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
   sut:
-    build: test/
+    build: .
     networks: ['conveyor-net']
   api:
     build: ../api/
