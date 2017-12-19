@@ -15,7 +15,7 @@
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7ce4fb', endColorstr='#2564d3', GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
   ul {
-    margin-bottom: 18px;
+    margin-bottom: 2em;
     margin-left: 0;
     padding-left: 0;
   }
@@ -31,6 +31,7 @@
       color: $primary-color;
       opacity: .7;
       transition: opacity .3s ease-out;
+      white-space: nowrap;
       &:hover {
         opacity: 1;
       }
@@ -41,7 +42,7 @@
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 5px;
-    opacity: .8;
+    opacity: .7;
   }
 
   .is-selected {
@@ -62,8 +63,10 @@
       max-width: calc(900px - (30px));
       padding: 0;
       display: flex;
+      flex-flow: row wrap;
       ul {
         flex: 1;
+        margin-bottom: 35px;
       }
 
       li {
