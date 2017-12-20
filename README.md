@@ -13,7 +13,7 @@ https://samtecspg.github.io/conveyor/
 * [Docker](https://docs.docker.com/engine/installation/) (If faced with any choices, get the Community Edition ("CE"))
 * [`docker-compose`](https://docs.docker.com/compose/install/) (should be auto-installed as part of Docker on mac and windows)
 
-2. Download the current release: https://github.com/samtecspg/conveyor/releases/download/v1.0.0/conveyor-5.6.1-v1.0.0.zip
+2. Download the current release: https://github.com/samtecspg/conveyor/releases/download/v1.0.1/conveyor-5.4.0-v1.0.1.zip
 
 3. Unzip and get a terminal or CMD in the release directory
 
