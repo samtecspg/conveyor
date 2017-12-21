@@ -1,6 +1,5 @@
 ---
 title: Basic Installation
-permalink: /:collection/index.html
 layout: default
 order: 0
 ---
@@ -24,9 +23,10 @@ To get started
 
 
 ```
-git clone https://github.com/samtecspg/conveyor.git
+curl -L -O https://github.com/samtecspg/conveyor/releases/download/v1.0.0/conveyor-5.6.1-v1.0.0.zip
+unzip conveyor-5.6.1-v1.0.0.zip
 cd conveyor
-sudo docker-compose up
+docker-compose up
 ```
 
 If all is going well you should see some output like the below:
