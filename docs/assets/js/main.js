@@ -90,4 +90,24 @@ $(document).ready(function(){
 
 }(window);
 
+
+  var $nav_open = $( '#sidenav .nav-container > nav' ).outerHeight();
+
+  $(function(){
+      $('#sidenav .dropdown-btn').on('click',function(event){
+
+        event.preventDefault();
+        $(this).toggleClass('nav-open');
+
+        if ( $(this).hasClass('nav-open') ) {
+          $('#sidenav .nav-container').css('height', $nav_open);
+        } else {
+          $('#sidenav .nav-container').css('height', '');
+        }
+
+      });
+
+  });
+
+
 });
