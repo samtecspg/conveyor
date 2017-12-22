@@ -1,11 +1,11 @@
 {
-    "name": "Data File Upload Source",
+    "name": "Text File",
     "description": "Use this source to upload files containing data records and store that data in ES. Files can be a variety of formats from JSON to CSV or TSVs.",
     "groups": [
         {
             "key": "fileInformation",
-            "title": "Information about the uploaded files",
-            "description": "Specify here the format of the file or manually set the column names."
+            "title": "Information about the file",
+            "description": "Specify here the format of the file."
         },
         {
             "key": "indexInformation",
@@ -19,14 +19,14 @@
             "group": "fileInformation",
             "name": "file",
             "label": "File to Upload",
-            "description": "Upload a file below. For now only one file at a time."
+            "description": "Select the file you would like to upload."
         },
         {
             "type": "list-single",
             "group": "fileInformation",
             "name": "fileType",
             "label": "File Format",
-            "description": "Use this drop down to select the seperate for your file type.",
+            "description": "Use this drop down to select the seperator for your file.",
             "options": [
                 {"value": "Comma Seperated", "label": "Comma Seperated"},
                 {"value": "Tab Seperated", "label": "Tab Seperated"},
@@ -42,28 +42,28 @@
             "type": "text",
             "group": "fileInformation",
             "name": "otherSeperator",
-            "label": "Custom Seperator",
-            "description": "Place a string here that seperates each column of data within a row."
+            "label": "Other Seperator",
+            "description": "If you chose Other Seperator above place a string here that seperates each column of data within a row."
         },
         {
             "type": "boolean",
             "group": "fileInformation",
             "name": "firstRow",
-            "label": "First Row Header",
+            "label": "Use First Row as Header",
             "description": "Does the first row of data contain the header?"
         },
         {
             "type": "boolean",
             "group": "indexInformation",
             "name": "truncate",
-            "label": "Truncate before Load?",
+            "label": "Overwrite",
             "description": "Set this to true if you would like to delete all of the data for this source before loading new data. Setting this to true allows a 'truncate before load' leaving it false allows incremental loading."
         },
         {
             "type": "text",
             "group": "indexInformation",
             "name": "uniqueField",
-            "label": "ID Field",
+            "label": "Unique Field",
             "description": "Set a field here to be used for the id of the record. Setting this allows for incremental loading and updating of existing records with the same ID."
         }
     ],

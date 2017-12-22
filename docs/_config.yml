@@ -36,16 +36,20 @@ collections:
     title: Getting Started
     output: true
     permalink: /:collection/:title
-  channel_documentation:
-    title: Channel Documentation
+  source_documentation:
+    title: Source Documentation
     output: true
     permalink: /:collection/:title
-  channel_authoring:
+  source_authoring:
     title: Source Authoring
     output: true
     permalink: /:collection/:title
   api_endpoints:
     title: API
+    output: true
+    permalink: /:collection/:title
+  developer_docs:
+    title: For Developers
     output: true
     permalink: /:collection/:title
 

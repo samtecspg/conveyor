@@ -1,5 +1,5 @@
 {
-  "name": "SQL Server Scheduled Query",
+  "name": "SQL Server",
   "description": "With this flow you can populate an ES index with SQL Server data. Truncate/Reload and Incremental Updates are supported.",
   "groups": [
     {
@@ -54,7 +54,7 @@
       "group": "connectionCredential",
       "name": "domain",
       "label": "Domain",
-      "description": "Domain"
+      "description": "To use with Windows Authentication specify the domain here. Leave blank to login as a database user."
     },
     {
       "type": "boolean",
@@ -76,15 +76,15 @@
       "type": "boolean",
       "group": "queryDetails",
       "name": "truncate",
-      "label": "Truncate Before Load",
-      "description": "If this is set to true the ES index will be cleared before new data is inserted."
+      "label": "Overwrite",
+      "description": "Setting this to true will clear out existing data before loading new data. In otherwords this will 'Truncate' the data. Setting this to false allows incremental loading."
     },
     {
       "type": "text",
       "group": "queryDetails",
       "name": "uniqueField",
       "label": "Unique Field",
-      "description": "Specifying a unique field with truncate turned off allows for incremental loads of data. The unique field will prevent duplicates and allow updates. This also exposes the parameter latestUniqueField to the query. Use it star the query at the right spot.",
+      "description": "Specifying a unique field with overwrite turned off allows for incremental loading of data. The unique field will prevent duplicates and allow updates. This also exposes the parameter latestUniqueField to the query. Use it to start the query at the right spot.",
       "required": false
     },
     {
@@ -93,7 +93,7 @@
       "name": "uniqueFieldStart",
       "label": "Unique Field Starting Position",
       "default": "0",
-      "description": "Generally speaking you're going to set a value here where the query should start and it will work incrementally up from that point.",
+      "description": "Let's say that my unique field above is an autoincremented ID. I could use this field to start extracting data at an arbitrary ID rather than 0.",
       "required": false
     },
     {

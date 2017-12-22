@@ -1,5 +1,5 @@
 {
-  "name": "Twitter Streaming API Source",
+  "name": "Twitter Streaming",
   "description": "Use this source to pull tweets into Elasticsearch. You can stream specific user's tweets or search topics.",
   "groups": [
     {

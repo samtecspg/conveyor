@@ -23,11 +23,10 @@
           {% endif %}
         {% endfor %}
       </ul>
-
       <ul>
         <li class="text-label">Source Documentation</li>
-        {% assign channel_docs = site.channel_documentation | sort: 'order' %}
-        {% for item in channel_docs %}
+        {% assign source_items = site.source_documentation | sort: 'order' %}
+        {% for item in source_items %}
           {% if page.url == item.url %}
             <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
           {% else %}
@@ -35,11 +34,10 @@
           {% endif %}
         {% endfor %}
       </ul>
-
       <ul>
         <li class="text-label">Source Authoring</li>
-        {% assign auth_items = site.channel_authoring | sort: 'order' %}
-        {% for item in auth_items %}
+        {% assign authoring_items = site.source_authoring | sort: 'order' %}
+        {% for item in authoring_items %}
           {% if page.url == item.url %}
             <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
           {% else %}
@@ -48,17 +46,28 @@
         {% endfor %}
       </ul>
 
-      <ul>
-        <li class="text-label">API</li>
-        {% assign api_items = site.api_endpoints | sort: 'order' %}
-        {% for item in api_items %}
-          {% if page.url == item.url %}
-            <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
-          {% else %}
-            <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </nav>
-  </div>
+    <ul>
+      <li class="text-label">API</li>
+      {% assign api_items = site.api_endpoints | sort: 'order' %}
+      {% for item in api_items %}
+        {% if page.url == item.url %}
+          <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
+        {% else %}
+          <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+
+    <ul>
+      <li class="text-label">For Developers</li>
+      {% assign dev_items = site.developer_docs | sort: 'order' %}
+      {% for item in dev_items %}
+        {% if page.url == item.url %}
+          <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
+        {% else %}
+          <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
 </menu>
