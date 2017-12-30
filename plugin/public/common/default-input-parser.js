@@ -9,6 +9,10 @@ export default function InputParser(event, callback) {
             value = target.files[0];
             target.value = null;
             break;
+        case 'textarea':
+            value = target.value;
+            value = value.replace(/[\n]/g, '\\\\n')
+            break;
         default:
             value = target.value;
             break;
