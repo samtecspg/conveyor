@@ -1,18 +1,26 @@
 #!/usr/bin/python
 
-import sys
-import getopt
+import argparse
 import requests
 import json
 import os
 from os import walk
 
-def main(argv):
-    try:
-        opts, args = getopt.getopt(argv,"t")
-    except getopt.GetoptError:
-        print('test.py -i <inputfile> -o <outputfile>')
-        sys.exit(2)
+def main():
+    node_red_url = 'node-red:1880'
+    api_url = 'api:80'
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-n", "--node", help="Specify the Node-RED URL")
+    parser.add_argument("-a", "--api", help="Specify the API URL")
+    
+    args = parser.parse_args()
+    if args.node:
+        node_red_url = args.node
+        print "Setting the Node-RED url to: " + node_red_url
+    if args.api:
+        api_url = args.api
+        print "Setting the API url to: " + api_url
 
     # walk where this script is: https://stackoverflow.com/a/595332/3334178
     script_loc = os.path.dirname(os.path.realpath(__file__))
@@ -28,7 +36,7 @@ def main(argv):
 
             if len(missingLibraries) > 0:
                 print "--- verifing node-red libraries: " + ", ".join([str(x) for x in missingLibraries]) 
-                url = 'http://node-red:1880/nodes'
+                url = 'http://' + node_red_url + '/nodes'
                 headers = {'accept': 'application/json'}
 
                 installedNodes = requests.get(url, headers=headers).json()
@@ -62,8 +70,8 @@ def main(argv):
                 body['flow'] = json.dumps(stringFlow)
 
 
-            postreturn = requests.post('http://api:80/flowTemplate', data=json.dumps(body)).status_code
+            postreturn = requests.post('http://' + api_url + '/flowTemplate', data=json.dumps(body)).status_code
             print "Install of '" + dirname + "' conveyor channel COMPLETE with return of: " + str(postreturn)
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
