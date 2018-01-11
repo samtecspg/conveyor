@@ -1,4 +1,8 @@
-import modules from 'ui/modules';
+var modules = require('ui/modules')
+
+if (!modules) {
+  modules = require('ui/modules').uiModules
+}
 
 /**
  *  Completely disable global state so it doesn't interfere with the app routing

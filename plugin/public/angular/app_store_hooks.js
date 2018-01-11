@@ -1,4 +1,8 @@
-import modules from 'ui/modules';
+var modules = require('ui/modules');
+
+if (!modules) {
+  modules = require('ui/modules').uiModules
+}
 
 import { changeLocation } from './change_location';
 import { AppActions } from '../actions/app-actions';
