@@ -7,7 +7,7 @@ const generateGlobalRoutes = function generateGlobalRoutes() {
     return [
         {
             method: '*',
-            path: '/flow/global/configs',
+            path: '/flow/global',
             config: {
                 description: 'Proxy for Node-RED Global Context endpoints',
                 tags: ['api', 'flow', 'node-red'],
@@ -19,12 +19,16 @@ const generateGlobalRoutes = function generateGlobalRoutes() {
             }
         },
         {
-            method: 'GET',
-            path: '/flow/global/configs/{paths*}',
+            method: '*',
+            path: '/flow/global/{paths*}',
             config: {
                 description: 'Proxy for Node-RED Global Context endpoints',
                 tags: ['api', 'flow', 'node-red'],
-                handler: NodeRedController.global
+                handler: NodeRedController.global,
+                payload: {
+                    output: 'stream',
+                    parse: false
+                }
             }
         }
     ];
