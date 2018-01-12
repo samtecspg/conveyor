@@ -42,7 +42,7 @@
             "type": "text",
             "group": "fileInformation",
             "name": "otherSeperator",
-            "label": "Other Seperator",
+            "label": "Other Seperator if Selected Above",
             "description": "If you chose Other Seperator above place a string here that seperates each column of data within a row."
         },
         {
@@ -56,14 +56,14 @@
             "type": "boolean",
             "group": "indexInformation",
             "name": "truncate",
-            "label": "Overwrite",
+            "label": "Overwrite on Subsequent Uploads",
             "description": "Set this to true if you would like to delete all of the data for this source before loading new data. Setting this to true allows a 'truncate before load' leaving it false allows incremental loading."
         },
         {
             "type": "text",
             "group": "indexInformation",
             "name": "uniqueField",
-            "label": "Unique Field",
+            "label": "Unique Field for Incremental Loading and Deduplication",
             "description": "Set a field here to be used for the id of the record. Setting this allows for incremental loading and updating of existing records with the same ID."
         }
     ],
