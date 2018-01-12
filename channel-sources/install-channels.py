@@ -6,6 +6,16 @@ import json
 import os
 from os import walk
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 def main():
     node_red_url = 'node-red:1880'
     api_url = 'api:80'
@@ -69,9 +79,12 @@ def main():
 
                 body['flow'] = json.dumps(stringFlow)
 
-
-            postreturn = requests.post('http://' + api_url + '/flowTemplate', data=json.dumps(body)).status_code
-            print "Install of '" + dirname + "' conveyor channel COMPLETE with return of: " + str(postreturn)
+            try:
+                postreturn = requests.post('http://' + api_url + '/flowTemplate', data=json.dumps(body))
+                postreturn.raise_for_status()
+                print "Install of '" + dirname + "' conveyor source completed successfully."
+            except requests.exceptions.RequestException as err:
+                print bcolors.FAIL + "Error while installing '" + dirname + "' channel: " + bcolors.ENDC, err
 
 if __name__ == "__main__":
     main()
