@@ -85,6 +85,7 @@ class _List extends React.Component {
                         onChange={this.handleChange}
                         onBlur={this.validate}
                         multi={this.props.isMultiple}
+                        menuContainerStyle={{'zIndex': 999}}
                     />
 
                     <FormHelperText>{this.state.isValid ? ' ' : 'Error'}</FormHelperText>
