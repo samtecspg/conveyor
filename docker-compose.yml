@@ -19,8 +19,6 @@ services:
       - NODE_RED_URL=${NODE_RED_URL:-http://node-red:1880}
       - ES_INDEX=${ES_INDEX:-flow}
       - DEBUG=${DEBUG:-*}
-      - TEST_DATA_CHANNEL_TEMPLATE_ID_1
-      - TEST_DATA_CHANNEL_ID_1
     depends_on:
       - elasticsearch
       - node-red
