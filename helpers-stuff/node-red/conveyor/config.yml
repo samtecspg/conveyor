@@ -1,0 +1,8 @@
+# Specify the ES Connection Information
+elasticsearch:
+  url: http://elasticsearch:9200
+  auth-method: none
+
+# Specify the Node-RED URL
+node-red:
+  url: http://node-red:1880

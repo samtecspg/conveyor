@@ -3,3 +3,5 @@
 # Except this file
 !.gitignore
 !settings.js
+!conveyor
+!conveyor/*
