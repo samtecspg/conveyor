@@ -11,8 +11,8 @@
             "repeat": "",
             "crontab": "",
             "once": true,
-            "x": 125.5,
-            "y": 65,
+            "x": 110,
+            "y": 80,
             "wires": [
                 [
                     "global-2"
@@ -21,14 +21,306 @@
         },
         {
             "id": "global-2",
+            "type": "file in",
+            "name": "",
+            "filename": "/data/conveyor/config.yml",
+            "format": "utf8",
+            "chunk": false,
+            "sendError": false,
+            "x": 320,
+            "y": 80,
+            "wires": [
+                [
+                    "global-3"
+                ]
+            ]
+        },
+        {
+            "id": "global-3",
+            "type": "yaml",
+            "name": "",
+            "x": 510,
+            "y": 80,
+            "wires": [
+                [
+                    "global-4"
+                ]
+            ]
+        },
+        {
+            "id": "global-4",
+            "type": "function",
+            "name": "",
+            "func": "var globalVariables = Object.keys(msg.payload);\n\nfor (var i=0; i<globalVariables.length; i++) {\n    global.set(globalVariables[i], msg.payload[globalVariables[i]])\n}\n\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 630,
+            "y": 80,
+            "wires": [
+                [
+                    "global-5"
+                ]
+            ]
+        },
+        {
+            "id": "global-5",
             "type": "debug",
             "name": "",
             "active": true,
             "console": "false",
             "complete": "false",
-            "x": 284.5,
-            "y": 63,
+            "x": 770,
+            "y": 80,
             "wires": []
+        },
+        {
+            "id": "global-6",
+            "type": "comment",
+            "name": "Load Global Context Variables",
+            "info": "",
+            "x": 140,
+            "y": 40,
+            "wires": []
+        },
+        {
+            "id": "global-7",
+            "type": "switch",
+            "name": "",
+            "property": "basicAuth",
+            "propertyType": "global",
+            "rules": [
+                {
+                    "t": "nnull"
+                },
+                {
+                    "t": "else"
+                }
+            ],
+            "checkall": "false",
+            "outputs": 2,
+            "x": 430,
+            "y": 240,
+            "wires": [
+                [
+                    "global-8"
+                ],
+                [
+                    "global-13"
+                ]
+            ]
+        },
+        {
+            "id": "global-10",
+            "type": "switch",
+            "name": "",
+            "property": "useTLS",
+            "propertyType": "global",
+            "rules": [
+                {
+                    "t": "true"
+                },
+                {
+                    "t": "else"
+                }
+            ],
+            "checkall": "false",
+            "outputs": 2,
+            "x": 710,
+            "y": 200,
+            "wires": [
+                [
+                    "global-11"
+                ],
+                [
+                    "global-12"
+                ]
+            ]
+        },
+        {
+            "id": "global-13",
+            "type": "switch",
+            "name": "",
+            "property": "useTLS",
+            "propertyType": "global",
+            "rules": [
+                {
+                    "t": "true"
+                },
+                {
+                    "t": "else"
+                }
+            ],
+            "checkall": "false",
+            "outputs": 2,
+            "x": 710,
+            "y": 280,
+            "wires": [
+                [
+                    "global-14"
+                ],
+                [
+                    "global-15"
+                ]
+            ]
+        },
+        {
+            "id": "global-11",
+            "type": "http request",
+            "name": "Basic Auth with SSL",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "global-16",
+            "x": 920,
+            "y": 180,
+            "wires": [
+                [
+                    "global-17"
+                ]
+            ]
+        },
+        {
+            "id": "global-12",
+            "type": "http request",
+            "name": "Basic Auth without SSL",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "",
+            "x": 910,
+            "y": 220,
+            "wires": [
+                [
+                    "global-17"
+                ]
+            ]
+        },
+        {
+            "id": "global-14",
+            "type": "http request",
+            "name": "No Basic Auth with SSL",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "global-16",
+            "x": 910,
+            "y": 260,
+            "wires": [
+                [
+                    "global-17"
+                ]
+            ]
+        },
+        {
+            "id": "global-15",
+            "type": "http request",
+            "name": "No Basic Auth without SSL",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "",
+            "x": 900,
+            "y": 300,
+            "wires": [
+                [
+                    "global-17"
+                ]
+            ]
+        },
+        {
+            "id": "global-18",
+            "type": "comment",
+            "name": "Basic Auth",
+            "info": "",
+            "x": 440,
+            "y": 180,
+            "wires": []
+        },
+        {
+            "id": "global-19",
+            "type": "comment",
+            "name": "No Basic Auth",
+            "info": "",
+            "x": 430,
+            "y": 300,
+            "wires": []
+        },
+        {
+            "id": "global-20",
+            "type": "comment",
+            "name": "Elasticsearch Query Proxy",
+            "info": "This endpoint exists to simplify the connection to Elasticsearch.\n\nIt could certainly be cleaned up by creating a http node that accept auth changes on the fly or by creating a better ES node.",
+            "x": 130,
+            "y": 200,
+            "wires": []
+        },
+        {
+            "id": "global-21",
+            "type": "http in",
+            "name": "",
+            "url": "/elasticsearch",
+            "method": "post",
+            "upload": false,
+            "swaggerDoc": "",
+            "x": 110,
+            "y": 240,
+            "wires": [
+                [
+                    "global-22"
+                ]
+            ]
+        },
+        {
+            "id": "global-22",
+            "type": "function",
+            "name": "",
+            "func": "delete msg.req, msg.res;\n\nvar es = global.get('elasticsearch');\n\nvar errors = [];\n\nif (es) {\n    var url = es.url;\n} else {\n    errors.push('No ES Connection found in the Global Configuraiton.')\n}\n\nvar request = msg.payload;\n\nif (request.path) {\n    msg.url = url + request.path;\n} else {\n    errors.push('No path found in payload')   \n}\n\nif (request.payload) {\n    msg.payload = request.body\n}\n\nmsg.headers = {\n    'Content-Type': 'application/json'\n}\n\nmsg.errors = errors;\n\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 290,
+            "y": 240,
+            "wires": [
+                [
+                    "global-7"
+                ]
+            ]
+        },
+        {
+            "id": "global-8",
+            "type": "function",
+            "name": "",
+            "func": "var es = global.get('elasticsearch');\n\nif (es.basicAuth) {\n    var basicString = es.basicAuth.username + ':' + es.basicAuth.password;\n    var encodedString = Buffer.from(basicString).toString('base64')\n    \n    msg.headers.Authorization = 'Basic ' + encodedString\n} else {\n    msg.errors.push('Basic authentication specified, but unavailable.')\n}\n\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 570,
+            "y": 200,
+            "wires": [
+                [
+                    "global-10"
+                ]
+            ]
+        },
+        {
+            "id": "global-17",
+            "type": "http response",
+            "name": "",
+            "statusCode": "",
+            "headers": {},
+            "x": 1110,
+            "y": 240,
+            "wires": []
+        },
+        {
+            "id": "global-16",
+            "type": "tls-config",
+            "name": "",
+            "cert": "/data/conveyor/elasticsearch.crt",
+            "key": "/data/conveyor/elasticsearch.key",
+            "ca": "/data/conveyor/ca.crt",
+            "certname": "",
+            "keyname": "",
+            "caname": "",
+            "verifyservercert": true
         }
     ]
   }
