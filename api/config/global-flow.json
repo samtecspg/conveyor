@@ -1,0 +1,34 @@
+{
+    "label": "Global Flow",
+    "nodes": [
+        {
+            "id": "global-1",
+            "type": "inject",
+            "name": "",
+            "topic": "",
+            "payload": "",
+            "payloadType": "date",
+            "repeat": "",
+            "crontab": "",
+            "once": true,
+            "x": 125.5,
+            "y": 65,
+            "wires": [
+                [
+                    "global-2"
+                ]
+            ]
+        },
+        {
+            "id": "global-2",
+            "type": "debug",
+            "name": "",
+            "active": true,
+            "console": "false",
+            "complete": "false",
+            "x": 284.5,
+            "y": 63,
+            "wires": []
+        }
+    ]
+  }

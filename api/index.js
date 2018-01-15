@@ -9,6 +9,7 @@ const Vision = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
 const MetricsLogger = require('./plugins/metrics-logger.plugin');
+const Startup = require('./plugins/startup-install.plugin');
 
 module.exports = (callback) => {
     /* $lab:coverage:off$ */
@@ -31,11 +32,13 @@ module.exports = (callback) => {
             console.log('Loaded h2o2');
         }
     });
+
     for (const route in Routes) {
         if (Routes.hasOwnProperty(route)) {
             server.route(Routes[route]);
         }
     }
+
     server.register([
 
         Inert,
@@ -58,6 +61,10 @@ module.exports = (callback) => {
         },
         {
             register: MetricsLogger,
+            options: {}
+        },
+        {
+            register: Startup,
             options: {}
         }
     ], (err) => {
