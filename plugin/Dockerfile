@@ -1,17 +1,17 @@
+ARG ELASTIC_TAG=5.4.0
 # https://github.com/elastic/kibana-docker
-FROM docker.elastic.co/kibana/kibana:5.4.0
+FROM docker.elastic.co/kibana/kibana:${ELASTIC_TAG}
+ARG ELASTIC_TAG
+# to understand the "ARG" stuff see: 
+#   https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
 
-# Add your kibana plugins setup here
-# Example: RUN kibana-plugin install <name|url>
-
-#Copy my hacked install zip into the kibana container
-COPY ./build/conveyor-5.4.0.zip .
-#In case your umask doesn't given everyone read rights, and
+COPY ./build/conveyor-${ELASTIC_TAG}.zip .
+#In case your umask doesn't give everyone read rights, and
 #until the --chown arg to COPY is more commonly available
 # (... see:  https://github.com/moby/moby/issues/6119 & https://github.com/moby/moby/pull/34263
 USER root
-RUN chmod 444 conveyor-5.4.0.zip
+RUN chmod 444 conveyor-${ELASTIC_TAG}.zip
 USER kibana
 
 #Run the kibana installer to install the plugin
-RUN kibana-plugin install file://`pwd`/conveyor-5.4.0.zip
+RUN kibana-plugin install file://`pwd`/conveyor-${ELASTIC_TAG}.zip

@@ -43,7 +43,10 @@ services:
       timeout: 10s
       retries: 3
   kibana:
-    build: plugin/
+    build: 
+      context: plugin/
+      args:
+        - ELASTIC_TAG=${ELASTIC_TAG:-5.4.0}
     ports: ['5601:5601']
     networks: ['conveyor-net']
     volumes:
