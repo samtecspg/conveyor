@@ -3,8 +3,12 @@ version: '3.0'
 services:
   api:
     build: api/
-    ports: ['0.0.0.0:4000:80']
+    ports:
+      - '0.0.0.0:4000:80'
+      - '0.0.0.0:1880:1880'
     networks: ['conveyor-net']
+    volumes:
+      - ${NODERED_CONFIG:-./helpers-stuff/node-red}:/data
     # The following (crazy) block is about both:
     # 1) setting default values for app parameteres
     # 2) projecting any changes to those values set in the .env file
@@ -16,18 +20,12 @@ services:
       - PORT=80
       - ELASTIC_SEARCH_URL=${ELASTIC_SEARCH_URL:-http://elasticsearch:9200}
       - ES_BASIC_AUTH=${ES_BASIC_AUTH:-elastic:changeme}
-      - NODE_RED_URL=${NODE_RED_URL:-http://node-red:1880}
+      - NODE_RED_URL=${NODE_RED_URL:-http://localhost:1880}
+      - NODE_RED_DATA=${NODE_RED_DATA:-/data}
       - ES_INDEX=${ES_INDEX:-flow}
       - DEBUG=${DEBUG:-*}
     depends_on:
       - elasticsearch
-      - node-red
-  node-red:
-    image: nodered/node-red-docker:${NODERED_TAG-:-0.16.2}
-    ports: ['1880:1880']
-    volumes:
-      - ${NODERED_CONFIG:-./helpers-stuff/node-red}:/data
-    networks: ['conveyor-net']
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-5.4.0}
     environment:
@@ -64,7 +62,6 @@ services:
     networks: ['conveyor-net']
     depends_on:
       - elasticsearch
-      - node-red
       - api
       - kibana
     volumes:

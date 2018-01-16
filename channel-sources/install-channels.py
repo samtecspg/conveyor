@@ -17,7 +17,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 def main():
-    node_red_url = 'node-red:1880'
+    node_red_url = 'api:1880'
     api_url = 'api:80'
 
     parser = argparse.ArgumentParser()

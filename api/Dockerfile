@@ -12,4 +12,4 @@ COPY ./package.json ./yarn.lock ./
 RUN yarn install
 COPY . /usr/src/app
 
-CMD ["dockerize", "-wait", "tcp://node-red:1880", "-timeout", "5m", "node", "start.js"]
+CMD ["node", "start.js"]
