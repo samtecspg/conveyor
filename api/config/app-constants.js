@@ -25,7 +25,8 @@ if (!parsed) {
         ELASTIC_SEARCH_HTTP_AUTH: envValues.ELASTIC_SEARCH_HTTP_AUTH || '',
         ELASTIC_SEARCH_LOG_LEVEL: envValues.ELASTIC_SEARCH_LOG_LEVEL || 'error',
         NODE_ENV: envValues.NODE_ENV,
-        NODE_RED_ENDPOINTS: envValues.NODE_RED_ENDPOINTS ? envValues.NODE_RED_ENDPOINTS.split(',') : []
+        NODE_RED_ENDPOINTS: envValues.NODE_RED_ENDPOINTS ? envValues.NODE_RED_ENDPOINTS.split(',') : [],
+        NODE_RED_DATA: envValues.NODE_RED_DATA ? envValues.NODE_RED_DATA : '/data'
     });
 }
 else {
