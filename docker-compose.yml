@@ -4,7 +4,7 @@ services:
   api:
     build: api/
     ports:
-      - '0.0.0.0:4000:80'
+      - '0.0.0.0:4000:4000'
       - '0.0.0.0:1880:1880'
     networks: ['conveyor-net']
     volumes:
@@ -17,12 +17,6 @@ services:
     # same for both the var thats projected into the app (the first name)
     # and the name thats expected in the .env (the second name)
     environment:
-      - PORT=80
-      - ELASTIC_SEARCH_URL=${ELASTIC_SEARCH_URL:-http://elasticsearch:9200}
-      - ES_BASIC_AUTH=${ES_BASIC_AUTH:-elastic:changeme}
-      - NODE_RED_URL=${NODE_RED_URL:-http://localhost:1880}
-      - NODE_RED_DATA=${NODE_RED_DATA:-/data}
-      - ES_INDEX=${ES_INDEX:-flow}
       - DEBUG=${DEBUG:-*}
     depends_on:
       - elasticsearch

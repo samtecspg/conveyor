@@ -18,7 +18,7 @@ class bcolors:
 
 def main():
     node_red_url = 'api:1880'
-    api_url = 'api:80'
+    api_url = 'api:4000'
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--node", help="Specify the Node-RED URL")

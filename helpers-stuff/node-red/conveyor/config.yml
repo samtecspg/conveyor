@@ -5,4 +5,8 @@ elasticsearch:
 
 # Specify the Node-RED URL
 node-red:
-  url: http://node-red:1880
+  url: http://localhost:1880
+
+# Specify where we can reach the conveyor API internal to Node-RED
+conveyor-api:
+  url: http://localhost:4000

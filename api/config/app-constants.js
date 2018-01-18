@@ -20,13 +20,13 @@ if (!parsed) {
     values = Object.assign({}, values, {
         PORT: envValues.PORT || 4000,
         ES_INDEX: envValues.ES_INDEX || 'flow',
-        NODE_RED_URL: envValues.NODE_RED_URL,
-        ELASTIC_SEARCH_URL: envValues.ELASTIC_SEARCH_URL,
+        NODE_RED_URL: envValues.NODE_RED_URL || 'http://localhost:1880',
+        NODE_RED_ENDPOINTS: envValues.NODE_RED_ENDPOINTS ? envValues.NODE_RED_ENDPOINTS.split(',') : [],
+        NODE_RED_DATA: envValues.NODE_RED_DATA ? envValues.NODE_RED_DATA : '/data',
+        ELASTIC_SEARCH_URL: envValues.ELASTIC_SEARCH_URL || 'http://elasticsearch:9200',
         ELASTIC_SEARCH_HTTP_AUTH: envValues.ELASTIC_SEARCH_HTTP_AUTH || '',
         ELASTIC_SEARCH_LOG_LEVEL: envValues.ELASTIC_SEARCH_LOG_LEVEL || 'error',
-        NODE_ENV: envValues.NODE_ENV,
-        NODE_RED_ENDPOINTS: envValues.NODE_RED_ENDPOINTS ? envValues.NODE_RED_ENDPOINTS.split(',') : [],
-        NODE_RED_DATA: envValues.NODE_RED_DATA ? envValues.NODE_RED_DATA : '/data'
+        NODE_ENV: envValues.NODE_ENV
     });
 }
 else {

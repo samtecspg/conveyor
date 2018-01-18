@@ -58,7 +58,10 @@ exports.register = function (server, options, next) {
         RED.start().then(embeddedStart(RED)).then((result) => {
             // result is whatever RED.start() resolved to 
             // RED.node.getFlows() etc are now ready to use
-            callback(null)
+
+            //Still calls a little bit too fast so adding a delay.
+            setTimeout(callback(null), 1000 * 5)
+            
         }).catch((err) => {
             if (/^timed out/.test(err.message)) {
                 // embeddedStart() timed out 
