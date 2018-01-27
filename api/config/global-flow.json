@@ -58,7 +58,8 @@
             "y": 80,
             "wires": [
                 [
-                    "global-5"
+                    "global-5",
+                    "global-38"
                 ]
             ]
         },
@@ -69,8 +70,8 @@
             "active": true,
             "console": "false",
             "complete": "false",
-            "x": 770,
-            "y": 80,
+            "x": 790,
+            "y": 40,
             "wires": []
         },
         {
@@ -99,7 +100,7 @@
             "checkall": "false",
             "outputs": 2,
             "x": 430,
-            "y": 240,
+            "y": 380,
             "wires": [
                 [
                     "global-8"
@@ -126,7 +127,7 @@
             "checkall": "false",
             "outputs": 2,
             "x": 710,
-            "y": 200,
+            "y": 340,
             "wires": [
                 [
                     "global-11"
@@ -153,7 +154,7 @@
             "checkall": "false",
             "outputs": 2,
             "x": 710,
-            "y": 280,
+            "y": 420,
             "wires": [
                 [
                     "global-14"
@@ -172,7 +173,7 @@
             "url": "",
             "tls": "global-16",
             "x": 920,
-            "y": 180,
+            "y": 320,
             "wires": [
                 [
                     "global-17"
@@ -188,7 +189,7 @@
             "url": "",
             "tls": "",
             "x": 910,
-            "y": 220,
+            "y": 360,
             "wires": [
                 [
                     "global-17"
@@ -204,7 +205,7 @@
             "url": "",
             "tls": "global-16",
             "x": 910,
-            "y": 260,
+            "y": 400,
             "wires": [
                 [
                     "global-17"
@@ -220,7 +221,7 @@
             "url": "",
             "tls": "",
             "x": 900,
-            "y": 300,
+            "y": 440,
             "wires": [
                 [
                     "global-17"
@@ -233,7 +234,7 @@
             "name": "Basic Auth",
             "info": "",
             "x": 440,
-            "y": 180,
+            "y": 320,
             "wires": []
         },
         {
@@ -242,7 +243,7 @@
             "name": "No Basic Auth",
             "info": "",
             "x": 430,
-            "y": 300,
+            "y": 440,
             "wires": []
         },
         {
@@ -251,7 +252,7 @@
             "name": "Elasticsearch Query Proxy",
             "info": "This endpoint exists to simplify the connection to Elasticsearch.\n\nIt could certainly be cleaned up by creating a http node that accept auth changes on the fly or by creating a better ES node.",
             "x": 130,
-            "y": 200,
+            "y": 340,
             "wires": []
         },
         {
@@ -263,7 +264,7 @@
             "upload": false,
             "swaggerDoc": "",
             "x": 110,
-            "y": 240,
+            "y": 380,
             "wires": [
                 [
                     "global-22"
@@ -278,7 +279,7 @@
             "outputs": 1,
             "noerr": 0,
             "x": 290,
-            "y": 240,
+            "y": 380,
             "wires": [
                 [
                     "global-7"
@@ -293,7 +294,7 @@
             "outputs": 1,
             "noerr": 0,
             "x": 570,
-            "y": 200,
+            "y": 340,
             "wires": [
                 [
                     "global-10"
@@ -307,26 +308,8 @@
             "statusCode": "",
             "headers": {},
             "x": 1110,
-            "y": 240,
+            "y": 380,
             "wires": []
-        },
-        {
-            "id": "global-23",
-            "type": "inject",
-            "name": "",
-            "topic": "",
-            "payload": "",
-            "payloadType": "date",
-            "repeat": "",
-            "crontab": "",
-            "once": true,
-            "x": 110,
-            "y": 420,
-            "wires": [
-                [
-                    "global-24"
-                ]
-            ]
         },
         {
             "id": "global-25",
@@ -334,7 +317,7 @@
             "name": "Update Index Patterns",
             "info": "",
             "x": 120,
-            "y": 340,
+            "y": 120,
             "wires": []
         },
         {
@@ -342,8 +325,8 @@
             "type": "link in",
             "name": "Update Index Patterns",
             "links": [],
-            "x": 155,
-            "y": 380,
+            "x": 35,
+            "y": 200,
             "wires": [
                 [
                     "global-24"
@@ -358,8 +341,8 @@
             "ret": "obj",
             "url": "",
             "tls": "",
-            "x": 590,
-            "y": 420,
+            "x": 470,
+            "y": 200,
             "wires": [
                 [
                     "global-28"
@@ -373,8 +356,8 @@
             "func": "msg = {\n    url: global.get('conveyor-api').url + '/flow',\n    method: 'GET'\n}\n\n\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
-            "x": 440,
-            "y": 420,
+            "x": 320,
+            "y": 200,
             "wires": [
                 [
                     "global-27"
@@ -388,8 +371,8 @@
             "func": "if (msg.statusCode == 200 && msg.payload.length > 0) {\n    \n    msg = {\n        currentFlows: msg.payload,\n        payload: {\n            path: '/.kibana/index-pattern/_search',\n            method: 'GET'\n        },\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST'\n    }\n    return msg;\n}",
             "outputs": 1,
             "noerr": 0,
-            "x": 730,
-            "y": 420,
+            "x": 610,
+            "y": 200,
             "wires": [
                 [
                     "global-30"
@@ -404,8 +387,8 @@
             "ret": "obj",
             "url": "",
             "tls": "",
-            "x": 890,
-            "y": 420,
+            "x": 770,
+            "y": 200,
             "wires": [
                 [
                     "global-31"
@@ -420,7 +403,7 @@
             "outputs": 1,
             "noerr": 0,
             "x": 130,
-            "y": 460,
+            "y": 240,
             "wires": [
                 [
                     "global-33"
@@ -434,8 +417,8 @@
             "links": [
                 "global-34"
             ],
-            "x": 1015,
-            "y": 420,
+            "x": 895,
+            "y": 200,
             "wires": []
         },
         {
@@ -446,7 +429,7 @@
                 "global-31"
             ],
             "x": 35,
-            "y": 460,
+            "y": 240,
             "wires": [
                 [
                     "global-32"
@@ -464,7 +447,7 @@
             "stream": false,
             "addname": "",
             "x": 270,
-            "y": 460,
+            "y": 240,
             "wires": [
                 [
                     "global-35"
@@ -479,7 +462,7 @@
             "outputs": 1,
             "noerr": 0,
             "x": 400,
-            "y": 460,
+            "y": 240,
             "wires": [
                 [
                     "global-36"
@@ -495,7 +478,7 @@
             "url": "",
             "tls": "",
             "x": 580,
-            "y": 460,
+            "y": 240,
             "wires": [
                 []
             ]
@@ -514,13 +497,39 @@
             "randomLast": "5",
             "randomUnits": "seconds",
             "drop": true,
-            "x": 280,
-            "y": 420,
+            "x": 160,
+            "y": 200,
             "wires": [
                 [
                     "global-29"
                 ]
             ]
+        },
+        {
+            "id": "global-37",
+            "type": "link in",
+            "name": "Update Index patterns - Start",
+            "links": [
+                "global-38"
+            ],
+            "x": 35,
+            "y": 160,
+            "wires": [
+                [
+                    "global-24"
+                ]
+            ]
+        },
+        {
+            "id": "global-38",
+            "type": "link out",
+            "name": "Load Global Context - End",
+            "links": [
+                "global-37"
+            ],
+            "x": 735,
+            "y": 80,
+            "wires": []
         },
         {
             "id": "global-16",
