@@ -274,7 +274,7 @@
             "id": "global-22",
             "type": "function",
             "name": "",
-            "func": "delete msg.req, msg.res;\n\nvar es = global.get('elasticsearch');\n\nvar errors = [];\n\nif (es) {\n    var url = es.url;\n} else {\n    errors.push('No ES Connection found in the Global Configuraiton.')\n}\n\nvar request = msg.payload;\n\nif (request.path) {\n    msg.url = url + request.path;\n} else {\n    errors.push('No path found in payload')   \n}\n\nif (request.payload) {\n    msg.payload = request.body\n}\n\nmsg.headers = {\n    'Content-Type': 'application/json'\n}\n\nmsg.errors = errors;\n\nreturn msg;",
+            "func": "delete msg.req, msg.res;\n\nvar es = global.get('elasticsearch');\n\nvar errors = [];\n\nif (es) {\n    var url = es.url;\n} else {\n    errors.push('No ES Connection found in the Global Configuraiton.')\n}\n\nvar request = msg.payload;\n\nif (request.path) {\n    msg.url = url + request.path;\n} else {\n    errors.push('No path found in payload')   \n}\n\nif (request.payload) {\n    msg.payload = request.body\n}\n\nif (request.method) {\n    msg.method = request.method\n} else {\n    msg.method = 'GET'\n}\n\nmsg.headers = {\n    'Content-Type': 'application/json'\n}\n\nmsg.errors = errors;\n\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 290,
@@ -311,6 +311,218 @@
             "wires": []
         },
         {
+            "id": "global-23",
+            "type": "inject",
+            "name": "",
+            "topic": "",
+            "payload": "",
+            "payloadType": "date",
+            "repeat": "",
+            "crontab": "",
+            "once": true,
+            "x": 110,
+            "y": 420,
+            "wires": [
+                [
+                    "global-24"
+                ]
+            ]
+        },
+        {
+            "id": "global-25",
+            "type": "comment",
+            "name": "Update Index Patterns",
+            "info": "",
+            "x": 120,
+            "y": 340,
+            "wires": []
+        },
+        {
+            "id": "global-26",
+            "type": "link in",
+            "name": "Update Index Patterns",
+            "links": [],
+            "x": 155,
+            "y": 380,
+            "wires": [
+                [
+                    "global-24"
+                ]
+            ]
+        },
+        {
+            "id": "global-27",
+            "type": "http request",
+            "name": "GET Flows",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "",
+            "x": 590,
+            "y": 420,
+            "wires": [
+                [
+                    "global-28"
+                ]
+            ]
+        },
+        {
+            "id": "global-29",
+            "type": "function",
+            "name": "Format",
+            "func": "msg = {\n    url: global.get('conveyor-api').url + '/flow',\n    method: 'GET'\n}\n\n\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 440,
+            "y": 420,
+            "wires": [
+                [
+                    "global-27"
+                ]
+            ]
+        },
+        {
+            "id": "global-28",
+            "type": "function",
+            "name": "",
+            "func": "if (msg.statusCode == 200 && msg.payload.length > 0) {\n    \n    msg = {\n        currentFlows: msg.payload,\n        payload: {\n            path: '/.kibana/index-pattern/_search',\n            method: 'GET'\n        },\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST'\n    }\n    return msg;\n}",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 730,
+            "y": 420,
+            "wires": [
+                [
+                    "global-30"
+                ]
+            ]
+        },
+        {
+            "id": "global-30",
+            "type": "http request",
+            "name": "GET Index Patterns",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "",
+            "x": 890,
+            "y": 420,
+            "wires": [
+                [
+                    "global-31"
+                ]
+            ]
+        },
+        {
+            "id": "global-32",
+            "type": "function",
+            "name": "Check",
+            "func": "var currentFlows = msg.currentFlows;\nvar currentPatterns = msg.payload.hits.hits;\nvar missingPatterns = [];\n\ncurrentFlows.forEach(function(flow) {\n    var indexFound = currentPatterns.find(function(pattern) {\n        return flow.index == pattern._id\n    })\n    \n    if (!indexFound || indexFound._id != flow.index) {\n        missingPatterns.push(flow.index)\n    }\n})\n\nmsg = {\n    payload: missingPatterns\n}\n\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 130,
+            "y": 460,
+            "wires": [
+                [
+                    "global-33"
+                ]
+            ]
+        },
+        {
+            "id": "global-31",
+            "type": "link out",
+            "name": "Index Pattern - End Line 1",
+            "links": [
+                "global-34"
+            ],
+            "x": 1015,
+            "y": 420,
+            "wires": []
+        },
+        {
+            "id": "global-34",
+            "type": "link in",
+            "name": "Index Pattern - Start Line 2",
+            "links": [
+                "global-31"
+            ],
+            "x": 35,
+            "y": 460,
+            "wires": [
+                [
+                    "global-32"
+                ]
+            ]
+        },
+        {
+            "id": "global-33",
+            "type": "split",
+            "name": "",
+            "splt": "\\n",
+            "spltType": "str",
+            "arraySplt": 1,
+            "arraySpltType": "len",
+            "stream": false,
+            "addname": "",
+            "x": 270,
+            "y": 460,
+            "wires": [
+                [
+                    "global-35"
+                ]
+            ]
+        },
+        {
+            "id": "global-35",
+            "type": "function",
+            "name": "Format",
+            "func": "var index = msg.payload;\n\nmsg = {\n    url: global.get('node-red').url + '/elasticsearch',\n    method: 'POST',\n    payload: {\n        path: '/.kibana/index-pattern/' + index,\n        method: 'POST',\n        body: {\n            \"title\": index\n        }\n    }\n}\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 400,
+            "y": 460,
+            "wires": [
+                [
+                    "global-36"
+                ]
+            ]
+        },
+        {
+            "id": "global-36",
+            "type": "http request",
+            "name": "POST Index patterns",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "",
+            "x": 580,
+            "y": 460,
+            "wires": [
+                []
+            ]
+        },
+        {
+            "id": "global-24",
+            "type": "delay",
+            "name": "",
+            "pauseType": "rate",
+            "timeout": "5",
+            "timeoutUnits": "seconds",
+            "rate": "1",
+            "nbRateUnits": "10",
+            "rateUnits": "second",
+            "randomFirst": "1",
+            "randomLast": "5",
+            "randomUnits": "seconds",
+            "drop": true,
+            "x": 280,
+            "y": 420,
+            "wires": [
+                [
+                    "global-29"
+                ]
+            ]
+        },
+        {
             "id": "global-16",
             "type": "tls-config",
             "name": "",
@@ -323,4 +535,4 @@
             "verifyservercert": true
         }
     ]
-  }
+}
