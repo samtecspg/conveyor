@@ -38,7 +38,7 @@ export class _SourceListView extends React.Component {
         const { sources } = this.props;
         return (
             <Content>
-                <ContentHeader title="+ Create">We create a new conveyor channel by selecting a channel source and filling out some information about the channel we wold like to create.</ContentHeader>
+                <ContentHeader title="+ Create">We create a new Conveyor channel by selecting a data source and providing information needed to create the channel.</ContentHeader>
                 <Divider light/>
                 {/*<ContentSubHeader>
                     <Grid container>

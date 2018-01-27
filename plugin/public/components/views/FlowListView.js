@@ -76,7 +76,7 @@ class _FlowListView extends React.Component {
         }
         return (
             <Content>
-                <ContentHeader title="Channels">This are your existing channels.</ContentHeader>
+                <ContentHeader title="Channels">{"These are your existing channels. Mouse over the the dots to the left of any channel to see it's options."}</ContentHeader>
                 <Divider light />
                 <ContentBody>
                     <div>
