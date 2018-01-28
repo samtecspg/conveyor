@@ -40,6 +40,14 @@ exports.register = function (server, options, next) {
             httpAdminRoot: '/',
             httpNodeRoot: '/',
             userDir: AppConstants.NODE_RED_DATA,
+            logging: {
+                // Console logging
+                console: {
+                    level: "error",
+                    metrics: false,
+                    audit: false
+                }
+            },
             functionGlobalContext: { }    // enables global context
         };
 
@@ -60,7 +68,9 @@ exports.register = function (server, options, next) {
             // RED.node.getFlows() etc are now ready to use
 
             //Still calls a little bit too fast so adding a delay.
-            setTimeout(callback(null), 1000 * 5)
+            setTimeout(function() {
+                callback(null)
+            }, 1000 * 5)
             
         }).catch((err) => {
             if (/^timed out/.test(err.message)) {
