@@ -9,4 +9,4 @@ COPY . .
 
 VOLUME [ "/usr/src/app" ]
 
-CMD ["dockerize", "-wait", "tcp://elasticsearch:9200", "-wait", "tcp://api:4000", "-wait", "tcp://kibana:5601", "-timeout", "5m",  "python", "./install-channels.py"]
+CMD ["dockerize", "-wait", "tcp://elasticsearch:9200", "-wait", "tcp://kibana:5601", "-wait", "tcp://api:4000", "-timeout", "5m",  "python", "./install-channels.py"]

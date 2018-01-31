@@ -5,7 +5,7 @@ MAINTAINER Mike Lutz / Luis Malavé
 RUN npm set progress=false && \
     npm config set depth 0
 RUN npm install -g yarn
-RUN mkdir /usr/src && mkdir /usr/src/app
+RUN mkdir /usr/src && mkdir /usr/src/app && mkdir /usr/src/data
 RUN apk add dockerize --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
 WORKDIR /usr/src/app
 COPY ./package.json ./yarn.lock ./

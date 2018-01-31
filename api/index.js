@@ -39,6 +39,14 @@ module.exports = (callback) => {
         }
     }
 
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: function (request, reply) {
+            reply('Hello, docker!');
+        }
+    });
+
     server.register([
 
         Inert,

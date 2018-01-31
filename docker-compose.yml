@@ -8,16 +8,7 @@ services:
       - '0.0.0.0:1880:1880'
     networks: ['conveyor-net']
     volumes:
-      - ${NODERED_CONFIG:-./helpers-stuff/node-red}:/data
-    # The following (crazy) block is about both:
-    # 1) setting default values for app parameteres
-    # 2) projecting any changes to those values set in the .env file
-    # a line should be added to this list for any env-var/param that the
-    # app might need, and its easiest to follow if the var name is kept the
-    # same for both the var thats projected into the app (the first name)
-    # and the name thats expected in the .env (the second name)
-    environment:
-      - DEBUG=${DEBUG:-*}
+      - ${NODERED_CONFIG:-./helpers-stuff/node-red}:/usr/src/data
     depends_on:
       - elasticsearch
   elasticsearch:

@@ -22,7 +22,7 @@ if (!parsed) {
         ES_INDEX: envValues.ES_INDEX || 'flow',
         NODE_RED_URL: envValues.NODE_RED_URL || 'http://localhost:1880',
         NODE_RED_ENDPOINTS: envValues.NODE_RED_ENDPOINTS ? envValues.NODE_RED_ENDPOINTS.split(',') : [],
-        NODE_RED_DATA: envValues.NODE_RED_DATA ? envValues.NODE_RED_DATA : '/data',
+        NODE_RED_DATA: envValues.NODE_RED_DATA ? envValues.NODE_RED_DATA : '/usr/src/data',
         ELASTIC_SEARCH_URL: envValues.ELASTIC_SEARCH_URL || 'http://elasticsearch:9200',
         ELASTIC_SEARCH_HTTP_AUTH: envValues.ELASTIC_SEARCH_HTTP_AUTH || '',
         ELASTIC_SEARCH_LOG_LEVEL: envValues.ELASTIC_SEARCH_LOG_LEVEL || 'error',
