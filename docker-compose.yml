@@ -11,6 +11,7 @@ services:
       - ${NODERED_CONFIG:-./helpers-stuff/node-red}:/usr/src/data
     depends_on:
       - elasticsearch
+    command: ["dockerize", "-wait", "tcp://elasticsearch:9200", "-timeout", "5m", "node", "start.js"]
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-5.4.0}
     environment:

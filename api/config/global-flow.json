@@ -23,7 +23,7 @@
             "id": "global-2",
             "type": "file in",
             "name": "",
-            "filename": "/data/conveyor/config.yml",
+            "filename": "/usr/src/app/config/conveyor.yml",
             "format": "utf8",
             "chunk": false,
             "sendError": false,

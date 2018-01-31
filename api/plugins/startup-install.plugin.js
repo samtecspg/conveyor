@@ -40,6 +40,7 @@ exports.register = function (server, options, next) {
             httpAdminRoot: '/',
             httpNodeRoot: '/',
             userDir: AppConstants.NODE_RED_DATA,
+            flowFile: 'conveyor_flows.json',
             logging: {
                 // Console logging
                 console: {
