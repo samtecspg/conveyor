@@ -13,6 +13,7 @@
 *.tgz
 *.xml
 .DS_Store
+._.DS_Store
 .project
 .strong-pm
 npm-debug.log
