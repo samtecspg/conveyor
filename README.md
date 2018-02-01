@@ -2,6 +2,8 @@
 
 ## Easy way to get database type stuff into Elasticsearch
 
+[![Join the chat at https://gitter.im/samtecspg/conveyor](https://badges.gitter.im/samtecspg/conveyor.svg)](https://gitter.im/samtecspg/conveyor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Documentation
 
 https://samtecspg.github.io/conveyor/
