@@ -170,6 +170,15 @@
             "get": {
                 "summary": "Proxy for Node-RED flows",
                 "operationId": "getFlowNameData",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the Flow (this is unique)",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "tags": [
                     "flow"
                 ],
@@ -185,6 +194,15 @@
             "post": {
                 "summary": "Proxy for Node-RED flows",
                 "operationId": "postFlowNameData",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the Flow (this is unique)",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "tags": [
                     "flow"
                 ],
@@ -200,6 +218,15 @@
             "put": {
                 "summary": "Proxy for Node-RED flows",
                 "operationId": "putFlowNameData",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the Flow (this is unique)",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "tags": [
                     "flow"
                 ],
@@ -215,6 +242,16 @@
             "patch": {
                 "summary": "Proxy for Node-RED flows",
                 "operationId": "patchFlowNameData",
+
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the Flow (this is unique)",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "tags": [
                     "flow"
                 ],
@@ -230,6 +267,15 @@
             "delete": {
                 "summary": "Proxy for Node-RED flows",
                 "operationId": "deleteFlowNameData",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name of the Flow (this is unique)",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "tags": [
                     "flow"
                 ],

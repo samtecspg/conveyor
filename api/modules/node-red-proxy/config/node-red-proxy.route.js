@@ -91,7 +91,7 @@ const generateRoutes = function generateRoutes(suffix) {
 module.exports = function initProxy() {
 
     let routes = generateGlobalRoutes();
-    routes = routes.concat(['data', 'configs'].map(generateRoutes));
+    routes = routes.concat(['data', 'config'].map(generateRoutes));
     routes = _.flatten(routes);
     return routes;
 };

@@ -15,7 +15,12 @@ module.exports = (request, reply, suffix) => {
             console.log(new Error('Flow not found'));
             return reply(Boom.badRequest('Flow Template not found'));
         }
-        const uri = request.params.paths ? `${AppConstants.NODE_RED_URL}/${encodeURI(flow.name)}/${suffix}/${request.params.paths}` : `${AppConstants.NODE_RED_URL}/${encodeURI(flow.name)}/${suffix}`;
+        var uri = request.params.paths ? `${AppConstants.NODE_RED_URL}/${encodeURI(flow.name)}/${suffix}/${request.params.paths}` : `${AppConstants.NODE_RED_URL}/${encodeURI(flow.name)}/${suffix}`;
+
+        if (request.url.search) {
+            uri = uri + request.url.search
+        }
+
         return reply.proxy({ uri });
     });
 };
