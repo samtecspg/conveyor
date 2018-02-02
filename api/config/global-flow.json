@@ -345,7 +345,7 @@
             "y": 200,
             "wires": [
                 [
-                    "global-28"
+                    "global-40"
                 ]
             ]
         },
@@ -371,7 +371,7 @@
             "func": "if (msg.statusCode == 200 && msg.payload.length > 0) {\n    \n    msg = {\n        currentFlows: msg.payload,\n        payload: {\n            path: '/.kibana/index-pattern/_search',\n            method: 'GET'\n        },\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST'\n    }\n    return msg;\n}",
             "outputs": 1,
             "noerr": 0,
-            "x": 610,
+            "x": 730,
             "y": 200,
             "wires": [
                 [
@@ -387,7 +387,7 @@
             "ret": "obj",
             "url": "",
             "tls": "",
-            "x": 770,
+            "x": 890,
             "y": 200,
             "wires": [
                 [
@@ -417,7 +417,7 @@
             "links": [
                 "global-34"
             ],
-            "x": 895,
+            "x": 1015,
             "y": 200,
             "wires": []
         },
@@ -530,6 +530,57 @@
             "x": 735,
             "y": 80,
             "wires": []
+        },
+        {
+            "id": "global-40",
+            "type": "switch",
+            "name": "",
+            "property": "statusCode",
+            "propertyType": "msg",
+            "rules": [
+                {
+                    "t": "neq",
+                    "v": "200",
+                    "vt": "str"
+                },
+                {
+                    "t": "else"
+                }
+            ],
+            "checkall": "false",
+            "outputs": 2,
+            "x": 610,
+            "y": 200,
+            "wires": [
+                [
+                    "global-39"
+                ],
+                [
+                    "global-28"
+                ]
+            ]
+        },
+        {
+            "id": "global-39",
+            "type": "delay",
+            "name": "",
+            "pauseType": "delay",
+            "timeout": "5",
+            "timeoutUnits": "seconds",
+            "rate": "1",
+            "nbRateUnits": "1",
+            "rateUnits": "second",
+            "randomFirst": "1",
+            "randomLast": "5",
+            "randomUnits": "seconds",
+            "drop": false,
+            "x": 462.5,
+            "y": 143,
+            "wires": [
+                [
+                    "global-29"
+                ]
+            ]
         },
         {
             "id": "global-16",
