@@ -1,1 +1,1 @@
-[ "node-red-contrib-flat", "node-red-contrib-twitter-stream" ]
+[ "node-red-contrib-flat", "node-red-contrib-twitter-stream","node-red-contrib-http-multipart"]
