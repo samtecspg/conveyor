@@ -1,6 +1,6 @@
 {
     "name": "Push API",
-    "description": "This source eposes an easy to use API endpoint from which you can POST and PUT data into Elasticsearch with no special query syntax.",
+    "description": "This source exposes an easy to use API endpoint from which you can POST and PUT data into Elasticsearch with no special query syntax.",
     "groups": [],
     "parameters": [],
     "flow": {
