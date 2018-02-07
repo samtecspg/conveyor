@@ -174,10 +174,12 @@
         "func": "var parameters = msg.payload.parameters;\nvar parameterNames = [];\n\nparameters.forEach(function(param) {\n    parameterNames.push(param.key)\n    \n    flow.set(param.key, param.value)\n})\n\nflow.set('params', parameterNames);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 810,
+        "x": 730,
         "y": 80,
         "wires": [
-          []
+          [
+            "{{_id}}-33"
+          ]
         ]
       },
       {
@@ -281,7 +283,7 @@
         "id": "{{_id}}-core-13",
         "type": "function",
         "name": "",
-        "func": "var paramNames = flow.get('params');\nvar updates = [];\nvar errors = [];\n\nif (msg.payload) {\n    var paramsToUpdate = Object.keys(msg.payload);\n    \n    paramsToUpdate.forEach(function(update) {\n        if (paramNames.includes(update)) {\n            var updateParam = {\n                key: update,\n                value: msg.payload[update]\n            }\n            \n            updates.push(updateParam)\n        } else {\n            errors.push('Parameter [' + update + '] not valid.');\n        }\n    })\n} else {\n    errors.push('No Payload found');\n}\n\nif (errors.length > 0) {\n    msg.payload = errors\n} else {\n    updates.forEach(function(update) {\n        flow.set(update.key, update.value)\n    })\n    \n    var elasticParamsUpdate = [];\n    paramNames.forEach(function(param) {\n        elasticParamsUpdate.push({\n            \"key\": param,\n            \"value\": flow.get(param)\n        })\n    })\n    \n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {};\n    msg.payload.path = '/flow/default/AWFK160amolp6Xu7hC0P/_update',\n    msg.payload.method = 'POST',\n    msg.payload.payload = {\n        \"doc\" : {\n        \"parameters\" : elasticParamsUpdate\n        }\n    }\n}\nreturn msg;",
+        "func": "var paramNames = flow.get('params');\nvar updates = [];\nvar errors = [];\n\nif (msg.payload) {\n    var paramsToUpdate = Object.keys(msg.payload);\n    \n    paramsToUpdate.forEach(function(update) {\n        if (paramNames.includes(update)) {\n            var updateParam = {\n                key: update,\n                value: msg.payload[update]\n            }\n            \n            updates.push(updateParam)\n        } else {\n            errors.push('Parameter [' + update + '] not valid.');\n        }\n    })\n} else {\n    errors.push('No Payload found');\n}\n\nif (errors.length > 0) {\n    msg.payload = errors\n} else {\n    updates.forEach(function(update) {\n        flow.set(update.key, update.value)\n    })\n    \n    var elasticParamsUpdate = [];\n    paramNames.forEach(function(param) {\n        elasticParamsUpdate.push({\n            \"key\": param,\n            \"value\": flow.get(param)\n        })\n    })\n    \n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {};\n    msg.payload.path = '/flow/default/{{_id}}/_update',\n    msg.payload.method = 'POST',\n    msg.payload.payload = {\n        \"doc\" : {\n        \"parameters\" : elasticParamsUpdate\n        }\n    }\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 370,
@@ -677,9 +679,9 @@
         "propertyType": "msg",
         "rules": [
           {
+            "vt": "num",
             "t": "eq",
-            "v": "200",
-            "vt": "num"
+            "v": "200"
           },
           {
             "t": "else"
@@ -721,308 +723,273 @@
         ]
       },
       {
-        "repeat": "",
-        "name": "Inject on Startup",
-        "crontab": "",
-        "id": "{{_id}}-1",
-        "topic": "",
-        "payloadType": "str",
-        "wires": [
-          [
-            "{{_id}}-2"
-          ]
-        ],
+        "id": "{{_id}}-3",
+        "type": "later",
+        "name": "",
+        "schedule": "",
+        "x": 310,
         "y": 700,
-        "x": 130,
-        "type": "inject",
-        "payload": "Fail",
-        "once": true
-      },
-      {
         "wires": [
           [
             "{{_id}}-4"
           ]
-        ],
-        "name": "",
-        "schedule": "{{updateFrequency}}",
-        "y": 700,
-        "x": 510,
-        "type": "later",
-        "id": "{{_id}}-3"
+        ]
       },
       {
-        "wires": [],
+        "id": "{{_id}}-5",
+        "type": "debug",
+        "name": "These Are Errors!",
+        "active": true,
         "console": "false",
         "complete": "true",
-        "y": 700,
-        "active": true,
-        "x": 1171,
-        "type": "debug",
-        "id": "{{_id}}-5",
-        "name": "These Are Errors!"
+        "x": 1070,
+        "y": 660,
+        "wires": []
       },
       {
-        "wires": [
-          [
-            "{{_id}}-3"
-          ]
-        ],
-        "name": "",
-        "outputs": 1,
-        "noerr": 0,
-        "func": "flow.set('index', '{{_index}}')\nflow.set('truncate', {{truncate}})\nflow.set('uniqueField', '{{uniqueField}}')\nflow.set('latestUniqueField', '{{uniqueFieldStart}}')\n\nreturn msg;",
-        "y": 700,
-        "x": 330,
-        "type": "function",
-        "id": "{{_id}}-2"
-      },
-      {
+        "id": "{{_id}}-6",
+        "type": "template",
+        "name": "Query",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{{flow.query}}}",
+        "output": "str",
+        "x": 190,
+        "y": 900,
         "wires": [
           [
             "{{_id}}-7"
           ]
-        ],
-        "name": "Query",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "field": "payload",
-        "fieldType": "msg",
-        "template": "{{{query}}}",
-        "x": 130,
-        "y": 900,
-        "output": "str",
-        "type": "template",
-        "id": "{{_id}}-6"
+        ]
       },
       {
+        "id": "{{_id}}-7",
+        "type": "MSSQL",
+        "mssqlCN": "{{_id}}-8",
+        "name": "",
+        "query": "",
         "outField": "payload",
+        "x": 310,
+        "y": 900,
         "wires": [
           [
             "{{_id}}-9"
           ]
-        ],
-        "name": "",
-        "mssqlCN": "{{_id}}-8",
-        "x": 270,
-        "y": 900,
-        "query": "",
-        "type": "MSSQL",
-        "id": "{{_id}}-7"
+        ]
       },
       {
+        "id": "{{_id}}-4",
+        "type": "function",
+        "name": "Verify Later Parse",
+        "func": "if (msg.later) {\n    return [null, msg]\n} else {\n    return [msg, null];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 470,
+        "y": 700,
         "wires": [
           [
-            "{{_id}}-5"
+            "{{_id}}-29"
           ],
           [
             "{{_id}}-10"
           ]
-        ],
-        "name": "Verify Later Parse",
-        "outputs": "2",
-        "noerr": 0,
-        "func": "if (msg.later) {\n    return [null, msg]\n} else {\n    return [msg, null];\n}",
-        "y": 700,
-        "x": 690,
-        "type": "function",
-        "id": "{{_id}}-4"
+        ]
       },
       {
+        "id": "{{_id}}-11",
+        "type": "function",
+        "name": "",
+        "func": "var index = flow.get('index')\nvar operation = {\n    \"_index\": index,\n    \"_type\": \"default\"\n    }\n    \nvar uniqueField = flow.get('uniqueField')\n\nif (uniqueField && uniqueField !== '' && msg.payload[uniqueField]) {\n    operation['_id'] = msg.payload[uniqueField]\n    \n    if (msg.parts.index == msg.parts.count - 1) {\n        flow.set('latestUniqueField', msg.payload[uniqueField])\n    }\n}\n\nvar msg1 = {\n    payload: JSON.stringify({index: operation})\n}\n\nvar msg2 = {\n    payload: JSON.stringify(msg.payload)\n}\n\nif (msg.parts.index == (msg.parts.count - 1)) {\n    msg2.complete = true\n}\n\nreturn [[msg1,msg2]];",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 550,
+        "y": 900,
         "wires": [
           [
             "{{_id}}-12"
           ]
-        ],
-        "name": "",
-        "outputs": "1",
-        "noerr": 0,
-        "func": "var index = flow.get('index')\nvar operation = {\n    \"_index\": index,\n    \"_type\": \"default\"\n    }\n    \nvar uniqueField = flow.get('uniqueField')\n\nif (uniqueField && uniqueField !== '' && msg.payload[uniqueField]) {\n    operation['_id'] = msg.payload[uniqueField]\n    \n    if (msg.parts.index == msg.parts.count - 1) {\n        flow.set('latestUniqueField', msg.payload[uniqueField])\n    }\n}\n\nvar msg1 = {\n    payload: JSON.stringify({index: operation})\n}\n\nvar msg2 = {\n    payload: JSON.stringify(msg.payload)\n}\n\nif (msg.parts.index == (msg.parts.count - 1)) {\n    msg2.complete = true\n}\n\nreturn [[msg1,msg2]];",
-        "y": 900,
-        "x": 550,
-        "type": "function",
-        "id": "{{_id}}-11"
+        ]
       },
       {
+        "id": "{{_id}}-9",
+        "type": "split",
+        "name": "",
+        "splt": "\\n",
+        "x": 430,
+        "y": 900,
         "wires": [
           [
             "{{_id}}-11"
           ]
-        ],
-        "name": "",
-        "splt": "\\n",
-        "y": 900,
-        "x": 410,
-        "type": "split",
-        "id": "{{_id}}-9"
+        ]
       },
       {
-        "count": "1000",
-        "joiner": "\\n",
+        "id": "{{_id}}-12",
+        "type": "join",
         "name": "",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
         "timeout": "",
+        "count": "1000",
+        "x": 670,
+        "y": 900,
         "wires": [
           [
             "{{_id}}-13"
           ]
-        ],
-        "build": "string",
-        "key": "topic",
-        "propertyType": "msg",
-        "y": 900,
-        "x": 690,
-        "property": "payload",
-        "type": "join",
-        "id": "{{_id}}-12",
-        "mode": "custom"
+        ]
       },
       {
-        "tls": "",
-        "wires": [
-          [
-            "{{_id}}-15"
-          ]
-        ],
-        "name": "",
-        "url": "elasticsearch:9200/_bulk",
-        "ret": "obj",
         "id": "{{_id}}-14",
-        "y": 900,
-        "x": 1090,
         "type": "http request",
-        "method": "POST"
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "url": "",
+        "tls": "",
+        "x": 930,
+        "y": 900,
+        "wires": [
+          []
+        ]
       },
       {
+        "id": "{{_id}}-13",
+        "type": "function",
+        "name": "",
+        "func": "var bulkInsert = msg.payload;\nbulkInsert += \"\\n\";\n\nmsg = {\n    url: '/_bulk',\n    method: 'POST',\n    payload: bulkInsert\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 790,
+        "y": 900,
         "wires": [
           [
             "{{_id}}-14"
           ]
-        ],
-        "name": "Add Trailing New Line",
-        "outputs": 1,
-        "noerr": 0,
-        "func": "msg.payload += \"\\n\"\nreturn msg;",
-        "y": 900,
-        "x": 880,
-        "type": "function",
-        "id": "{{_id}}-13"
+        ]
       },
       {
-        "wires": [],
-        "console": "false",
-        "complete": "false",
-        "y": 900,
-        "active": true,
-        "x": 1270,
-        "type": "debug",
-        "id": "{{_id}}-15",
-        "name": ""
-      },
-      {
-        "wires": [],
+        "id": "{{_id}}-16",
+        "type": "link out",
         "name": "Truncate",
         "links": [
           "{{_id}}-17"
         ],
+        "x": 855,
         "y": 740,
-        "x": 870,
-        "type": "link out",
-        "id": "{{_id}}-16"
+        "wires": []
       },
       {
-        "wires": [
-          [
-            "{{_id}}-18"
-          ]
-        ],
+        "id": "{{_id}}-17",
+        "type": "link in",
         "name": "Truncate In",
         "links": [
           "{{_id}}-16"
         ],
-        "y": 820,
-        "x": 35,
-        "type": "link in",
-        "id": "{{_id}}-17"
+        "x": 95,
+        "y": 800,
+        "wires": [
+          [
+            "{{_id}}-18"
+          ]
+        ]
       },
       {
-        "info": "",
-        "wires": [],
-        "name": "Truncate Existing Data",
-        "y": 780,
-        "x": 120,
+        "id": "{{_id}}-19",
         "type": "comment",
-        "id": "{{_id}}-19"
+        "name": "Truncate Existing Data",
+        "info": "",
+        "x": 160,
+        "y": 760,
+        "wires": []
       },
       {
+        "id": "{{_id}}-20",
+        "type": "http request",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "url": "",
         "tls": "",
+        "x": 610,
+        "y": 800,
         "wires": [
           [
             "{{_id}}-21"
           ]
-        ],
-        "name": "",
-        "url": "elasticsearch:9200/{{_index}}/_delete_by_query",
-        "ret": "obj",
-        "id": "{{_id}}-20",
-        "y": 820,
-        "x": 610,
-        "type": "http request",
-        "method": "POST"
+        ]
       },
       {
-        "wires": [],
+        "id": "{{_id}}-22",
+        "type": "link out",
         "name": "Query",
         "links": [
           "{{_id}}-23"
         ],
-        "y": 820,
-        "x": 951,
-        "type": "link out",
-        "id": "{{_id}}-22"
+        "x": 855,
+        "y": 840,
+        "wires": []
       },
       {
+        "id": "{{_id}}-23",
+        "type": "link in",
+        "name": "Query In",
+        "links": [
+          "{{_id}}-22",
+          "{{_id}}-28"
+        ],
+        "x": 95,
+        "y": 900,
         "wires": [
           [
             "{{_id}}-6"
           ]
-        ],
-        "name": "Query In",
-        "links": [
-          "{{_id}}-22"
-        ],
-        "y": 900,
-        "x": 35,
-        "type": "link in",
-        "id": "{{_id}}-23"
+        ]
       },
       {
-        "info": "",
-        "wires": [],
-        "name": "Query New Data",
-        "y": 860,
-        "x": 100,
+        "id": "{{_id}}-24",
         "type": "comment",
-        "id": "{{_id}}-24"
+        "name": "Query New Data",
+        "info": "",
+        "x": 140,
+        "y": 860,
+        "wires": []
       },
       {
+        "id": "{{_id}}-21",
+        "type": "function",
+        "name": "",
+        "func": "if (msg.statusCode && msg.statusCode == 200) {\n    return [null, msg]\n} else {\n    return [msg, null]\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 750,
+        "y": 800,
         "wires": [
           [
-            "{{_id}}-5"
+            "{{_id}}-31"
           ],
           [
             "{{_id}}-22"
           ]
-        ],
-        "name": "",
-        "outputs": "2",
-        "noerr": 0,
-        "func": "if (msg.statusCode && msg.statusCode == 200) {\n    return [null, msg]\n} else {\n    return [msg, null]\n}",
-        "y": 700,
-        "x": 770,
-        "type": "function",
-        "id": "{{_id}}-21"
+        ]
       },
       {
+        "id": "{{_id}}-25",
+        "type": "function",
+        "name": "",
+        "func": "if (msg.statusCode == 200) {\n\n    msg.payload = {\n        path: '/{{_index}}/_delete_by_query',\n        method: 'POST'\n    }\n\n    return [msg, null]\n} else {\n    return [null, {}]    \n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 470,
+        "y": 820,
         "wires": [
           [
             "{{_id}}-20"
@@ -1030,73 +997,69 @@
           [
             "{{_id}}-22"
           ]
-        ],
-        "name": "",
-        "outputs": "2",
-        "noerr": 0,
-        "func": "if (msg.statusCode == 200) {\n    var newMsg = {\n        payload: {\n            \"query\": {\n                \"match_all\": {}\n            }\n        }\n    }\n    return [newMsg, null]\n} else {\n    return [null, {}]    \n}",
-        "y": 700,
-        "x": 450,
-        "type": "function",
-        "id": "{{_id}}-25"
+        ]
       },
       {
+        "id": "{{_id}}-26",
+        "type": "http request",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "url": "",
         "tls": "",
+        "x": 330,
+        "y": 800,
         "wires": [
           [
             "{{_id}}-25"
           ]
-        ],
-        "name": "",
-        "url": "elasticsearch:9200/{{_index}}",
-        "ret": "txt",
-        "id": "{{_id}}-26",
-        "y": 700,
-        "x": 290,
-        "type": "http request",
-        "method": "use"
+        ]
       },
       {
+        "id": "{{_id}}-18",
+        "type": "function",
+        "name": "",
+        "func": "msg = {\n    method: 'POST',\n    url: global.get('node-red').url + '/elasticsearch',\n    payload: {\n        method: 'HEAD',\n        path: '/{{_index}}'\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 800,
         "wires": [
           [
             "{{_id}}-26"
           ]
-        ],
-        "name": "",
-        "outputs": 1,
-        "noerr": 0,
-        "func": "msg.method = 'HEAD'\nreturn msg;",
-        "y": 700,
-        "x": 130,
-        "type": "function",
-        "id": "{{_id}}-18"
+        ]
       },
       {
+        "id": "{{_id}}-10",
+        "type": "switch",
+        "name": "",
+        "property": "truncate",
+        "propertyType": "flow",
+        "rules": [
+          {
+            "t": "eq",
+            "v": "false",
+            "vt": "str"
+          },
+          {
+            "t": "eq",
+            "v": "true",
+            "vt": "str"
+          }
+        ],
         "checkall": "false",
+        "outputs": 2,
+        "x": 630,
+        "y": 720,
         "wires": [
           [
-            "{{_id}}-22"
+            "{{_id}}-28"
           ],
           [
             "{{_id}}-16"
           ]
-        ],
-        "name": "",
-        "rules": [
-          {
-            "t": "false"
-          },
-          {
-            "t": "true"
-          }
-        ],
-        "outputs": 2,
-        "propertyType": "flow",
-        "y": 740,
-        "x": 845.5,
-        "property": "truncate",
-        "type": "switch",
-        "id": "{{_id}}-10"
+        ]
       },
       {
         "id": "{{_id}}-27",
@@ -1106,6 +1069,96 @@
         "x": 110,
         "y": 660,
         "wires": []
+      },
+      {
+        "id": "{{_id}}-28",
+        "type": "link out",
+        "name": "Query",
+        "links": [
+          "{{_id}}-23"
+        ],
+        "x": 855,
+        "y": 700,
+        "wires": []
+      },
+      {
+        "id": "{{_id}}-29",
+        "type": "link out",
+        "name": "Error Out",
+        "links": [
+          "{{_id}}-30"
+        ],
+        "x": 855,
+        "y": 660,
+        "wires": []
+      },
+      {
+        "id": "{{_id}}-30",
+        "type": "link in",
+        "name": "",
+        "links": [
+          "{{_id}}-29",
+          "{{_id}}-31"
+        ],
+        "x": 935,
+        "y": 660,
+        "wires": [
+          [
+            "{{_id}}-5"
+          ]
+        ]
+      },
+      {
+        "id": "{{_id}}-31",
+        "type": "link out",
+        "name": "Error Out",
+        "links": [
+          "{{_id}}-30"
+        ],
+        "x": 855,
+        "y": 800,
+        "wires": []
+      },
+      {
+        "id": "{{_id}}-32",
+        "type": "function",
+        "name": "",
+        "func": "var updateFrequency = msg.payload.parameters.find(function(element) {\n    return element.key == \"updateFrequency\"\n})\n\nmsg.payload = {\n    later: JSON.parse(updateFrequency.value)\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 700,
+        "wires": [
+          [
+            "{{_id}}-3"
+          ]
+        ]
+      },
+      {
+        "id": "{{_id}}-33",
+        "type": "link out",
+        "name": "Start Primary Flow",
+        "links": [
+          "{{_id}}-34"
+        ],
+        "x": 835,
+        "y": 80,
+        "wires": []
+      },
+      {
+        "id": "{{_id}}-34",
+        "type": "link in",
+        "name": "",
+        "links": [
+          "{{_id}}-33"
+        ],
+        "x": 95,
+        "y": 700,
+        "wires": [
+          [
+            "{{_id}}-32"
+          ]
+        ]
       },
       {
         "name": "Connection for {{_name}}",
