@@ -968,9 +968,7 @@
                         "vt": "str"
                     },
                     {
-                        "t": "eq",
-                        "v": "false",
-                        "vt": "str"
+                        "t": "else"
                     }
                 ],
                 "checkall": "false",
@@ -1019,7 +1017,7 @@
                 "id": "{{_id}}-22",
                 "type": "function",
                 "name": "",
-                "func": "if (flow.get('truncate') == 'false') {\n    msg.payload = msg.fileData;\n    delete msg.fileData\n    \n    return [msg, null]\n} else {\n    if (msg.statusCode && msg.statusCode == 200) {\n        msg.payload = msg.fileData;\n        delete msg.fileData\n        \n        return [msg, null]\n    } else {\n        return [null, msg]\n    }\n}",
+                "func": "if (flow.get('truncate') && flow.get('truncate') == 'true') {\n    if (msg.statusCode && msg.statusCode == 200) {\n        msg.payload = msg.fileData;\n        delete msg.fileData\n        \n        return [msg, null]\n    } else {\n        return [null, msg]\n    }\n} else {\n    msg.payload = msg.fileData;\n    delete msg.fileData\n    \n    return [msg, null]\n}",
                 "outputs": "2",
                 "noerr": 0,
                 "x": 170,
