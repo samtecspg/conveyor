@@ -1022,13 +1022,8 @@
                 "id": "{{_id}}-22",
                 "type": "function",
                 "name": "",
-<<<<<<< HEAD
                 "func": "if (!flow.get('truncate') || flow.get('truncate') == 'false') {\n    msg.payload = msg.fileData;\n    delete msg.fileData\n    \n    return msg\n} else {\n    if (msg.statusCode && msg.statusCode == 200) {\n        msg.payload = msg.fileData;\n        delete msg.fileData\n        \n        return msg\n    } else {\n        node.error(\"File doesn't appear to have any data\")\n    }\n}",
                 "outputs": "1",
-=======
-                "func": "if (flow.get('truncate') && flow.get('truncate') == 'true') {\n    if (msg.statusCode && msg.statusCode == 200) {\n        msg.payload = msg.fileData;\n        delete msg.fileData\n        \n        return [msg, null]\n    } else {\n        return [null, msg]\n    }\n} else {\n    msg.payload = msg.fileData;\n    delete msg.fileData\n    \n    return [msg, null]\n}",
-                "outputs": "2",
->>>>>>> 059dd4f7017a703c85ce97da5ed6cd3ac90fc763
                 "noerr": 0,
                 "x": 170,
                 "y": 1200,
