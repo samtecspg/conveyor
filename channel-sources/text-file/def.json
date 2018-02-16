@@ -244,7 +244,7 @@
                 "id": "{{_id}}-core-13",
                 "type": "function",
                 "name": "",
-                "func": "var paramNames = flow.get('params');\nvar updates = [];\nvar errors = [];\n\nif (msg.payload) {\n    var paramsToUpdate = Object.keys(msg.payload);\n    \n    paramsToUpdate.forEach(function(update) {\n        if (paramNames.includes(update)) {\n            var updateParam = {\n                key: update,\n                value: msg.payload[update]\n            }\n            \n            updates.push(updateParam)\n        } else {\n            errors.push('Parameter [' + update + '] not valid.');\n        }\n    })\n} else {\n    errors.push('No Payload found');\n}\n\nif (errors.length > 0) {\n    msg.payload = errors\n} else {\n    updates.forEach(function(update) {\n        flow.set(update.key, update.value)\n    })\n    \n    var elasticParamsUpdate = [];\n    paramNames.forEach(function(param) {\n        elasticParamsUpdate.push({\n            \"key\": param,\n            \"value\": flow.get(param)\n        })\n    })\n    \n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {};\n    msg.payload.path = '/flow/default/AWFUuv2FrVFZyi9LDB1X/_update'\n    msg.payload.method = 'POST',\n    msg.payload.payload = {\n        \"doc\" : {\n        \"parameters\" : elasticParamsUpdate\n        }\n    }\n}\nreturn msg;",
+                "func": "var paramNames = flow.get('params');\nvar updates = [];\nvar errors = [];\n\nif (msg.payload) {\n    var paramsToUpdate = Object.keys(msg.payload);\n    \n    paramsToUpdate.forEach(function(update) {\n        if (paramNames.includes(update)) {\n            var updateParam = {\n                key: update,\n                value: msg.payload[update]\n            }\n            \n            updates.push(updateParam)\n        } else {\n            errors.push('Parameter [' + update + '] not valid.');\n        }\n    })\n} else {\n    errors.push('No Payload found');\n}\n\nif (errors.length > 0) {\n    msg.payload = errors\n} else {\n    updates.forEach(function(update) {\n        flow.set(update.key, update.value)\n    })\n    \n    var elasticParamsUpdate = [];\n    paramNames.forEach(function(param) {\n        elasticParamsUpdate.push({\n            \"key\": param,\n            \"value\": flow.get(param)\n        })\n    })\n    \n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {};\n    msg.payload.path = '/flow/default/{{_id}}/_update'\n    msg.payload.method = 'POST',\n    msg.payload.payload = {\n        \"doc\" : {\n        \"parameters\" : elasticParamsUpdate\n        }\n    }\n}\nreturn msg;",
                 "outputs": 1,
                 "noerr": 0,
                 "x": 370,
@@ -377,7 +377,7 @@
                 "id": "{{_id}}-core-22",
                 "type": "function",
                 "name": "",
-                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_url}}/_search',\n    method: 'GET'\n}\n\nif (msg.req._parsedUrl.search) {\n    msg.payload.path += msg.req._parsedUrl.search\n}\nreturn msg;",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/_search',\n    method: 'GET'\n}\n\nif (msg.req._parsedUrl.search) {\n    msg.payload.path += msg.req._parsedUrl.search\n}\nreturn msg;",
                 "outputs": 1,
                 "noerr": 0,
                 "x": 350,
@@ -455,7 +455,7 @@
                 "id": "{{_id}}-core-28",
                 "type": "function",
                 "name": "",
-                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_url}}/default/' + msg.req.params.id,\n    method: 'GET'\n}\nreturn msg;",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'GET'\n}\nreturn msg;",
                 "outputs": 1,
                 "noerr": 0,
                 "x": 350,
@@ -521,12 +521,11 @@
                 "method": "post",
                 "fields": "[{\"name\": \"file\"}]",
                 "swaggerDoc": "",
-                "x": 140,
+                "x": 150,
                 "y": 600,
                 "wires": [
                     [
-                        "{{_id}}-core-33",
-                        "{{_id}}-45"
+                        "{{_id}}-core-33"
                     ]
                 ]
             },
@@ -534,7 +533,7 @@
                 "id": "{{_id}}-core-33",
                 "type": "function",
                 "name": "",
-                "func": "if (msg.req.files && msg.req.files.file) {\n    return [null, msg]\n} else {\n    var body = msg.payload;\n\n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {\n        path: '/{{_index}}/default/',\n        method: 'PUT'\n    }\n    \n    if (msg.payload instanceof Array) {\n        var messages = [];\n        \n        msg.payload.forEach(function(data) {\n            msg.payload.payload = data;\n            \n            messages.push(msg)\n        })\n        \n        return [messages, null];\n    } else {\n        msg.payload.payload = body\n        \n        return [msg, null];\n    }\n}",
+                "func": "if (msg.req.files && msg.req.files.file) {\n    msg.payload = 'Attempting to parse file, see Node-RED logs for status.'\n    \n    return [null, msg]\n} else {\n    var body = msg.payload;\n\n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {\n        path: '/{{_index}}/default/',\n        method: 'PUT'\n    }\n    \n    if (msg.payload instanceof Array) {\n        var messages = [];\n        \n        msg.payload.forEach(function(data) {\n            msg.payload.payload = data;\n            \n            messages.push(msg)\n        })\n        \n        return [messages, null];\n    } else {\n        msg.payload.payload = body\n        \n        return [msg, null];\n    }\n}",
                 "outputs": "2",
                 "noerr": 0,
                 "x": 350,
@@ -544,7 +543,8 @@
                         "{{_id}}-core-31"
                     ],
                     [
-                        "{{_id}}-1"
+                        "{{_id}}-1",
+                        "{{_id}}-45"
                     ]
                 ]
             },
@@ -568,7 +568,7 @@
                 "id": "{{_id}}-core-35",
                 "type": "function",
                 "name": "",
-                "func": "var body = msg.payload;\n\nmsg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_url}}/default/' + msg.req.params.id,\n    method: 'PUT',\n    payload: body\n}\nreturn msg;",
+                "func": "var body = msg.payload;\n\nmsg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'PUT',\n    payload: body\n}\nreturn msg;",
                 "outputs": 1,
                 "noerr": 0,
                 "x": 350,
@@ -599,7 +599,7 @@
                 "id": "{{_id}}-core-37",
                 "type": "function",
                 "name": "",
-                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_url}}/default/' + msg.req.params.id,\n    method: 'DELETE'\n}\nreturn msg;",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'DELETE'\n}\nreturn msg;",
                 "outputs": 1,
                 "noerr": 0,
                 "x": 350,
@@ -681,15 +681,12 @@
                 "id": "{{_id}}-1",
                 "type": "function",
                 "name": "",
-                "func": "if (msg.req.files && msg.req.files.file) {\n    msg.payload = msg.req.files.file\n    return [null, msg]\n} else {\n    msg.payload = {\n        \"error\": 'No file found in payload.'\n    }\n    msg.statusCode = 404\n    return [msg, null]\n}",
-                "outputs": "2",
+                "func": "if (msg.req.files && msg.req.files.file) {\n    msg.payload = msg.req.files.file\n    return msg\n} else {\n    node.error('No file found in payload.');\n}",
+                "outputs": "1",
                 "noerr": 0,
-                "x": 330,
-                "y": 700,
+                "x": 490,
+                "y": 680,
                 "wires": [
-                    [
-                        "{{_id}}-42"
-                    ],
                     [
                         "{{_id}}-2"
                     ]
@@ -700,8 +697,8 @@
                 "type": "split",
                 "name": "",
                 "splt": "\\n",
-                "x": 510,
-                "y": 740,
+                "x": 610,
+                "y": 680,
                 "wires": [
                     [
                         "{{_id}}-3"
@@ -715,8 +712,8 @@
                 "func": "msg.fileInfo = msg.payload\nmsg.filename = msg.payload.path\n\nreturn msg",
                 "outputs": "1",
                 "noerr": 0,
-                "x": 630,
-                "y": 740,
+                "x": 730,
+                "y": 680,
                 "wires": [
                     [
                         "{{_id}}-7"
@@ -733,7 +730,8 @@
                     "{{_id}}-40",
                     "{{_id}}-42",
                     "{{_id}}-43",
-                    "{{_id}}-44"
+                    "{{_id}}-44",
+                    "11194e58.7f22d2"
                 ],
                 "x": 835,
                 "y": 120,
@@ -774,8 +772,8 @@
                 "name": "",
                 "filename": "",
                 "format": "utf8",
-                "x": 750,
-                "y": 740,
+                "x": 850,
+                "y": 680,
                 "wires": [
                     [
                         "{{_id}}-20"
@@ -876,9 +874,7 @@
                 "x": 890,
                 "y": 1200,
                 "wires": [
-                    [
-                        "{{_id}}-40"
-                    ]
+                    []
                 ]
             },
             {
@@ -968,9 +964,7 @@
                         "vt": "str"
                     },
                     {
-                        "t": "eq",
-                        "v": "false",
-                        "vt": "str"
+                        "t": "else"
                     }
                 ],
                 "checkall": "false",
@@ -993,25 +987,22 @@
                 "links": [
                     "{{_id}}-6"
                 ],
-                "x": 835,
-                "y": 740,
+                "x": 935,
+                "y": 680,
                 "wires": []
             },
             {
                 "id": "{{_id}}-21",
                 "type": "function",
                 "name": "",
-                "func": "if (msg.payload.length > 0) {\n    msg.fileData = msg.payload\n    return [msg, null];\n} else {\n    msg.statusCode = 404;\n    msg.payload = {\n        error: \"File doesn't appear to have any data\"\n    }\n    \n    return [null, msg]\n}",
-                "outputs": "2",
+                "func": "if (msg.payload.length > 0) {\n    msg.fileData = msg.payload\n    return msg;\n} else {\n    node.error(\"File doesn't appear to have any data\");\n}",
+                "outputs": "1",
                 "noerr": 0,
                 "x": 170,
                 "y": 1080,
                 "wires": [
                     [
                         "{{_id}}-19"
-                    ],
-                    [
-                        "{{_id}}-35"
                     ]
                 ]
             },
@@ -1019,17 +1010,14 @@
                 "id": "{{_id}}-22",
                 "type": "function",
                 "name": "",
-                "func": "if (flow.get('truncate') == 'false') {\n    msg.payload = msg.fileData;\n    delete msg.fileData\n    \n    return [msg, null]\n} else {\n    if (msg.statusCode && msg.statusCode == 200) {\n        msg.payload = msg.fileData;\n        delete msg.fileData\n        \n        return [msg, null]\n    } else {\n        return [null, msg]\n    }\n}",
-                "outputs": "2",
+                "func": "if (!flow.get('truncate') || flow.get('truncate') == 'false') {\n    msg.payload = msg.fileData;\n    delete msg.fileData\n    \n    return msg\n} else {\n    if (msg.statusCode && msg.statusCode == 200) {\n        msg.payload = msg.fileData;\n        delete msg.fileData\n        \n        return msg\n    } else {\n        node.error(\"File doesn't appear to have any data\")\n    }\n}",
+                "outputs": "1",
                 "noerr": 0,
                 "x": 170,
                 "y": 1200,
                 "wires": [
                     [
                         "{{_id}}-9"
-                    ],
-                    [
-                        "{{_id}}-39"
                     ]
                 ]
             },
@@ -1041,39 +1029,39 @@
                 "propertyType": "flow",
                 "rules": [
                     {
+                        "vt": "str",
                         "t": "eq",
-                        "v": "\"Comma Seperated\"",
-                        "vt": "str"
+                        "v": "\"Comma Seperated\""
                     },
                     {
+                        "vt": "str",
                         "t": "eq",
-                        "v": "Tab Seperated",
-                        "vt": "str"
+                        "v": "Tab Seperated"
                     },
                     {
+                        "vt": "str",
                         "t": "eq",
-                        "v": "Space Seperated",
-                        "vt": "str"
+                        "v": "Space Seperated"
                     },
                     {
+                        "vt": "str",
                         "t": "eq",
-                        "v": "Colon Seperated",
-                        "vt": "str"
+                        "v": "Colon Seperated"
                     },
                     {
+                        "vt": "str",
                         "t": "eq",
-                        "v": "Semicolon Seperated",
-                        "vt": "str"
+                        "v": "Semicolon Seperated"
                     },
                     {
+                        "vt": "str",
                         "t": "eq",
-                        "v": "Hashtag Seperated",
-                        "vt": "str"
+                        "v": "Hashtag Seperated"
                     },
                     {
+                        "vt": "str",
                         "t": "eq",
-                        "v": "Other Seperator",
-                        "vt": "str"
+                        "v": "Other Seperator"
                     }
                 ],
                 "checkall": "false",
@@ -1251,7 +1239,8 @@
                 "y": 1200,
                 "wires": [
                     [
-                        "{{_id}}-22"
+                        "{{_id}}-22",
+                        "9ba35c70.29344"
                     ]
                 ]
             },
@@ -1273,17 +1262,6 @@
                 "info": "",
                 "x": 110,
                 "y": 660,
-                "wires": []
-            },
-            {
-                "id": "{{_id}}-35",
-                "type": "link out",
-                "name": "No Data Error",
-                "links": [
-                    "{{_id}}-4"
-                ],
-                "x": 275,
-                "y": 1120,
                 "wires": []
             },
             {
@@ -1318,28 +1296,6 @@
                 "wires": []
             },
             {
-                "id": "{{_id}}-39",
-                "type": "link out",
-                "name": "Truncate Failed Error",
-                "links": [
-                    "{{_id}}-4"
-                ],
-                "x": 275,
-                "y": 1240,
-                "wires": []
-            },
-            {
-                "id": "{{_id}}-40",
-                "type": "link out",
-                "name": "Truncate Failed Error",
-                "links": [
-                    "{{_id}}-4"
-                ],
-                "x": 995,
-                "y": 1200,
-                "wires": []
-            },
-            {
                 "id": "{{_id}}-41",
                 "type": "debug",
                 "name": "",
@@ -1348,17 +1304,6 @@
                 "complete": "true",
                 "x": 930,
                 "y": 80,
-                "wires": []
-            },
-            {
-                "id": "{{_id}}-42",
-                "type": "link out",
-                "name": "",
-                "links": [
-                    "{{_id}}-4"
-                ],
-                "x": 475,
-                "y": 700,
                 "wires": []
             },
             {
@@ -1385,13 +1330,13 @@
             },
             {
                 "id": "{{_id}}-45",
-                "type": "debug",
-                "name": "",
-                "active": true,
-                "console": "false",
-                "complete": "true",
-                "x": 455.5,
-                "y": 661,
+                "type": "link out",
+                "name": "Data Operation Output",
+                "links": [
+                    "{{_id}}-4"
+                ],
+                "x": 455,
+                "y": 640,
                 "wires": []
             }
         ]
