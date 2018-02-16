@@ -1,0 +1,957 @@
+{
+    "name": "Docker Hub Statistics",
+    "description": "Use this source to pull statistics from a Docker Hub Organization or User like stars and pulls. Just provide the organization or user and click create.",
+    "groups": [
+        {
+            "key": "repoInformation",
+            "title": "Docker Hub Information",
+            "description": "Provide a Docker Hub username or organiztion."
+        }
+    ],
+    "parameters": [
+        {
+            "type": "text",
+            "group": "repoInformation",
+            "name": "name",
+            "label": "Org or User Name",
+            "description": "This can be either an organization or user name.",
+            "required": true
+        }
+    ],
+    "flow": {
+        "label": "{{_name}}",
+        "nodes": [
+            {
+                "id": "{{_id}}-core-1",
+                "type": "comment",
+                "name": "Load Configuration on Start-Up",
+                "info": "",
+                "x": 170,
+                "y": 40,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-2",
+                "type": "inject",
+                "name": "",
+                "topic": "",
+                "payload": "",
+                "payloadType": "date",
+                "repeat": "",
+                "crontab": "",
+                "once": true,
+                "x": 130,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-core-3"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-3",
+                "type": "function",
+                "name": "Format",
+                "func": "msg = {\n    url: global.get('conveyor-api').url + '/flow/{{_name}}',\n    method: 'GET'\n}\n\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 280,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-core-4"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-4",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 430,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-core-39"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-5",
+                "type": "function",
+                "name": "",
+                "func": "var parameters = msg.payload.parameters;\nvar parameterNames = [];\n\nparameters.forEach(function(param) {\n    parameterNames.push(param.key)\n    \n    flow.set(param.key, JSON.parse(param.value))\n})\n\nflow.set('params', parameterNames);\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 730,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-68"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-6",
+                "type": "comment",
+                "name": "Configuration Endpoints",
+                "info": "",
+                "x": 150,
+                "y": 140,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-7",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/config",
+                "method": "get",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 160,
+                "y": 180,
+                "wires": [
+                    [
+                        "{{_id}}-core-8"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-8",
+                "type": "function",
+                "name": "",
+                "func": "var paramNames = flow.get('params');\nvar parameters = {};\n\nparamNames.forEach(function(name) {\n    parameters[name] = flow.get(name);\n})\n\nmsg.payload = parameters\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 180,
+                "wires": [
+                    [
+                        "{{_id}}-core-9"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-9",
+                "type": "http response",
+                "name": "",
+                "statusCode": "",
+                "headers": {},
+                "x": 810,
+                "y": 180,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-10",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/config",
+                "method": "post",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 160,
+                "y": 220,
+                "wires": [
+                    [
+                        "{{_id}}-core-11"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-11",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload = 'Post is currently not supported. Use PUT to update.'\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 220,
+                "wires": [
+                    [
+                        "{{_id}}-core-9"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-12",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/config",
+                "method": "put",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 160,
+                "y": 260,
+                "wires": [
+                    [
+                        "{{_id}}-core-13"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-13",
+                "type": "function",
+                "name": "",
+                "func": "var paramNames = flow.get('params');\nvar updates = [];\nvar errors = [];\n\nif (msg.payload) {\n    var paramsToUpdate = Object.keys(msg.payload);\n    \n    paramsToUpdate.forEach(function(update) {\n        if (paramNames.includes(update)) {\n            var updateParam = {\n                key: update,\n                value: msg.payload[update]\n            }\n            \n            updates.push(updateParam)\n        } else {\n            errors.push('Parameter [' + update + '] not valid.');\n        }\n    })\n} else {\n    errors.push('No Payload found');\n}\n\nif (errors.length > 0) {\n    msg.payload = errors\n} else {\n    updates.forEach(function(update) {\n        flow.set(update.key, update.value)\n    })\n    \n    var elasticParamsUpdate = [];\n    paramNames.forEach(function(param) {\n        elasticParamsUpdate.push({\n            \"key\": param,\n            \"value\": flow.get(param)\n        })\n    })\n    \n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {};\n    msg.payload.path = '/flow/default/{{_id}}/_update',\n    msg.payload.method = 'POST',\n    msg.payload.payload = {\n        \"doc\" : {\n        \"parameters\" : elasticParamsUpdate\n        }\n    }\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 370,
+                "y": 260,
+                "wires": [
+                    [
+                        "{{_id}}-core-18"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-14",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/config",
+                "method": "delete",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 170,
+                "y": 300,
+                "wires": [
+                    [
+                        "{{_id}}-core-15"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-15",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload = 'Delete is currently not supported. Use PUT to update.'\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 300,
+                "wires": [
+                    [
+                        "{{_id}}-core-9"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-16",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/config",
+                "method": "patch",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 160,
+                "y": 340,
+                "wires": [
+                    [
+                        "{{_id}}-core-17"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-17",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload = 'Patch is currently not supported. Use PUT to update.'\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 340,
+                "wires": [
+                    [
+                        "{{_id}}-core-9"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-18",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "txt",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 260,
+                "wires": [
+                    [
+                        "{{_id}}-core-19"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-19",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.statusCode != 200) {\n    msg.payload = 'Local Flow Configuration Updated, but not persisted.',\n    msg.statusCode = 500\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 260,
+                "wires": [
+                    [
+                        "{{_id}}-core-9"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-20",
+                "type": "comment",
+                "name": "Data Endpoints",
+                "info": "",
+                "x": 120,
+                "y": 400,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-21",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/data",
+                "method": "get",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 150,
+                "y": 440,
+                "wires": [
+                    [
+                        "{{_id}}-core-22"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-22",
+                "type": "function",
+                "name": "",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/_search',\n    method: 'GET'\n}\n\nif (msg.req._parsedUrl.search) {\n    msg.payload.path += msg.req._parsedUrl.search\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 370,
+                "y": 440,
+                "wires": [
+                    [
+                        "{{_id}}-core-24"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-23",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/data/:id",
+                "method": "delete",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 150,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-core-37"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-24",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 440,
+                "wires": [
+                    [
+                        "{{_id}}-core-25"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-25",
+                "type": "function",
+                "name": "",
+                "func": "var data = [];\n\nif (msg.payload.hits && msg.payload.hits.hits) {\n    data = msg.payload.hits.hits;    \n}\n\nmsg.payload = data\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 440,
+                "wires": [
+                    [
+                        "{{_id}}-core-26"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-26",
+                "type": "http response",
+                "name": "",
+                "statusCode": "",
+                "headers": {},
+                "x": 810,
+                "y": 520,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-27",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/data/:id",
+                "method": "get",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 160,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-core-28"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-28",
+                "type": "function",
+                "name": "",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'GET'\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 370,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-core-29"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-29",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-core-30"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-30",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.payload.found === true && msg.payload._source) {\n    var data = msg.payload._source;\n}\n\nmsg.payload = data\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-core-26"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-31",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 520,
+                "wires": [
+                    [
+                        "{{_id}}-core-26"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-32",
+                "type": "httpInMultipart",
+                "name": "",
+                "url": "/{{_name}}/data",
+                "method": "post",
+                "fields": "",
+                "swaggerDoc": "",
+                "x": 160,
+                "y": 520,
+                "wires": [
+                    [
+                        "{{_id}}-core-33"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-33",
+                "type": "function",
+                "name": "",
+                "func": "var body = msg.payload;\n\nmsg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default',\n    method: 'POST',\n    payload: body\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 370,
+                "y": 520,
+                "wires": [
+                    [
+                        "{{_id}}-core-31"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-34",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_name}}/data/:id",
+                "method": "put",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 160,
+                "y": 560,
+                "wires": [
+                    [
+                        "{{_id}}-core-35"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-35",
+                "type": "function",
+                "name": "",
+                "func": "var body = msg.payload;\n\nmsg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'PUT',\n    payload: body\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 370,
+                "y": 560,
+                "wires": [
+                    [
+                        "{{_id}}-core-36"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-36",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "txt",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 560,
+                "wires": [
+                    [
+                        "{{_id}}-core-26"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-37",
+                "type": "function",
+                "name": "",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'DELETE'\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 370,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-core-38"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-38",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "txt",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-core-26"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-39",
+                "type": "switch",
+                "name": "",
+                "property": "statusCode",
+                "propertyType": "msg",
+                "rules": [
+                    {
+                        "vt": "num",
+                        "t": "eq",
+                        "v": "200"
+                    },
+                    {
+                        "t": "else"
+                    }
+                ],
+                "checkall": "true",
+                "outputs": 2,
+                "x": 570,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-core-5"
+                    ],
+                    [
+                        "{{_id}}-core-40"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-40",
+                "type": "delay",
+                "name": "",
+                "pauseType": "delay",
+                "timeout": "5",
+                "timeoutUnits": "seconds",
+                "rate": "1",
+                "nbRateUnits": "1",
+                "rateUnits": "second",
+                "randomFirst": "1",
+                "randomLast": "5",
+                "randomUnits": "seconds",
+                "drop": false,
+                "x": 440,
+                "y": 120,
+                "wires": [
+                    [
+                        "{{_id}}-core-3"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-1",
+                "type": "comment",
+                "name": "Primary Flow",
+                "info": "",
+                "x": 110,
+                "y": 660,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-2",
+                "type": "link in",
+                "name": "",
+                "links": [
+                    "{{_id}}-68"
+                ],
+                "x": 75,
+                "y": 700,
+                "wires": [
+                    [
+                        "{{_id}}-5",
+                        "{{_id}}-6"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-3",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 410,
+                "y": 800,
+                "wires": [
+                    [
+                        "{{_id}}-15"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-4",
+                "type": "function",
+                "name": "",
+                "func": "var name = flow.get('name');\n \nmsg.url = 'https://hub.docker.com/v2/repositories/' + name\nmsg.method = 'GET'\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 270,
+                "y": 800,
+                "wires": [
+                    [
+                        "{{_id}}-3"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-5",
+                "type": "later",
+                "name": "",
+                "schedule": "every 1 hour",
+                "x": 170,
+                "y": 720,
+                "wires": [
+                    [
+                        "{{_id}}-6"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-6",
+                "type": "link out",
+                "name": "Timer Out",
+                "links": [
+                    "{{_id}}-7",
+                    "{{_id}}-12",
+                    "{{_id}}-34",
+                    "{{_id}}-43",
+                    "{{_id}}-52",
+                    "{{_id}}-61"
+                ],
+                "x": 275,
+                "y": 700,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-7",
+                "type": "link in",
+                "name": "",
+                "links": [
+                    "{{_id}}-6"
+                ],
+                "x": 155,
+                "y": 840,
+                "wires": [
+                    [
+                        "{{_id}}-4"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-8",
+                "type": "inject",
+                "name": "",
+                "topic": "",
+                "payload": "",
+                "payloadType": "date",
+                "repeat": "",
+                "crontab": "",
+                "once": false,
+                "x": 120,
+                "y": 800,
+                "wires": [
+                    [
+                        "{{_id}}-4"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-9",
+                "type": "comment",
+                "name": "Update Stars",
+                "info": "",
+                "x": 130,
+                "y": 760,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-15",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.statusCode == 200) {\n    if (msg.payload.next) {\n        msg.url = msg.payload.next\n        msg.payload = msg.payload.results\n        \n        return [msg, msg]\n    } else {\n        msg.payload = msg.payload.results\n        \n        return [msg, null]\n    }\n}",
+                "outputs": "2",
+                "noerr": 0,
+                "x": 550,
+                "y": 800,
+                "wires": [
+                    [
+                        "{{_id}}-17"
+                    ],
+                    [
+                        "{{_id}}-16"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-16",
+                "type": "delay",
+                "name": "",
+                "pauseType": "delay",
+                "timeout": "5",
+                "timeoutUnits": "seconds",
+                "rate": "1",
+                "nbRateUnits": "1",
+                "rateUnits": "second",
+                "randomFirst": "1",
+                "randomLast": "5",
+                "randomUnits": "seconds",
+                "drop": false,
+                "x": 400,
+                "y": 840,
+                "wires": [
+                    [
+                        "{{_id}}-3"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-17",
+                "type": "split",
+                "name": "",
+                "splt": "\\n",
+                "spltType": "str",
+                "arraySplt": 1,
+                "arraySpltType": "len",
+                "stream": false,
+                "addname": "",
+                "x": 670,
+                "y": 800,
+                "wires": [
+                    [
+                        "{{_id}}-18"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-18",
+                "type": "flat",
+                "name": "",
+                "x": 790,
+                "y": 800,
+                "wires": [
+                    [
+                        "{{_id}}-22"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-19",
+                "type": "debug",
+                "name": "",
+                "active": true,
+                "console": "false",
+                "complete": "false",
+                "x": 910,
+                "y": 900,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-20",
+                "type": "link out",
+                "name": "Send To ES",
+                "links": [
+                    "{{_id}}-21"
+                ],
+                "x": 995,
+                "y": 800,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-21",
+                "type": "link in",
+                "name": "",
+                "links": [
+                    "{{_id}}-20",
+                    "{{_id}}-30",
+                    "{{_id}}-40",
+                    "{{_id}}-49",
+                    "{{_id}}-58",
+                    "{{_id}}-67"
+                ],
+                "x": 395,
+                "y": 900,
+                "wires": [
+                    [
+                        "{{_id}}-23"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-22",
+                "type": "function",
+                "name": "",
+                "func": "var data = msg.payload\ndata.pull_date = new Date();\n\nvar operation = {\n    \"_index\": \"{{_index}}\",\n    \"_type\": \"default\"\n}\n\nvar newMsg1 = {};\nnewMsg1.payload = JSON.stringify({index: operation})\nmsg.payload = JSON.stringify(data)\n\nif (msg.parts.index == (msg.parts.count - 1)) {\n    msg.complete = true\n}\n\nreturn [[newMsg1,msg]];",
+                "outputs": "1",
+                "noerr": 0,
+                "x": 910,
+                "y": 800,
+                "wires": [
+                    [
+                        "{{_id}}-20"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-23",
+                "type": "join",
+                "name": "",
+                "mode": "custom",
+                "build": "string",
+                "property": "payload",
+                "propertyType": "msg",
+                "key": "topic",
+                "joiner": "\\n",
+                "joinerType": "str",
+                "accumulate": false,
+                "timeout": "",
+                "count": "1000",
+                "x": 490,
+                "y": 900,
+                "wires": [
+                    [
+                        "{{_id}}-24"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-24",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload += \"\\n\"\n\nvar insertData = msg.payload;\n\nmsg.url = global.get('node-red').url + '/elasticsearch';\nmsg.method = 'POST'\n\nmsg.payload = {\n    path: '/_bulk',\n    method: 'POST',\n    payload: insertData\n}\n\n\ndelete msg.headers\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 610,
+                "y": 900,
+                "wires": [
+                    [
+                        "{{_id}}-25"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-25",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 750,
+                "y": 900,
+                "wires": [
+                    [
+                        "{{_id}}-19"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-68",
+                "type": "link out",
+                "name": "Init Out",
+                "links": [
+                    "b9f24f0a.fdec7"
+                ],
+                "x": 835,
+                "y": 80,
+                "wires": []
+            }
+        ]
+    }
+}
