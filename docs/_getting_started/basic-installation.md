@@ -6,9 +6,9 @@ order: 0
 
 # Basic Installation
 
-We have multiple approaches to getting conveyor running, the majority using Docker.   Unless you _really_ like doing things the hard way, or you have special hatred for Docker, we strongly recommend using one of the Docker installs to get yourself running.
+We use multiple approaches to getting conveyor running, the majority using Docker. Unless you really like doing things the hard way, or you have special hatred for Docker, we strongly recommend using one of the Docker installs to get yourself running.
 
-#### Prerequistes
+#### Pre-requisites
 
 * Docker [Installed](https://docs.docker.com/engine/installation/) (Community Edition, if using recent versions)
 * `docker-compose` [installed](https://docs.docker.com/compose/install/) (should be pre-installed for Docker on Mac or Windows)
@@ -16,7 +16,7 @@ We have multiple approaches to getting conveyor running, the majority using Dock
 
 | Warning  /  Be aware  /  Notice  /  Look out  / etc... |
 |--------------------------------------------------------|
-| Running this in docker starts 5 containers, that is a lot. On your system the default "max ram" for Docker may be too low. Please make sure Docker has a ram max of **at-least 4GB** before using Conveyor (known issue using Docker for Mac, and expected on Windows as well) <br> <br> If you receive a message like `conveyor_kibana_1 exited with code 137` then it means you need to give Docker more ram|
+| Running this in docker starts 5 containers, which is a lot. On your system, the default “max ram” for Docker may be too low. Please make sure Docker has a ram max of **at least 4GB** before using Conveyor (this is a known issue using Docker for Mac, and expected on Windows as well) <br> <br> If you receive a message like `conveyor_kibana_1 exited with code 137` then it means you need to give Docker more ram|
 
 ### Docker Installation
 To get started
@@ -29,7 +29,7 @@ cd conveyor
 docker-compose up
 ```
 
-If all is going well you should see some output like the below:
+If all is going well, you should see some output like below:
 
 ```
 [... LOTS building output ...]
