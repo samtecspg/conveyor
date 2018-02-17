@@ -323,7 +323,9 @@
             "id": "global-26",
             "type": "link in",
             "name": "Update Index Patterns",
-            "links": [],
+            "links": [
+                "global-46"
+            ],
             "x": 35,
             "y": 300,
             "wires": [
@@ -457,7 +459,7 @@
             "id": "global-35",
             "type": "function",
             "name": "Format",
-            "func": "var index = msg.payload;\n\nif (global.get('kibana').version == '<6') {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/index-pattern/' + index,\n            method: 'POST',\n            payload: {\n                \"title\": index\n            }\n        }\n    }\n} else {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/doc/index-pattern:' + index,\n            method: 'PUT',\n            payload: {\n                \"type\":\"index-pattern\",\n                \"index-pattern\": {\n                    \"title\": index\n                }\n            }\n        }\n    }\n}\n\nreturn msg;",
+            "func": "var index = msg.payload;\n\nif (global.get('kibana').version == '<6') {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/index-pattern/' + index,\n            method: 'POST',\n            payload: {\n                \"title\": index\n            }\n        }\n    }\n} else {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/doc/index-pattern:' + index,\n            method: 'PUT',\n            payload: {\n                \"type\":\"index-pattern\",\n                \"updated_at\": new Date(),\n                \"index-pattern\": {\n                    \"title\": index\n                }\n            }\n        }\n    }\n}\n\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 400,
@@ -479,7 +481,9 @@
             "x": 580,
             "y": 340,
             "wires": [
-                []
+                [
+                    "global-47"
+                ]
             ]
         },
         {
@@ -505,26 +509,10 @@
             ]
         },
         {
-            "id": "global-37",
-            "type": "link in",
-            "name": "Update Index patterns - Start",
-            "links": [
-                "global-38"
-            ],
-            "x": 35,
-            "y": 260,
-            "wires": [
-                [
-                    "global-24"
-                ]
-            ]
-        },
-        {
             "id": "global-38",
             "type": "link out",
             "name": "Load Global Context - End",
             "links": [
-                "global-37",
                 "global-42"
             ],
             "x": 735,
@@ -641,14 +629,38 @@
             "id": "global-45",
             "type": "function",
             "name": "",
-            "func": "kibanaConfig = global.get('kibana');\n\nif (msg.statusCode == 200) {\n    kibanaConfig.version = msg.payload.version.number\n} else {\n    kibanaConfig.version = '<6'\n}\n\nglobal.set('kibana', kibanaConfig);",
+            "func": "kibanaConfig = global.get('kibana');\n\nif (msg.statusCode == 200) {\n    kibanaConfig.version = msg.payload.version.number\n} else {\n    kibanaConfig.version = '<6'\n}\n\nglobal.set('kibana', kibanaConfig);\n\nreturn msg",
             "outputs": 1,
             "noerr": 0,
             "x": 470,
             "y": 160,
             "wires": [
-                []
+                [
+                    "global-46"
+                ]
             ]
+        },
+        {
+            "id": "global-46",
+            "type": "link out",
+            "name": "Check Kibana Version - End",
+            "links": [
+                "global-26"
+            ],
+            "x": 555,
+            "y": 160,
+            "wires": []
+        },
+        {
+            "id": "global-47",
+            "type": "debug",
+            "name": "",
+            "active": true,
+            "console": "false",
+            "complete": "false",
+            "x": 770,
+            "y": 340,
+            "wires": []
         },
         {
             "id": "global-16",

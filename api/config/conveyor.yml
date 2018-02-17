@@ -10,3 +10,6 @@ node-red:
 # Specify where we can reach the conveyor API internal to Node-RED
 conveyor-api:
   url: http://localhost:4000
+
+kibana:
+  url: http://kibana:5601
