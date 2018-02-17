@@ -1,6 +1,6 @@
 {
   "name": "conveyor",
-  "version": "5.4.0",
+  "version": "6.2.1",
   "description": "Conveyor",
   "main": "index.js",
   "scripts": {

@@ -13,7 +13,7 @@ services:
       - elasticsearch
     command: ["dockerize", "-wait", "tcp://elasticsearch:9200", "-timeout", "5m", "node", "start.js"]
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-5.4.0}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.2.1}
     environment:
      - ES_JAVA_OPTS=${ES_RAM:--Xmx1g -Xms1g}
     ports: ['9200:9200']
@@ -30,7 +30,7 @@ services:
     build: 
       context: plugin/
       args:
-        - ELASTIC_TAG=${ELASTIC_TAG:-5.4.0}
+        - ELASTIC_TAG=${ELASTIC_TAG:-6.2.1}
     ports: ['5601:5601']
     networks: ['conveyor-net']
     volumes:
