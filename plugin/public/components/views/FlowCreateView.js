@@ -81,7 +81,7 @@ class _FlowCreateView extends React.Component {
             FlowActions
                 .completeCreateFlow({
                         template: this.props.source.name,
-                        name: form.name.value,
+                        name: form.name.value.trim(),
                         description: form.description.value,
                         index: form.index.value,
                         parameters
@@ -97,7 +97,7 @@ class _FlowCreateView extends React.Component {
                     let data = new FormData();
                     data.append(file.key, file.value);
                     FlowActions
-                        .postData(form.name.value, data)
+                        .postData(form.name.value.trim(), data)
                         .then(() => cb())
                         .catch(cb);
                 });
