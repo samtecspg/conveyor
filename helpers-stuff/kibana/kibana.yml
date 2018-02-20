@@ -20,4 +20,4 @@ xpack.graph.enabled: false
 xpack.reporting.enabled: false
 
 conveyor.enabled: true
-conveyor.api.url: "http://api:4000"
+conveyor.api.url: "http://conveyor-node:4000"
