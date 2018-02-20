@@ -25,7 +25,7 @@ https://samtecspg.github.io/conveyor/
 
 ## Something not working?
 
-Find a bug? Or something not working the way you expect? Don't go! Create an issue or join us on our Gitter. This is Alpha software you're testing and we will work hard to set the problem straight.
+Find a bug? Or something not working the way you expect? Don't go! Create an issue or join us on our [Gitter channel](https://gitter.im/samtecspg/conveyor). This is Alpha software you're testing and we will work hard to set the problem straight.
 
 ## License
 ```
