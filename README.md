@@ -23,7 +23,7 @@ https://samtecspg.github.io/conveyor/
 
 5. point your web browser at  http://localhost:5601 and enjoy Conveyor!
 
-## Somthing not working?
+## Something not working?
 
 Find a bug? Or something not working the way you expect? Don't go! Create an issue or join us on our Gitter. This is Alpha software you're testing and we will work hard to set the problem straight.
 
