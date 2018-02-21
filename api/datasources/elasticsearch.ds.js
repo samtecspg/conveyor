@@ -28,7 +28,8 @@ const datasource = {
         const query = {
             index: params.index,
             type: params.type,
-            body: params.document
+            body: params.document,
+            refresh: 'true'
         };
         const metrics = new Metrics('Elasticsearch', 'save', query);
         Client.index(query, (err, response) => {
@@ -49,7 +50,8 @@ const datasource = {
             id: params.id,
             body: {
                 doc: params.document
-            }
+            },
+            refresh: 'true'
         };
         const metrics = new Metrics('Elasticsearch', 'update', query);
         Client.update(query, (err, response) => {
