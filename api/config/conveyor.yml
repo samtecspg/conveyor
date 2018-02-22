@@ -1,15 +1,29 @@
 # Specify the ES Connection Information
-elasticsearch:
-  url: http://elasticsearch:9200
-  auth-method: none
+elasticsearch.url: http://elasticsearch:9200
+
+# If connection to ES requires a username and password specify it here.
+# elasticsearch.basicAuth.username: elastic
+# elasticsearch.basicAuth.password: changeme
+
+# If connection to ES requires TLS set the below parameter to true.
+# See the documentation for information on providing TLS certificates
+# elasticsearch.useTLS: true
 
 # Specify the Node-RED URL
-node-red:
-  url: http://localhost:1880
+# Normally this runs intnerally to the Conveyor Node and does not need changed.
+node-red.url: http://localhost:1880
 
 # Specify where we can reach the conveyor API internal to Node-RED
-conveyor-api:
-  url: http://localhost:4000
+# Normally this runs intnerally to the Conveyor Node and does not need changed.
+conveyor-api.url: http://localhost:4000
 
-kibana:
-  url: http://kibana:5601
+# Specify the Kibana URL
+kibana.url: http://kibana:5601
+
+# If connection to Kibana requires a username and password specify it here.
+# kibana.basicAuth.username: elastic
+# kibana.basicAuth.password: changeme
+
+# If connection to ES requires TLS set the below parameter to true.
+# See the documentation for information on providing TLS certificates
+# kibana.useTLS: true

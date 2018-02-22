@@ -73,33 +73,6 @@
             "wires": []
         },
         {
-            "id": "global-7",
-            "type": "switch",
-            "name": "",
-            "property": "basicAuth",
-            "propertyType": "global",
-            "rules": [
-                {
-                    "t": "nnull"
-                },
-                {
-                    "t": "else"
-                }
-            ],
-            "checkall": "false",
-            "outputs": 2,
-            "x": 430,
-            "y": 520,
-            "wires": [
-                [
-                    "global-8"
-                ],
-                [
-                    "global-13"
-                ]
-            ]
-        },
-        {
             "id": "global-10",
             "type": "switch",
             "name": "",
@@ -115,41 +88,14 @@
             ],
             "checkall": "false",
             "outputs": 2,
-            "x": 710,
-            "y": 480,
+            "x": 430,
+            "y": 520,
             "wires": [
                 [
                     "global-11"
                 ],
                 [
                     "global-12"
-                ]
-            ]
-        },
-        {
-            "id": "global-13",
-            "type": "switch",
-            "name": "",
-            "property": "useTLS",
-            "propertyType": "global",
-            "rules": [
-                {
-                    "t": "true"
-                },
-                {
-                    "t": "else"
-                }
-            ],
-            "checkall": "false",
-            "outputs": 2,
-            "x": 710,
-            "y": 560,
-            "wires": [
-                [
-                    "global-14"
-                ],
-                [
-                    "global-15"
                 ]
             ]
         },
@@ -161,8 +107,8 @@
             "ret": "obj",
             "url": "",
             "tls": "global-16",
-            "x": 920,
-            "y": 460,
+            "x": 620,
+            "y": 500,
             "wires": [
                 [
                     "global-17"
@@ -177,63 +123,13 @@
             "ret": "obj",
             "url": "",
             "tls": "",
-            "x": 910,
-            "y": 500,
-            "wires": [
-                [
-                    "global-17"
-                ]
-            ]
-        },
-        {
-            "id": "global-14",
-            "type": "http request",
-            "name": "No Basic Auth with SSL",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "global-16",
-            "x": 910,
+            "x": 630,
             "y": 540,
             "wires": [
                 [
                     "global-17"
                 ]
             ]
-        },
-        {
-            "id": "global-15",
-            "type": "http request",
-            "name": "No Basic Auth without SSL",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 900,
-            "y": 580,
-            "wires": [
-                [
-                    "global-17"
-                ]
-            ]
-        },
-        {
-            "id": "global-18",
-            "type": "comment",
-            "name": "Basic Auth",
-            "info": "",
-            "x": 440,
-            "y": 460,
-            "wires": []
-        },
-        {
-            "id": "global-19",
-            "type": "comment",
-            "name": "No Basic Auth",
-            "info": "",
-            "x": 430,
-            "y": 580,
-            "wires": []
         },
         {
             "id": "global-20",
@@ -264,25 +160,11 @@
             "id": "global-22",
             "type": "function",
             "name": "",
-            "func": "delete msg.req, msg.res;\n\nvar es = global.get('elasticsearch');\n\nvar errors = [];\n\nif (es) {\n    var url = es.url;\n} else {\n    errors.push('No ES Connection found in the Global Configuraiton.')\n}\n\nvar request = msg.payload;\n\nif (request.path) {\n    msg.url = url + request.path;\n} else {\n    errors.push('No path found in payload')   \n}\n\nif (request.payload) {\n    msg.payload = request.payload\n}\n\nif (request.method) {\n    msg.method = request.method\n} else {\n    msg.method = 'GET'\n}\n\nmsg.headers = {\n    'Content-Type': 'application/json'\n}\n\nmsg.errors = errors;\n\nreturn msg;",
+            "func": "delete msg.req, msg.res;\n\nvar es = global.get('elasticsearch');\n\nvar errors = [];\n\nif (es) {\n    var url = es.url;\n} else {\n    errors.push('No ES Connection found in the Global Configuraiton.')\n}\n\nvar request = msg.payload;\n\nif (request.path) {\n    msg.url = url + request.path;\n} else {\n    errors.push('No path found in payload')   \n}\n\nif (request.payload) {\n    msg.payload = request.payload\n}\n\nif (request.method) {\n    msg.method = request.method\n} else {\n    msg.method = 'GET'\n}\n\nmsg.headers = {\n    'Content-Type': 'application/json'\n}\n\nif (global.get('elasticsearch') && global.get('elasticsearch').basicAuth) {\n    var basicAuth = global.get('elasticsearch').basicAuth;\n    if ( basicAuth.username && basicAuth.password) {\n        var username = basicAuth.username;\n        var password = basicAuth.password;\n        var crypt = new Buffer(username + ':' + password).toString('base64')\n        var authStr = 'Basic ' + crypt\n\n        msg.headers.Authorization = authStr;\n    } else {\n        errors.push('Basic Auth Specified, but no username or password found.')   \n    }\n}\n\nmsg.errors = errors;\n\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 290,
             "y": 520,
-            "wires": [
-                [
-                    "global-7"
-                ]
-            ]
-        },
-        {
-            "id": "global-8",
-            "type": "function",
-            "name": "",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 570,
-            "y": 480,
             "wires": [
                 [
                     "global-10"
@@ -295,7 +177,7 @@
             "name": "",
             "statusCode": "",
             "headers": {},
-            "x": 1110,
+            "x": 850,
             "y": 520,
             "wires": []
         },
@@ -358,7 +240,7 @@
             "id": "global-28",
             "type": "function",
             "name": "",
-            "func": "if (msg.statusCode == 200 && msg.payload.length > 0) {\n    \n    \n    if (global.get('kibana').major < 6) {\n        msg = {\n            currentFlows: msg.payload,\n            payload: {\n                path: '/.kibana/index-pattern/_search',\n                method: 'GET'\n            },\n            url: global.get('node-red').url + '/elasticsearch',\n            method: 'POST'\n        }\n    } else {\n        msg = {\n            currentFlows: msg.payload,\n            url: global.get('kibana').url + '/api/saved_objects/index-pattern',\n            method: 'GET'\n        }\n    }\n    \n    \n    return msg;\n}",
+            "func": "if (msg.statusCode == 200 && msg.payload.length > 0) {\n    \n    if (global.get('kibana').major < 6) {\n        msg = {\n            currentFlows: msg.payload,\n            payload: {\n                path: '/.kibana/index-pattern/_search',\n                method: 'GET'\n            },\n            url: global.get('node-red').url + '/elasticsearch',\n            method: 'POST'\n        }\n    } else {\n        msg = {\n            currentFlows: msg.payload,\n            url: global.get('node-red').url + '/kibana',\n            method: 'POST',\n            payload: {\n                path: '/api/saved_objects/index-pattern',\n                method: 'GET'\n            }\n        }\n    }\n    \n    \n    return msg;\n}",
             "outputs": 1,
             "noerr": 0,
             "x": 610,
@@ -566,7 +448,7 @@
             "id": "global-43",
             "type": "http request",
             "name": "",
-            "method": "GET",
+            "method": "use",
             "ret": "obj",
             "url": "",
             "tls": "",
@@ -582,7 +464,7 @@
             "id": "global-44",
             "type": "function",
             "name": "",
-            "func": "msg = {\n    url: global.get('kibana').url + '/api/status'\n}\nreturn msg;",
+            "func": "msg = {\n    url: global.get('node-red').url + '/kibana',\n    payload: {\n        path: '/api/status',\n        method: 'GET'\n    }\n}\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 130,
@@ -645,11 +527,11 @@
             "randomLast": "5",
             "randomUnits": "seconds",
             "drop": false,
-            "x": 360.5,
-            "y": 163,
+            "x": 300,
+            "y": 160,
             "wires": [
                 [
-                    "global-43"
+                    "global-44"
                 ]
             ]
         },
@@ -725,7 +607,7 @@
             "id": "global-54",
             "type": "function",
             "name": "",
-            "func": "var index = msg.index;\n\nif (global.get('kibana').major < 6) {\n    msg = {\n        currentFlows: msg.payload,\n        payload: {\n            path: '/.kibana/config/_search',\n            method: 'GET'\n        },\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        index: index\n    }\n} else {\n    msg = {\n        currentFlows: msg.payload,\n        url: global.get('kibana').url + '/api/saved_objects/config',\n        method: 'GET',\n        index: index\n    }\n}\n\nreturn msg;",
+            "func": "var index = msg.index;\n\nif (global.get('kibana').major < 6) {\n    msg = {\n        currentFlows: msg.payload,\n        payload: {\n            path: '/.kibana/config/_search',\n            method: 'GET'\n        },\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        index: index\n    }\n} else {\n    msg = {\n        currentFlows: msg.payload,\n        url: global.get('node-red').url + '/kibana',\n        method: 'POST',\n        payload: {\n            path: '/api/saved_objects/config',\n            method: 'GET'\n        },\n        index: index\n    }\n}\n\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 130,
@@ -779,6 +661,115 @@
             "wires": []
         },
         {
+            "id": "global-57",
+            "type": "comment",
+            "name": "Kibana Query Proxy",
+            "info": "This endpoint exists to simplify the connection to Kibana.\n\nIt could certainly be cleaned up by creating a http node that accept auth changes on the fly or by creating a better ES node.",
+            "x": 110,
+            "y": 600,
+            "wires": []
+        },
+        {
+            "id": "global-58",
+            "type": "switch",
+            "name": "",
+            "property": "useTLS",
+            "propertyType": "global",
+            "rules": [
+                {
+                    "t": "true"
+                },
+                {
+                    "t": "else"
+                }
+            ],
+            "checkall": "false",
+            "outputs": 2,
+            "x": 430,
+            "y": 640,
+            "wires": [
+                [
+                    "global-63"
+                ],
+                [
+                    "global-59"
+                ]
+            ]
+        },
+        {
+            "id": "global-59",
+            "type": "http request",
+            "name": "Basic Auth without SSL",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "",
+            "x": 630,
+            "y": 660,
+            "wires": [
+                [
+                    "global-62"
+                ]
+            ]
+        },
+        {
+            "id": "global-60",
+            "type": "http in",
+            "name": "",
+            "url": "/kibana",
+            "method": "post",
+            "upload": false,
+            "swaggerDoc": "",
+            "x": 90,
+            "y": 640,
+            "wires": [
+                [
+                    "global-61"
+                ]
+            ]
+        },
+        {
+            "id": "global-61",
+            "type": "function",
+            "name": "",
+            "func": "delete msg.req, msg.res;\n\nvar kibana = global.get('kibana');\n\nvar errors = [];\n\nif (kibana) {\n    var url = kibana.url;\n} else {\n    errors.push('No ES Connection found in the Global Configuraiton.')\n}\n\nvar request = msg.payload;\n\nif (request.path) {\n    msg.url = url + request.path;\n} else {\n    errors.push('No path found in payload')   \n}\n\nif (request.payload) {\n    msg.payload = request.payload\n}\n\nif (request.method) {\n    msg.method = request.method\n} else {\n    msg.method = 'GET'\n}\n\nmsg.headers = {\n    'Content-Type': 'application/json'\n}\n\nif (global.get('kibana') && global.get('kibana').basicAuth) {\n    var basicAuth = global.get('kibana').basicAuth;\n    if ( basicAuth.username && basicAuth.password) {\n        var username = basicAuth.username;\n        var password = basicAuth.password;\n        var crypt = new Buffer(username + ':' + password).toString('base64')\n        var authStr = 'Basic ' + crypt\n\n        msg.headers.Authorization = authStr;\n    } else {\n        errors.push('Basic Auth Specified, but no username or password found.')   \n    }\n}\n\nmsg.errors = errors;\n\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 290,
+            "y": 640,
+            "wires": [
+                [
+                    "global-58"
+                ]
+            ]
+        },
+        {
+            "id": "global-62",
+            "type": "http response",
+            "name": "",
+            "statusCode": "",
+            "headers": {},
+            "x": 850,
+            "y": 640,
+            "wires": []
+        },
+        {
+            "id": "global-63",
+            "type": "http request",
+            "name": "Basic Auth with SSL",
+            "method": "use",
+            "ret": "obj",
+            "url": "",
+            "tls": "global-16",
+            "x": 620,
+            "y": 620,
+            "wires": [
+                [
+                    "global-62"
+                ]
+            ]
+        },
+        {
             "id": "global-16",
             "type": "tls-config",
             "name": "",
@@ -788,7 +779,7 @@
             "certname": "",
             "keyname": "",
             "caname": "",
-            "verifyservercert": true
+            "verifyservercert": false
         }
     ]
 }
