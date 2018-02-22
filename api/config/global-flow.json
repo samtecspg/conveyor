@@ -464,7 +464,7 @@
             "id": "global-44",
             "type": "function",
             "name": "",
-            "func": "msg = {\n    url: global.get('node-red').url + '/kibana',\n    payload: {\n        path: '/api/status',\n        method: 'GET'\n    }\n}\nreturn msg;",
+            "func": "msg = {\n    url: global.get('node-red').url + '/kibana',\n    method: 'POST',\n    payload: {\n        path: '/api/status',\n        method: 'GET'\n    }\n}\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 130,
