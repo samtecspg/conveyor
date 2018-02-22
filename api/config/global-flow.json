@@ -76,7 +76,7 @@
             "id": "global-10",
             "type": "switch",
             "name": "",
-            "property": "useTLS",
+            "property": "elasticsearch.useTLS",
             "propertyType": "global",
             "rules": [
                 {
@@ -673,7 +673,7 @@
             "id": "global-58",
             "type": "switch",
             "name": "",
-            "property": "useTLS",
+            "property": "kibana.useTLS",
             "propertyType": "global",
             "rules": [
                 {
