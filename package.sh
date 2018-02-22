@@ -22,5 +22,5 @@ mkdir $BUILD
 cp conveyor/docker-compose.yml $BUILD
 cp -r conveyor/local-storage $BUILD
 rm $BUILD/local-storage/*/.gitignore
-zip zip -9 -y -r $BUILD.zip $BUILD
+zip -9 -y -r $BUILD.zip $BUILD
 echo "$0: Complete: go to $TMPDIR for results"
