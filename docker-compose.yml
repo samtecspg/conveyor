@@ -3,7 +3,6 @@ version: '3.0'
 services:
   conveyor-node:
     image: samtecspg/conveyor-node:repo-head
-    build: api/
     ports:
       - '0.0.0.0:4000:4000'
       - '0.0.0.0:1880:1880'
@@ -12,7 +11,7 @@ services:
         aliases:
           - api
     volumes:
-      - ${NODERED_CONFIG:-./helpers-stuff/node-red}:/usr/src/data
+      - ${NODERED_CONFIG:-./local-storage/node-red}:/usr/src/data
     depends_on:
       - elasticsearch
     command: ["dockerize", "-wait", "tcp://elasticsearch:9200", "-timeout", "5m", "node", "start.js"]
@@ -23,8 +22,8 @@ services:
     ports: ['9200:9200']
     networks: ['conveyor-net']
     volumes:
-      - ${ES_CONFIG:-./helpers-stuff/elasticsearch/elasticsearch.yml}:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ${ES_DATA:-./helpers-stuff/es-data}:/usr/share/elasticsearch/data
+      - ${ES_CONFIG:-./local-storage/elasticsearch/elasticsearch.yml}:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${ES_DATA:-./local-storage/es-data}:/usr/share/elasticsearch/data
     healthcheck:
       test: ['CMD', 'curl', '-f', '-u', '${ES_USER:-elastic}:${ES_PASSWORD:-changeme}', 'http://localhost:9200']
       interval: 1m30s
@@ -32,17 +31,13 @@ services:
       retries: 3
   conveyorized-kibana:
     image: samtecspg/conveyorized-kibana:repo-head
-    build: 
-      context: plugin/
-      args:
-        - ELASTIC_TAG=${ELASTIC_TAG:-6.2.1}
     ports: ['5601:5601']
     networks:
       conveyor-net:
         aliases:
           - kibana
     volumes:
-      - ${KIBANA_CONFIG:-./helpers-stuff/kibana/kibana.yml}:/usr/share/kibana/config/kibana.yml
+      - ${KIBANA_CONFIG:-./local-storage/kibana/kibana.yml}:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
       - conveyor-node
@@ -53,7 +48,6 @@ services:
       retries: 3
   channel-load:
     image: samtecspg/conveyor-channel-init:repo-head
-    build: channel-sources
     networks: ['conveyor-net']
     depends_on:
       - elasticsearch
