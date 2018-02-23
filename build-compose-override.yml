@@ -10,3 +10,6 @@ services:
         - ELASTIC_TAG=${ELASTIC_TAG:-6.2.1}
   channel-load:
     build: channel-sources
+    volumes:
+     - ${CHANNEL_FOLDER:-./channel-sources/}:/usr/src/app
+
