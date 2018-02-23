@@ -53,7 +53,5 @@ services:
       - elasticsearch
       - conveyor-node
       - conveyorized-kibana
-    volumes:
-     - ${CHANNEL_FOLDER:-./channel-sources/}:/usr/src/app
 networks:
   conveyor-net:
