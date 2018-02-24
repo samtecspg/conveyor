@@ -353,8 +353,7 @@
             "y": 420,
             "wires": [
                 [
-                    "global-47",
-                    "global-50"
+                    "global-47"
                 ]
             ]
         },
@@ -510,7 +509,7 @@
             "console": "false",
             "complete": "true",
             "x": 930,
-            "y": 460,
+            "y": 420,
             "wires": []
         },
         {
@@ -545,109 +544,6 @@
             "x": 790,
             "y": 140,
             "wires": []
-        },
-        {
-            "id": "global-50",
-            "type": "link out",
-            "name": "Index Pattern - End Line 2",
-            "links": [
-                "global-51"
-            ],
-            "x": 895,
-            "y": 420,
-            "wires": []
-        },
-        {
-            "id": "global-51",
-            "type": "link in",
-            "name": "Index Pattern - Start Line 3",
-            "links": [
-                "global-50"
-            ],
-            "x": 35,
-            "y": 460,
-            "wires": [
-                [
-                    "global-54"
-                ]
-            ]
-        },
-        {
-            "id": "global-52",
-            "type": "function",
-            "name": "Format",
-            "func": "var index = msg.index;\nvar kibana = global.get('kibana');\n\nif (kibana.major < 6) {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/config/' + kibana.version,\n            method: 'POST',\n            payload: {\n                \"buildNum\": kibana.build\n            }\n        }\n    }\n} else {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/doc/config:' + kibana.version,\n            method: 'PUT',\n            payload: {\n                \"type\":\"config\",\n                \"updated_at\": new Date(),\n                \"config\": {\n                    \"buildNum\": kibana.build,\n                    \"defaultIndex\": msg.index\n                }\n            }\n        }\n    }\n}\n\n// Used later to create default index if needed.\nmsg.index = index;\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 540,
-            "y": 460,
-            "wires": [
-                [
-                    "global-53"
-                ]
-            ]
-        },
-        {
-            "id": "global-53",
-            "type": "http request",
-            "name": "POST Default Index Pattern",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 740,
-            "y": 460,
-            "wires": [
-                [
-                    "global-47"
-                ]
-            ]
-        },
-        {
-            "id": "global-54",
-            "type": "function",
-            "name": "",
-            "func": "var index = msg.index;\n\nif (global.get('kibana').major < 6) {\n    msg = {\n        currentFlows: msg.payload,\n        payload: {\n            path: '/.kibana/config/_search',\n            method: 'GET'\n        },\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        index: index\n    }\n} else {\n    msg = {\n        currentFlows: msg.payload,\n        url: global.get('node-red').url + '/kibana',\n        method: 'POST',\n        payload: {\n            path: '/api/saved_objects/config',\n            method: 'GET'\n        },\n        index: index\n    }\n}\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 130,
-            "y": 460,
-            "wires": [
-                [
-                    "global-55"
-                ]
-            ]
-        },
-        {
-            "id": "global-55",
-            "type": "http request",
-            "name": "GET Config",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 270,
-            "y": 460,
-            "wires": [
-                [
-                    "global-56"
-                ]
-            ]
-        },
-        {
-            "id": "global-56",
-            "type": "function",
-            "name": "",
-            "func": "var hasDefaultIndexPattern = false;\n\nif (msg.statusCode == 200) {\n    if (global.get('kibana').major < 6) {\n        if (msg.payload.hits.hits && msg.payload.hits.hits.length > 0) {\n            var hits = msg.payload.hits.hits;\n            hasDefaultIndexPattern = true\n        }\n    } else {\n        if (msg.payload.saved_objects && msg.payload.saved_objects.length > 0) {\n            var objects = msg.payload.saved_objects;\n            \n            if (objects[0] && objects[0].attributes) {\n                var config = objects[0].attributes;\n                \n                if (config.defaultIndex) {\n                    hasDefaultIndexPattern = true\n                }\n            }\n        }\n    }\n}\n\nif (hasDefaultIndexPattern === false) {\n    return msg;\n}",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 410,
-            "y": 460,
-            "wires": [
-                [
-                    "global-52"
-                ]
-            ]
         },
         {
             "id": "global-5",
@@ -797,7 +693,7 @@
             "id": "global-66",
             "type": "function",
             "name": "Format",
-            "func": "var kibana = global.get('kibana');\n\nif (kibana.major < 6) {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/config/' + kibana.version,\n            method: 'POST',\n            payload: {\n                \"buildNum\": kibana.build\n            }\n        }\n    }\n} else {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/doc/config:' + kibana.version,\n            method: 'PUT',\n            payload: {\n                \"type\":\"config\",\n                \"updated_at\": new Date(),\n                \"config\": {\n                    \"buildNum\": kibana.build\n                }\n            }\n        }\n    }\n}\n\nreturn msg;",
+            "func": "var kibana = global.get('kibana');\n\nif (kibana.major < 6) {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/config/' + kibana.version,\n            method: 'POST',\n            payload: {\n                \"buildNum\": kibana.build\n            }\n        }\n    }\n} else {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/doc/config:' + kibana.version,\n            method: 'PUT',\n            payload: {\n                \"type\":\"config\",\n                \"updated_at\": new Date(),\n                \"config\": {\n                    \"buildNum\": kibana.build,\n                    \"defaultIndex\": null\n                }\n            }\n        }\n    }\n}\n\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 540,
