@@ -4,8 +4,8 @@ const Metrics = require('../lib/metrics.lib');
 const Hoek = require('hoek');
 const _ = require('lodash');
 const Defaults = {
-    index: 'metrics',
-    type: 'default'
+    index: 'conveyor_metrics',
+    type: 'doc'
 };
 
 exports.register = function (server, options, next) {
