@@ -1,6 +1,6 @@
 'use strict';
 const Boom = require('boom');
-const Flow = require('../../../models').Flow;
+const Flow = require('../../../models/flow.model');
 
 module.exports = (request, reply) => {
 

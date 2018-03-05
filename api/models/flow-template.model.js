@@ -1,24 +1,9 @@
 'use strict';
 
-const Joi = require('joi');
 const ES = require('../datasources').Elasticsearch;
 const _ = require('lodash');
 const Async = require('async');
 const AppConstants = require('../config/app-constants');
-const schema = {
-    id: Joi.string().description('Id on Elasticsearch'),
-    version: Joi.number().description('Version on Elasticsearch'),
-    deprecated: Joi.boolean(),
-    name: Joi.string().description('Name of the Flow (this is unique)'),
-    description: Joi.string().description('Description of the Flow Template'),
-    parameters: Joi.array().items(Joi.object()).description('List of Parameters'),
-    groups: Joi.array().items(Joi.object().keys({
-        key: Joi.string(),
-        title: Joi.string(),
-        description: Joi.string()
-    })).description('List of Groups'),
-    flow: Joi.string().description('Node-RED flow object')
-};
 
 class FlowTemplateModel {
     constructor(deprecated,
@@ -35,11 +20,6 @@ class FlowTemplateModel {
         this.flow = flow;
         this.groups = groups;
     }
-
-    static get schema() {
-
-        return schema;
-    };
 
     static save(payload, cb) {
 
@@ -66,7 +46,7 @@ class FlowTemplateModel {
                     payload.name,
                     payload.description,
                     payload.parameters,
-                   // JSON.stringify(payload.flow),
+                    // JSON.stringify(payload.flow),
                     payload.flow,
                     payload.groups
                 );

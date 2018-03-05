@@ -1,7 +1,8 @@
 'use strict';
 
-const FlowSchema = require('../../../models/index').Flow.schema;
-const ParameterSchema = require('../../../models/index').Parameter.schema;
+const FlowSchema = require('../../../models/schemas/flow.schema');
+const ParameterSchema = require('../../../models/schemas/parameter.schema');
+
 const Joi = require('joi');
 
 class FlowValidate {

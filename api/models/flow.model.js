@@ -1,25 +1,12 @@
 'use strict';
 
 const AppConstants = require('../config/app-constants');
-const Joi = require('joi');
-const ParameterModel = require('./parameter.model');
 const Async = require('async');
 const Handlebars = require('handlebars');
 const _ = require('lodash');
 const NodeRED = require('../datasources').NodeRED;
 const ES = require('../datasources').Elasticsearch;
 const ParameterConvert = require('../lib/parameter-convert.lib');
-const schema = {
-    id: Joi.string().description('Id on Elasticsearch'),
-    nodeRedId: Joi.number().description('Id on Node-RED'),
-    version: Joi.number().description('Version on Elasticsearch'),
-    template: Joi.string().description('Name of the Flow Template'),
-    templateVersion: Joi.string().description('Flow Template version used'),
-    name: Joi.string().trim().description('Name of the Flow (this is unique)'),
-    description: Joi.string().description('Description of the Flow'),
-    index: Joi.string().description('Name of index used by Elasticsearch'),
-    parameters: Joi.array().items(ParameterModel.schema).description('List of Parameters, must match with Flow Template\'s parameters')
-};
 
 const parseEStoModel = (document) => {
 
@@ -57,11 +44,6 @@ class FlowModel {
         this.index = index;
         this.parameters = parameters;
     }
-
-    static get schema() {
-
-        return schema;
-    };
 
     static validateParameters(templateParameters, newParameters) {
 

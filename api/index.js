@@ -42,7 +42,8 @@ module.exports = (callback) => {
     server.route({
         method: 'GET',
         path: '/',
-        handler: function (request, reply) {
+        handler: (request, reply) => {
+
             reply('Hello, docker!');
         }
     });

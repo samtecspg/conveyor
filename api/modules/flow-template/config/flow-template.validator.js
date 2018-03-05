@@ -1,6 +1,6 @@
 'use strict';
 
-const FlowTemplateSchema = require('../../../models/index').FlowTemplate.schema;
+const FlowTemplateSchema = require('../../../models/schemas/flow-template.schema');
 const Joi = require('joi');
 
 class FlowTemplateValidate {
