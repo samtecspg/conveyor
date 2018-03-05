@@ -16,7 +16,7 @@ services:
       - elasticsearch
     command: ["dockerize", "-wait", "tcp://elasticsearch:9200", "-timeout", "5m", "node", "start.js"]
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.2.1}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.2.2}
     environment:
      - ES_JAVA_OPTS=${ES_RAM:--Xmx1g -Xms1g}
     ports: ['9200:9200']
