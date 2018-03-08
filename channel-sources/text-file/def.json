@@ -23,6 +23,13 @@
         },
         {
             "type": "boolean",
+            "group": "fileInformation",
+            "name": "forceStrings",
+            "label": "Force all Values to Strings",
+            "description": "Managing ES Mappings can be difficult. Use this toggle to force all values to be saved as strings. You can always use the reindex api later to change the mapping types."
+        },
+        {
+            "type": "boolean",
             "group": "indexInformation",
             "name": "truncate",
             "label": "Overwrite on Future Uploads",
@@ -726,7 +733,7 @@
                 "id": "{{_id}}-10",
                 "type": "function",
                 "name": "",
-                "func": "if (msg.payload) {\n    var operation = {\n        \"_index\": \"{{_index}}\",\n        \"_type\": \"default\"\n    }\n    \n    var data = msg.payload\n        \n    var uniqueField = flow.get('uniqueField')\n    \n    if (uniqueField && uniqueField !== '' && msg.payload[uniqueField]) {\n        operation['_id'] = msg.payload[uniqueField]\n    }\n    \n    var newMsg1 = {};\n    newMsg1.payload = JSON.stringify({index: operation})\n    msg.payload = JSON.stringify(data)\n    \n    return [[newMsg1,msg]];\n} else if (msg.control && msg.control.state == 'end') {\n    msg.complete = true;\n    return msg\n}",
+                "func": "if (msg.payload) {\n    var operation = {\n        \"_index\": \"{{_index}}\",\n        \"_type\": \"default\"\n    }\n    \n    var data = msg.payload\n        \n    var uniqueField = flow.get('uniqueField');\n    var forceStrings = flow.get('forceStrings');\n    \n    if (forceStrings) {\n        for (var k in data) {\n            data[k] = String(data[k])\n        }\n    }\n    \n    if (uniqueField && uniqueField !== '' && msg.payload[uniqueField]) {\n        operation['_id'] = msg.payload[uniqueField]\n    }\n    \n    var newMsg1 = {};\n    newMsg1.payload = JSON.stringify({index: operation})\n    msg.payload = JSON.stringify(data)\n    \n    return [[newMsg1,msg]];\n} else if (msg.control && msg.control.state == 'end') {\n    msg.complete = true;\n    return msg\n}",
                 "outputs": "1",
                 "noerr": 0,
                 "x": 170,
