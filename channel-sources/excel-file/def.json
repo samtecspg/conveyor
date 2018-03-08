@@ -1,0 +1,1129 @@
+{
+    "name": "Excel File",
+    "description": "Use this source to upload Excel files containing data records and store that data in ES.",
+    "groups": [
+        {
+            "key": "fileInformation",
+            "title": "Information about the file",
+            "description": "Upload your file. For now this source does not allow specifying custom delimeters, but it is possible if needed. Also the source expects the file to have the first row as the column titles."
+        },
+        {
+            "key": "indexInformation",
+            "title": "Data Storage Options",
+            "description": "You can use the options below to configure whether the data should be cleared upon further uploads or if the new data should be merged with the old. Merging while using a unique field allows for incremental loading."
+        }
+    ],
+    "parameters": [
+        {
+            "type": "file",
+            "group": "fileInformation",
+            "name": "file",
+            "label": "File to Upload",
+            "description": "Select the file you would like to upload."
+        },
+        {
+            "type": "text",
+            "group": "fileInformation",
+            "name": "sheetName",
+            "label": "Choose a Sheet to Import",
+            "description": "Select the sheet from the file you would like to upload."
+        },
+        {
+            "type": "boolean",
+            "group": "indexInformation",
+            "name": "truncate",
+            "label": "Overwrite on Future Uploads",
+            "description": "Set this to true if you would like to delete all of the data for this source before loading new data. Setting this to true allows a 'truncate before load' leaving it false allows incremental loading."
+        },
+        {
+            "type": "text",
+            "group": "indexInformation",
+            "name": "uniqueField",
+            "label": "Unique Field for Incremental Loading and Deduplication",
+            "description": "Set a field here to be used for the id of the record. Setting this allows for incremental loading and updating of existing records with the same ID."
+        }
+    ],
+    "flow": {
+        "label": "{{_name}}",
+        "nodes": [
+            {
+                "id": "{{_id}}-core-1",
+                "type": "comment",
+                "name": "Load Configuration on Start-Up",
+                "info": "",
+                "x": 170,
+                "y": 40,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-2",
+                "type": "inject",
+                "name": "",
+                "topic": "",
+                "payload": "",
+                "payloadType": "date",
+                "repeat": "",
+                "crontab": "",
+                "once": true,
+                "x": 130,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-core-3",
+                        "{{_id}}-core-41"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-3",
+                "type": "function",
+                "name": "Format",
+                "func": "msg = {\n    url: global.get('conveyor-api').url + '/flow/{{_url}}',\n    method: 'GET'\n}\n\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 280,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-core-4"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-4",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 430,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-core-39"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-5",
+                "type": "function",
+                "name": "",
+                "func": "var parameters = msg.payload.parameters;\nvar parameterNames = [];\n\nparameters.forEach(function(param) {\n    parameterNames.push(param.key)\n    \n    flow.set(param.key, param.value)\n})\n\nflow.set('params', parameterNames);\n\nmsg.payload = parameters\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 710,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-41"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-6",
+                "type": "comment",
+                "name": "Configuration Endpoints",
+                "info": "",
+                "x": 150,
+                "y": 140,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-7",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/config",
+                "method": "get",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 140,
+                "y": 180,
+                "wires": [
+                    [
+                        "{{_id}}-core-8"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-8",
+                "type": "function",
+                "name": "",
+                "func": "var paramNames = flow.get('params');\nvar parameters = {};\n\nparamNames.forEach(function(name) {\n    parameters[name] = flow.get(name);\n})\n\nmsg.payload = parameters\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 180,
+                "wires": [
+                    [
+                        "{{_id}}-44"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-9",
+                "type": "http response",
+                "name": "",
+                "statusCode": "",
+                "headers": {},
+                "x": 930,
+                "y": 120,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-10",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/config",
+                "method": "post",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 140,
+                "y": 220,
+                "wires": [
+                    [
+                        "{{_id}}-core-11"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-11",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload = 'Post is currently not supported. Use PUT to update.'\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 220,
+                "wires": [
+                    [
+                        "{{_id}}-44"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-12",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/config",
+                "method": "put",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 140,
+                "y": 260,
+                "wires": [
+                    [
+                        "{{_id}}-core-13"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-13",
+                "type": "function",
+                "name": "",
+                "func": "var paramNames = flow.get('params');\nvar updates = [];\nvar errors = [];\n\nif (msg.payload) {\n    var paramsToUpdate = Object.keys(msg.payload);\n    \n    paramsToUpdate.forEach(function(update) {\n        if (paramNames.includes(update)) {\n            var updateParam = {\n                key: update,\n                value: msg.payload[update]\n            }\n            \n            updates.push(updateParam)\n        } else {\n            errors.push('Parameter [' + update + '] not valid.');\n        }\n    })\n} else {\n    errors.push('No Payload found');\n}\n\nif (errors.length > 0) {\n    msg.payload = errors\n} else {\n    updates.forEach(function(update) {\n        flow.set(update.key, update.value)\n    })\n    \n    var elasticParamsUpdate = [];\n    paramNames.forEach(function(param) {\n        elasticParamsUpdate.push({\n            \"key\": param,\n            \"value\": flow.get(param)\n        })\n    })\n    \n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {};\n    msg.payload.path = '/flow/default/{{_id}}/_update'\n    msg.payload.method = 'POST',\n    msg.payload.payload = {\n        \"doc\" : {\n        \"parameters\" : elasticParamsUpdate\n        }\n    }\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 370,
+                "y": 260,
+                "wires": [
+                    [
+                        "{{_id}}-core-18"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-14",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/config",
+                "method": "delete",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 130,
+                "y": 300,
+                "wires": [
+                    [
+                        "{{_id}}-core-15"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-15",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload = 'Delete is currently not supported. Use PUT to update.'\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 300,
+                "wires": [
+                    [
+                        "{{_id}}-44"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-16",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/config",
+                "method": "patch",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 140,
+                "y": 340,
+                "wires": [
+                    [
+                        "{{_id}}-core-17"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-17",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload = 'Patch is currently not supported. Use PUT to update.'\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 340,
+                "wires": [
+                    [
+                        "{{_id}}-44"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-18",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "txt",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 260,
+                "wires": [
+                    [
+                        "{{_id}}-core-19"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-19",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.statusCode != 200) {\n    msg.payload = 'Local Flow Configuration Updated, but not persisted.',\n    msg.statusCode = 500\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 260,
+                "wires": [
+                    [
+                        "{{_id}}-44"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-20",
+                "type": "comment",
+                "name": "Data Endpoints",
+                "info": "",
+                "x": 120,
+                "y": 400,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-core-21",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/data",
+                "method": "get",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 150,
+                "y": 440,
+                "wires": [
+                    [
+                        "{{_id}}-core-22"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-22",
+                "type": "function",
+                "name": "",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/_search',\n    method: 'GET'\n}\n\nif (msg.req._parsedUrl.search) {\n    msg.payload.path += msg.req._parsedUrl.search\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 350,
+                "y": 440,
+                "wires": [
+                    [
+                        "{{_id}}-core-24"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-23",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/data/:id",
+                "method": "delete",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 130,
+                "y": 560,
+                "wires": [
+                    [
+                        "{{_id}}-core-37"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-24",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 440,
+                "wires": [
+                    [
+                        "{{_id}}-core-25"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-25",
+                "type": "function",
+                "name": "",
+                "func": "var data = [];\n\nif (msg.payload.hits && msg.payload.hits.hits) {\n    data = msg.payload.hits.hits;    \n}\n\nmsg.payload = data\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 440,
+                "wires": [
+                    [
+                        "{{_id}}-43"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-27",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/data/:id",
+                "method": "get",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 140,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-core-28"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-28",
+                "type": "function",
+                "name": "",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'GET'\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 350,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-core-29"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-29",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-core-30"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-30",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.payload.found === true && msg.payload._source) {\n    var data = msg.payload._source;\n}\n\nmsg.payload = data\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 650,
+                "y": 480,
+                "wires": [
+                    [
+                        "{{_id}}-43"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-31",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-43"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-32",
+                "type": "httpInMultipart",
+                "name": "",
+                "url": "/{{_url}}/data",
+                "method": "post",
+                "fields": "[{\"name\": \"file\"}]",
+                "swaggerDoc": "",
+                "x": 150,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-core-33"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-33",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.req.files && msg.req.files.file) {\n    msg.payload = 'Attempting to parse file, see Node-RED logs for status.'\n    \n    return [null, msg]\n} else {\n    var body = msg.payload;\n\n    msg.url = global.get('node-red').url + '/elasticsearch',\n    msg.method = 'POST',\n    msg.payload = {\n        path: '/{{_index}}/default/',\n        method: 'PUT'\n    }\n    \n    if (msg.payload instanceof Array) {\n        var messages = [];\n        \n        msg.payload.forEach(function(data) {\n            msg.payload.payload = data;\n            \n            messages.push(msg)\n        })\n        \n        return [messages, null];\n    } else {\n        msg.payload.payload = body\n        \n        return [msg, null];\n    }\n}",
+                "outputs": "2",
+                "noerr": 0,
+                "x": 350,
+                "y": 600,
+                "wires": [
+                    [
+                        "{{_id}}-core-31"
+                    ],
+                    [
+                        "{{_id}}-45",
+                        "{{_id}}-20"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-34",
+                "type": "http in",
+                "name": "",
+                "url": "/{{_url}}/data/:id",
+                "method": "put",
+                "upload": false,
+                "swaggerDoc": "",
+                "x": 140,
+                "y": 520,
+                "wires": [
+                    [
+                        "{{_id}}-core-35"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-35",
+                "type": "function",
+                "name": "",
+                "func": "var body = msg.payload;\n\nmsg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'PUT',\n    payload: body\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 350,
+                "y": 520,
+                "wires": [
+                    [
+                        "{{_id}}-core-36"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-36",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "txt",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 520,
+                "wires": [
+                    [
+                        "{{_id}}-43"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-37",
+                "type": "function",
+                "name": "",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch',\nmsg.method = 'POST',\nmsg.payload = {\n    path: '/{{_index}}/default/' + msg.req.params.id,\n    method: 'DELETE'\n}\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 350,
+                "y": 560,
+                "wires": [
+                    [
+                        "{{_id}}-core-38"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-38",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "txt",
+                "url": "",
+                "tls": "",
+                "x": 510,
+                "y": 560,
+                "wires": [
+                    [
+                        "{{_id}}-43"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-39",
+                "type": "switch",
+                "name": "",
+                "property": "statusCode",
+                "propertyType": "msg",
+                "rules": [
+                    {
+                        "vt": "num",
+                        "t": "eq",
+                        "v": "200"
+                    },
+                    {
+                        "t": "else"
+                    }
+                ],
+                "checkall": "true",
+                "outputs": 2,
+                "x": 570,
+                "y": 80,
+                "wires": [
+                    [
+                        "{{_id}}-core-5"
+                    ],
+                    [
+                        "{{_id}}-core-40"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-40",
+                "type": "delay",
+                "name": "",
+                "pauseType": "delay",
+                "timeout": "5",
+                "timeoutUnits": "seconds",
+                "rate": "1",
+                "nbRateUnits": "1",
+                "rateUnits": "second",
+                "randomFirst": "1",
+                "randomLast": "5",
+                "randomUnits": "seconds",
+                "drop": false,
+                "x": 440,
+                "y": 120,
+                "wires": [
+                    [
+                        "{{_id}}-core-3"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-core-41",
+                "type": "link out",
+                "name": "",
+                "links": [
+                    "global-42"
+                ],
+                "x": 289.5,
+                "y": 122,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-2",
+                "type": "split",
+                "name": "",
+                "splt": "\\n",
+                "spltType": "str",
+                "arraySplt": "1",
+                "arraySpltType": "len",
+                "stream": false,
+                "addname": "",
+                "x": 290,
+                "y": 880,
+                "wires": [
+                    [
+                        "{{_id}}-47"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-4",
+                "type": "link in",
+                "name": "HTTP Response",
+                "links": [
+                    "{{_id}}-35",
+                    "{{_id}}-39",
+                    "{{_id}}-40",
+                    "{{_id}}-42",
+                    "{{_id}}-43",
+                    "{{_id}}-44",
+                    "11194e58.7f22d2"
+                ],
+                "x": 835,
+                "y": 120,
+                "wires": [
+                    [
+                        "{{_id}}-core-9",
+                        "{{_id}}-41"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-5",
+                "type": "comment",
+                "name": "Try to parse file",
+                "info": "",
+                "x": 140,
+                "y": 840,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-6",
+                "type": "link in",
+                "name": "File In",
+                "links": [
+                    "{{_id}}-20"
+                ],
+                "x": 75,
+                "y": 740,
+                "wires": [
+                    [
+                        "{{_id}}-48"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-10",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.payload) {\n    var operation = {\n        \"_index\": \"{{_index}}\",\n        \"_type\": \"default\"\n    }\n    \n    var data = msg.payload\n        \n    var uniqueField = flow.get('uniqueField')\n    \n    if (uniqueField && uniqueField !== '' && msg.payload[uniqueField]) {\n        operation['_id'] = msg.payload[uniqueField]\n    }\n    \n    var newMsg1 = {};\n    newMsg1.payload = JSON.stringify({index: operation})\n    msg.payload = JSON.stringify(data)\n    \n    return [[newMsg1,msg]];\n} else if (msg.control && msg.control.state == 'end') {\n    msg.complete = true;\n    return msg\n}",
+                "outputs": "1",
+                "noerr": 0,
+                "x": 170,
+                "y": 980,
+                "wires": [
+                    [
+                        "{{_id}}-11"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-11",
+                "type": "join",
+                "name": "",
+                "mode": "custom",
+                "build": "string",
+                "property": "payload",
+                "propertyType": "msg",
+                "key": "topic",
+                "joiner": "\\n",
+                "joinerType": "str",
+                "accumulate": false,
+                "timeout": "",
+                "count": "10000",
+                "x": 290,
+                "y": 980,
+                "wires": [
+                    [
+                        "{{_id}}-12"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-12",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload += \"\\n\"\n\nvar insertData = msg.payload;\n\nmsg.url = global.get('node-red').url + '/elasticsearch';\nmsg.method = 'POST'\n\nmsg.payload = {\n    path: '/_bulk',\n    method: 'POST',\n    payload: insertData\n}\n\n\ndelete msg.headers\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 410,
+                "y": 980,
+                "wires": [
+                    [
+                        "{{_id}}-13"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-13",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 550,
+                "y": 980,
+                "wires": [
+                    [
+                        "{{_id}}-50"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-14",
+                "type": "comment",
+                "name": "Truncate Existing Data",
+                "info": "",
+                "x": 160,
+                "y": 700,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-15",
+                "type": "function",
+                "name": "",
+                "func": "msg.url = global.get('node-red').url + '/elasticsearch';\nmsg.method = 'POST';\n\nmsg.payload = {\n    path: '/{{_index}}',\n    method: 'HEAD'\n}\n\nreturn msg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 450,
+                "y": 740,
+                "wires": [
+                    [
+                        "{{_id}}-16"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-16",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "txt",
+                "url": "",
+                "tls": "",
+                "x": 590,
+                "y": 740,
+                "wires": [
+                    [
+                        "{{_id}}-17"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-17",
+                "type": "function",
+                "name": "",
+                "func": "delete msg.method;\ndelete msg.headers;\ndelete msg.req;\n\nif (msg.statusCode == 200) {\n    msg.url = global.get('node-red').url + '/elasticsearch'\n    msg.method = 'POST'\n    \n    msg.payload = {\n        path: '/{{_index}}/_delete_by_query',\n        method: 'POST',\n        payload: {\n            \"query\": {\n                \"match_all\": {}\n            }\n        }\n    }\n    \n    return [msg, null];\n} else {\n    // Likely index doesn't exist so we just continue like it's gone.\n    msg.statusCode = 200;\n    \n    return [null, msg]    \n}",
+                "outputs": "2",
+                "noerr": 0,
+                "x": 730,
+                "y": 740,
+                "wires": [
+                    [
+                        "{{_id}}-18"
+                    ],
+                    [
+                        "{{_id}}-37"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-18",
+                "type": "http request",
+                "name": "",
+                "method": "use",
+                "ret": "obj",
+                "url": "",
+                "tls": "",
+                "x": 890,
+                "y": 740,
+                "wires": [
+                    [
+                        "{{_id}}-30"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-19",
+                "type": "switch",
+                "name": "",
+                "property": "truncate",
+                "propertyType": "flow",
+                "rules": [
+                    {
+                        "vt": "str",
+                        "t": "eq",
+                        "v": "true"
+                    },
+                    {
+                        "t": "else"
+                    }
+                ],
+                "checkall": "false",
+                "outputs": 2,
+                "x": 310,
+                "y": 740,
+                "wires": [
+                    [
+                        "{{_id}}-15"
+                    ],
+                    [
+                        "{{_id}}-36"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-20",
+                "type": "link out",
+                "name": "File Out",
+                "links": [
+                    "{{_id}}-6"
+                ],
+                "x": 455,
+                "y": 680,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-30",
+                "type": "link out",
+                "name": "Switch out",
+                "links": [
+                    "{{_id}}-31"
+                ],
+                "x": 995,
+                "y": 740,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-31",
+                "type": "link in",
+                "name": "Switch In",
+                "links": [
+                    "{{_id}}-30",
+                    "{{_id}}-37",
+                    "{{_id}}-36"
+                ],
+                "x": 75,
+                "y": 880,
+                "wires": [
+                    [
+                        "{{_id}}-49"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-32",
+                "type": "link in",
+                "name": "Load Data",
+                "links": [
+                    "{{_id}}-33"
+                ],
+                "x": 75,
+                "y": 980,
+                "wires": [
+                    [
+                        "{{_id}}-10"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-33",
+                "type": "link out",
+                "name": "Truncated",
+                "links": [
+                    "{{_id}}-32"
+                ],
+                "x": 695,
+                "y": 880,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-34",
+                "type": "comment",
+                "name": "Primary Flow",
+                "info": "",
+                "x": 110,
+                "y": 660,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-36",
+                "type": "link out",
+                "name": "Do Not Truncate",
+                "links": [
+                    "{{_id}}-31"
+                ],
+                "x": 415,
+                "y": 780,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-37",
+                "type": "link out",
+                "name": "Index Does Not Exist",
+                "links": [
+                    "{{_id}}-31"
+                ],
+                "x": 835,
+                "y": 780,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-38",
+                "type": "comment",
+                "name": "Format Data",
+                "info": "",
+                "x": 130,
+                "y": 940,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-41",
+                "type": "debug",
+                "name": "",
+                "active": true,
+                "console": "false",
+                "complete": "true",
+                "x": 930,
+                "y": 80,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-43",
+                "type": "link out",
+                "name": "Data Operation Output",
+                "links": [
+                    "{{_id}}-4"
+                ],
+                "x": 815,
+                "y": 520,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-44",
+                "type": "link out",
+                "name": "Data Operation Output",
+                "links": [
+                    "{{_id}}-4"
+                ],
+                "x": 815,
+                "y": 260,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-45",
+                "type": "link out",
+                "name": "Data Operation Output",
+                "links": [
+                    "{{_id}}-4"
+                ],
+                "x": 455,
+                "y": 640,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-47",
+                "type": "function",
+                "name": "Configure",
+                "func": "var newMsg = {}\n\nnewMsg.config = {\n    filename: msg.payload.path,\n    sheets: JSON.parse(flow.get('sheetName'))\n}\nreturn newMsg;",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 440,
+                "y": 880,
+                "wires": [
+                    [
+                        "{{_id}}-51"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-48",
+                "type": "function",
+                "name": "",
+                "func": "if (msg.req.files && msg.req.files.file) {\n    msg.files = msg.req.files.file\n    return msg\n} else {\n    node.error('No file found in payload.');\n}",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 170,
+                "y": 740,
+                "wires": [
+                    [
+                        "{{_id}}-19"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-49",
+                "type": "function",
+                "name": "",
+                "func": "msg.payload = msg.files\nreturn msg",
+                "outputs": 1,
+                "noerr": 0,
+                "x": 170,
+                "y": 880,
+                "wires": [
+                    [
+                        "{{_id}}-2"
+                    ]
+                ]
+            },
+            {
+                "id": "{{_id}}-50",
+                "type": "debug",
+                "name": "",
+                "active": true,
+                "console": "false",
+                "complete": "false",
+                "x": 710,
+                "y": 980,
+                "wires": []
+            },
+            {
+                "id": "{{_id}}-51",
+                "type": "bigxlsx",
+                "name": "",
+                "filename": "",
+                "sheet": "",
+                "direction": true,
+                "headers": false,
+                "x": 580,
+                "y": 880,
+                "wires": [
+                    [
+                        "{{_id}}-33"
+                    ],
+                    [
+                        "{{_id}}-33"
+                    ]
+                ]
+            }
+        ]
+    }
+}
