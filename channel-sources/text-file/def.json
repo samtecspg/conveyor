@@ -1,11 +1,11 @@
 {
     "name": "Text File",
-    "description": "Use this source to upload files containing data records and store that data in ES. Files can be a variety of formats from JSON to CSV or TSVs.",
+    "description": "Use this source to upload files containing data records and store that data in ES. Files can be a variety of delimited formats like CSVs or TSVs.",
     "groups": [
         {
             "key": "fileInformation",
             "title": "Information about the file",
-            "description": "Specify here the format of the file."
+            "description": "Upload your file. For now this source does not allow specifying custom delimeters, but it is possible if needed. Also the source expects the file to have the first row as the column titles."
         },
         {
             "key": "indexInformation",
@@ -25,7 +25,7 @@
             "type": "boolean",
             "group": "indexInformation",
             "name": "truncate",
-            "label": "Overwrite on Subsequent Uploads",
+            "label": "Overwrite on Future Uploads",
             "description": "Set this to true if you would like to delete all of the data for this source before loading new data. Setting this to true allows a 'truncate before load' leaving it false allows incremental loading."
         },
         {
