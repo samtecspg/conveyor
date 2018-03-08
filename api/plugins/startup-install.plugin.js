@@ -41,6 +41,7 @@ exports.register = function (server, options, next) {
             httpNodeRoot: '/',
             userDir: AppConstants.NODE_RED_DATA,
             flowFile: 'conveyor_flows.json',
+            apiMaxLength: '500mb',
             logging: {
                 // Console logging
                 console: {

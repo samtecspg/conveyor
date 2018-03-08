@@ -18,7 +18,7 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.2.2}
     environment:
-     - ES_JAVA_OPTS=${ES_RAM:--Xmx1g -Xms1g}
+     - ES_JAVA_OPTS=${ES_RAM:--Xmx4g -Xms4g}
     ports: ['9200:9200']
     networks: ['conveyor-net']
     volumes:
