@@ -15,7 +15,7 @@ https://samtecspg.github.io/conveyor/
     * [Docker](https://docs.docker.com/engine/installation/) (If faced with any choices, get the Community Edition ("CE"))
     * [`docker-compose`](https://docs.docker.com/compose/install/) (should be auto-installed as part of Docker on mac and windows)
 
-2. Download the current release: https://github.com/samtecspg/conveyor/releases/download/v1.0.1/conveyor-5.4.0-v1.0.1.zip
+2. Download the current release: https://github.com/samtecspg/conveyor/releases/download/v1.2.0/conveyor-v1.2.0.zip
 
 3. Unzip and get a terminal or CMD in the release directory
 
@@ -29,7 +29,7 @@ Find a bug? Or something not working the way you expect? Don't go! Create an iss
 
 ## License
 ```
-Copyright 2017 Samtec.
+Copyright 2018 Samtec.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
