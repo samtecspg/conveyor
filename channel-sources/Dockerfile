@@ -15,4 +15,4 @@ COPY . .
 
 VOLUME [ "/usr/src/app" ]
 
-CMD ["dockerize", "-wait", "tcp://elasticsearch:9200", "-wait", "tcp://kibana:5601", "-wait", "tcp://conveyor-node:4000", "-timeout", "5m",  "python", "./install-channels.py"]
+CMD ["dockerize", "-wait", "http://elasticsearch:9200", "-wait", "http://conveyor-node:1880", "-wait", "http://conveyor-node:4000",  "-wait", "http://kibana:5601", "-timeout", "8m", "-wait-retry-interval", "10s",  "python", "./install-channels.py"]
