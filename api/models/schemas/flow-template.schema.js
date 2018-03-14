@@ -9,6 +9,9 @@ module.exports  = {
     name: Joi.string().description('Name of the Flow (this is unique)'),
     description: Joi.string().description('Description of the Flow Template'),
     parameters: Joi.array().items(Joi.object()).description('List of Parameters'),
+    hasDashboards:  Joi.boolean().description('Pre-build dashboards'),
+    hasAlerts:  Joi.boolean().description('Pre-build alerts'),
+    hasLearning:  Joi.boolean().description('Pre-build machine learning jobs'),
     groups: Joi.array().items(Joi.object().keys({
         key: Joi.string(),
         title: Joi.string(),

@@ -157,8 +157,24 @@ export default {
             content: {
                 ...global.wrapper
             },
-            header: {},
-            body: {},
+            header: {
+                float: 'left',
+            },
+            badges: {
+                root: {
+                    float: 'right',
+                    'padding-top': '7px',
+                },
+                img: {
+                    width: '17px',
+                    height: '17px',
+                    'margin-left': '10px',
+                }
+            },
+            body: {
+                clear: 'both',
+                'text-align': 'justify',
+            },
             action: {
                 root: {
                     'margin-top': 'auto',
@@ -362,6 +378,12 @@ export default {
             bar: {
                 'background-color': secondary[500],
             }
+        },
+        'MuiTooltip': {
+            root: {},
+            tooltipOpen: {
+                'font-size': '15px'
+            },
         }
     }
 };

@@ -1,14 +1,14 @@
-import React from 'react';
 import _ from 'lodash';
-import {CardItem} from './CardItem';
-import PropTypes from 'prop-types';
 import Grid from 'material-ui/Grid';
-import {withStyles} from 'material-ui/styles';
+import { withStyles } from 'material-ui/styles';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { CardItem } from './CardItem';
 
 const styles = theme => {
     return {
         gridItem: theme.custom.card.gridItem
-    }
+    };
 };
 
 class _SourceList extends React.Component {
@@ -27,6 +27,11 @@ class _SourceList extends React.Component {
                     body={item.description}
                     onActionButtonClick={() => this.props.onClick(item)}
                     actionName="Create"
+                    badges={{
+                        dashboard: item.hasDashboards,
+                        alert: item.hasAlerts,
+                        machineLearning: item.hasLearning,
+                    }}
                 >
                 </CardItem>
             </Grid>);
@@ -34,7 +39,7 @@ class _SourceList extends React.Component {
 
     renderList() {
         const { sources } = this.props;
-        return _.map(sources, this.renderItem)
+        return _.map(sources, this.renderItem);
     }
 
     render() {

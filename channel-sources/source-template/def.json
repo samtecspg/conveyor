@@ -1,6 +1,9 @@
 {
     "name": "Source Template",
     "description": "This source has two main purposes: the first is to enable easier development of additional flows, it can also be used to develop a custom channel.",
+    "hasDashboards": true,
+    "hasAlerts": true,
+    "hasLearning": true,
     "groups": [],
     "parameters": [],
     "flow": {

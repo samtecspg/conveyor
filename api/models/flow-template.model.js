@@ -11,7 +11,10 @@ class FlowTemplateModel {
                 description,
                 parameters,
                 flow,
-                groups) {
+                groups,
+                hasDashboards,
+                hasAlerts,
+                hasLearning) {
 
         this.deprecated = deprecated || false;
         this.name = name;
@@ -19,6 +22,9 @@ class FlowTemplateModel {
         this.parameters = parameters;
         this.flow = flow;
         this.groups = groups;
+        this.hasDashboards = !!hasDashboards;
+        this.hasAlerts = !!hasAlerts;
+        this.hasLearning = !!hasLearning;
     }
 
     static save(payload, cb) {
@@ -46,9 +52,12 @@ class FlowTemplateModel {
                     payload.name,
                     payload.description,
                     payload.parameters,
-                    // JSON.stringify(payload.flow),
-                    payload.flow,
-                    payload.groups
+                    JSON.stringify(payload.flow),
+                    //payload.flow,
+                    payload.groups,
+                    payload.hasDashboards,
+                    payload.hasAlerts,
+                    payload.hasLearning,
                 );
                 if (!template) { // save a new template
                     const values = {
@@ -116,7 +125,10 @@ class FlowTemplateModel {
                 result._source.description,
                 result._source.parameters,
                 result._source.flow,
-                result._source.groups
+                result._source.groups,
+                result._source.hasDashboards,
+                result._source.hasAlerts,
+                result._source.hasLearning,
             );
             flowTemplate.id = result._id;
             flowTemplate.version = result._version;
@@ -146,7 +158,10 @@ class FlowTemplateModel {
                     result._source.description,
                     result._source.parameters,
                     result._source.flow,
-                    result._source.groups
+                    result._source.groups,
+                    result._source.hasDashboards,
+                    result._source.hasAlerts,
+                    result._source.hasLearning,
                 );
                 flowTemplate.id = result._id;
                 flowTemplate.version = result._version;
