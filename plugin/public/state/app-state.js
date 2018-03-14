@@ -1,13 +1,12 @@
-import { ObjectTypes } from '../../lib/common/object-types';
+import { AppConstants } from '../../lib/common/app-constants';
 
 export class AppState {
-  constructor() {
-    this.kbnVersion = '6.0.0-alpha1';
-    this.basePath = undefined;
-    this.location = undefined;
-    this.selectedTab = false;
-    this.showSpinner = false;
-    this.snackBarMessage = undefined;
-    this.snackBarIsOpen = false;
-  }
+    constructor() {
+        this.kbnVersion = AppConstants.APP_VERSION;
+        this.basePath = undefined;
+        this.location = undefined;
+        this.selectedTab = false;
+        this.snackBarMessage = undefined;
+        this.snackBarIsOpen = false;
+    }
 } 

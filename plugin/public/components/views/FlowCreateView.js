@@ -1,26 +1,33 @@
-import React from 'react';
-import {FlowActions} from '../../actions/flow-actions';
-import PropTypes from 'prop-types';
-import {Content, ContentBody, ContentHeader, ContentFooter} from '../global';
-import {DynamicForm} from '../dynamic';
-import {Text} from '../dynamic/type';
-import {SourceActions} from '../../actions/source-actions';
-import {AppActions} from '../../actions/app-actions';
-import {ObjectTypes} from '../../../lib/common/object-types';
-import Divider from 'material-ui/Divider';
-import {ContentSubHeader} from '../global/content/ContentSubHeader';
-import {withStyles} from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
-import dashify from 'dashify';
-import {DescriptionHelper} from '../dynamic/helpers/DescriptionHelper';
 import Async from 'async';
+import dashify from 'dashify';
+import Button from 'material-ui/Button';
+import Divider from 'material-ui/Divider';
+import Grid from 'material-ui/Grid';
+import { LinearProgress } from 'material-ui/Progress';
+import { withStyles } from 'material-ui/styles';
+import Typography from 'material-ui/Typography';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { ObjectTypes } from '../../../lib/common/object-types';
+import { AppActions } from '../../actions/app-actions';
+import { FlowActions } from '../../actions/flow-actions';
+import { SourceActions } from '../../actions/source-actions';
+import { DynamicForm } from '../dynamic';
+import { DescriptionHelper } from '../dynamic/helpers/DescriptionHelper';
+import { Text } from '../dynamic/type';
+import {
+    Content,
+    ContentBody,
+    ContentFooter,
+    ContentHeader
+} from '../global';
+import { ContentSubHeader } from '../global/content/ContentSubHeader';
 
 const styles = theme => ({
     primaryButton: theme.custom.form.button.primary,
     secondaryButton: theme.custom.form.button.secondary,
-    box: theme.custom.form.box
+    box: theme.custom.form.box,
+    progressBar: theme.custom.layout.progressBar
 });
 
 class _FlowCreateView extends React.Component {
@@ -33,7 +40,8 @@ class _FlowCreateView extends React.Component {
                 name: {},
                 description: {}
             },
-            currentDescriptionHelper: undefined
+            currentDescriptionHelper: undefined,
+            uploadProgress: 0,
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.saveFlow = this.saveFlow.bind(this);
@@ -41,14 +49,14 @@ class _FlowCreateView extends React.Component {
         this.handleValidateInput = this.handleValidateInput.bind(this);
         this.validate = this.validate.bind(this);
         this.handleDescriptionHelperUpdate = this.handleDescriptionHelperUpdate.bind(this);
+        this.uploadProgressManager = this.uploadProgressManager.bind(this);
     }
 
     componentDidMount() {
         SourceActions.fetchByName(this.props.sourceName);
         AppActions.setTab(ObjectTypes.SOURCE);
     }
-    
-    
+
     validate(cb) {
         const results = _(this.state.form)
             .map((parameterValidator) => {
@@ -61,7 +69,7 @@ class _FlowCreateView extends React.Component {
         const isValid = results.indexOf(false) < 0;
         this.setState({ isFormValid: isValid });
         if (isValid) {
-            return cb()
+            return cb();
         }
     }
 
@@ -73,7 +81,7 @@ class _FlowCreateView extends React.Component {
             return {
                 key: parameter.name,
                 value: parameterValue ? parameterValue.value : null
-            }
+            };
         };
         const parameters = _(source.parameters).reject({ 'type': 'file' }).map(parseForm).value();
         const filesParameters = _(source.parameters).filter({ 'type': 'file' }).map(parseForm).value();
@@ -97,7 +105,7 @@ class _FlowCreateView extends React.Component {
                     let data = new FormData();
                     data.append(file.key, file.value);
                     FlowActions
-                        .postData(form.name.value.trim(), data)
+                        .postData(form.name.value.trim(), data, this.uploadProgressManager)
                         .then(() => cb())
                         .catch(cb);
                 });
@@ -148,24 +156,28 @@ class _FlowCreateView extends React.Component {
     handleDescriptionHelperUpdate(name) {
         this.setState({
             currentDescriptionHelper: name
-        })
+        });
+    }
+
+    uploadProgressManager(percentCompleted) {
+        percentCompleted = percentCompleted === 100 ? 0 : percentCompleted;
+        this.setState({ uploadProgress: percentCompleted });
     }
 
     render() {
         const { source, classes } = this.props;
         if (!source) {
-            return (<div>Source not found [{this.props.sourceName}]</div>)
+            return (<div>Source not found [{this.props.sourceName}]</div>);
         }
         return (
             <Content>
-                <ContentHeader title={<div>+ Create Channel: <strong>{source.name}</strong>
-                </div>}>{source.description}</ContentHeader>
-                <Divider light/>
+                <ContentHeader
+                    title={<div>+ Create Channel: <strong>{source.name}</strong>
+                    </div>}
+                >{source.description}</ContentHeader>
+                <Divider light />
                 <ContentSubHeader>
                     <Typography type="title" gutterBottom>Basic information</Typography>
-                    {/*
-                    <Typography type="body1" gutterBottom>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere voluptatibus accusantium magni expedita et dicta.</Typography>
-*/}
                     <div className={classes.box}>
 
                         <Grid container>
@@ -244,7 +256,7 @@ class _FlowCreateView extends React.Component {
                         </Grid>
                     </div>
                 </ContentSubHeader>
-                <Divider light/>
+                <Divider light />
                 <ContentBody>
                     <DynamicForm
                         handleInputChange={this.handleInputChange}
@@ -255,21 +267,30 @@ class _FlowCreateView extends React.Component {
                         currentDescriptionHelper={this.state.currentDescriptionHelper}
                     />
                 </ContentBody>
-                <Divider light/>
+                <Divider light />
+                <div>
+                    {this.state.uploadProgress > 0 ?
+                        <LinearProgress mode="determinate" value={this.state.uploadProgress} />
+                        :
+                        <div className={classes.progressBar} />
+                    }
+                </div>
                 <ContentFooter>
+
                     <Grid
                         container
                         justify={'flex-end'}
                         spacing={24}
                     >
                         <Grid item>
-                            <Button color="accent"
-                                    className={classes.secondaryButton}
-                                    onClick={() => AppActions.changeLocation(`/${ObjectTypes.SOURCE}`)}
+                            <Button
+                                color="accent"
+                                className={classes.secondaryButton}
+                                onClick={() => AppActions.changeLocation(`/${ObjectTypes.SOURCE}`)}
 
-                                    classes={{
-                                        label: 'button-label'
-                                    }}
+                                classes={{
+                                    label: 'button-label'
+                                }}
                             >
                                 <Typography type="button">Cancel</Typography>
 
@@ -277,12 +298,13 @@ class _FlowCreateView extends React.Component {
                         </Grid>
 
                         <Grid item>
-                            <Button color="primary"
-                                    className={classes.primaryButton}
-                                    onClick={this.handleOnSubmit}
-                                    classes={{
-                                        label: 'button-label'
-                                    }}
+                            <Button
+                                color="primary"
+                                className={classes.primaryButton}
+                                onClick={this.handleOnSubmit}
+                                classes={{
+                                    label: 'button-label'
+                                }}
                             >
                                 <Typography type="button">Finish</Typography>
 

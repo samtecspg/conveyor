@@ -1,6 +1,11 @@
-import React from 'react';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
+import CloseIcon from 'material-ui-icons/Close';
+import MoreVertIcon from 'material-ui-icons/MoreVert';
+import IconButton from 'material-ui/IconButton';
+import Input from 'material-ui/Input';
+import Menu, { MenuItem } from 'material-ui/Menu';
+import { LinearProgress } from 'material-ui/Progress';
+import Snackbar from 'material-ui/Snackbar';
 import { withStyles } from 'material-ui/styles';
 import Table, {
     TableBody,
@@ -11,15 +16,10 @@ import Table, {
     TableRow
 } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import MoreVertIcon from 'material-ui-icons/MoreVert';
-import Input from 'material-ui/Input';
-import InputParser from '../../common/default-input-parser'
+import PropTypes from 'prop-types';
+import React from 'react';
 import { FlowActions } from '../../actions/flow-actions';
-import Snackbar from 'material-ui/Snackbar';
-import CloseIcon from 'material-ui-icons/Close';
-import Button from 'material-ui/Button';
+import InputParser from '../../common/default-input-parser';
 
 const styles = theme => {
     return {
@@ -28,21 +28,22 @@ const styles = theme => {
         columnDescription: theme.custom.table.columns.description,
         columnOptions: theme.custom.table.columns.options,
         file: theme.custom.form.file.root,
-        label: theme.custom.form.file.label
-
-    }
+        label: theme.custom.form.file.label,
+        progressBar: theme.custom.layout.progressBar
+    };
 };
 
 class _FlowList extends React.Component {
-    state = {
-        anchorEl: [],
-        open: [],
-        snackbarOpen: false,
-        message: undefined
-    };
 
     constructor() {
         super();
+        this.state = {
+            anchorEl: [],
+            open: [],
+            snackbarOpen: false,
+            message: undefined,
+            uploadProgress: 0,
+        };
         this.renderItem = this.renderItem.bind(this);
         this.renderList = this.renderList.bind(this);
         this.handleOptionClick = this.handleOptionClick.bind(this);
@@ -50,11 +51,12 @@ class _FlowList extends React.Component {
         this.handleOnFileUploadChange = this.handleOnFileUploadChange.bind(this);
         this.handleSnackbarOpen = this.handleSnackbarOpen.bind(this);
         this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
+        this.uploadProgressManager = this.uploadProgressManager.bind(this);
     }
 
     menuHandlerDiscover = (item) => {
         this.handleOptionRequestClose(item);
-        window.location = `${this.props.basePath}/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:${item.index},interval:auto,query:'')`
+        window.location = `${this.props.basePath}/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:${item.index},interval:auto,query:'')`;
     };
     menuHandlerUpload = (item) => {
         this.handleOptionRequestClose(item);
@@ -75,7 +77,7 @@ class _FlowList extends React.Component {
         let data = new FormData();
         data.append('file', value); //TODO: will need to be changed to handle multiple files
         FlowActions
-            .postData(item.name, data)
+            .postData(item.name, data, this.uploadProgressManager)
             .then(handleResponse)
             .catch(handleResponse);
 
@@ -111,6 +113,11 @@ class _FlowList extends React.Component {
         this.setState({ snackbarOpen: false, message: undefined });
     };
 
+    uploadProgressManager(percentCompleted) {
+        percentCompleted = percentCompleted === 100 ? 0 : percentCompleted;
+        this.setState({ uploadProgress: percentCompleted });
+    }
+
     renderItem(item) {
         const { sources, classes } = this.props;
         const source = _.find(sources, { 'name': item.template });
@@ -118,6 +125,7 @@ class _FlowList extends React.Component {
 
         return (
             <TableRow key={item.id}>
+
                 <TableCell><Typography type="body1">{item.name}</Typography></TableCell>
                 <TableCell><Typography type="body1">{item.template}</Typography></TableCell>
                 <TableCell className={classes.columnDescription}><Typography type="body1">{item.description}</Typography></TableCell>
@@ -128,6 +136,7 @@ class _FlowList extends React.Component {
                         aria-haspopup="true"
                         onClick={this.handleOptionClick.bind(null, item)}
                     >
+
                         <MoreVertIcon />
                     </IconButton>
                     <Menu
@@ -141,7 +150,8 @@ class _FlowList extends React.Component {
 
                             <label
                                 className={classes.label}
-                                htmlFor={item.id}>
+                                htmlFor={item.id}
+                            >
                                 Upload
                             </label>
                         </MenuItem>
@@ -159,13 +169,20 @@ class _FlowList extends React.Component {
 
     renderList() {
         const { flows } = this.props;
-        return _.map(flows, this.renderItem)
+        return _.map(flows, this.renderItem);
     }
 
     render() {
         const { classes } = this.props;
         return (
             <div>
+                <div>
+                    {this.state.uploadProgress > 0 ?
+                        <LinearProgress mode="determinate" value={this.state.uploadProgress} />
+                        :
+                        <div className={classes.progressBar} />
+                    }
+                </div>
 
                 <Table className={classes.table}>
                     <TableHead>
@@ -185,7 +202,7 @@ class _FlowList extends React.Component {
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',
-                        horizontal: 'left'
+                        horizontal: 'right'
                     }}
                     open={this.state.snackbarOpen}
                     autoHideDuration={6000}
@@ -206,7 +223,7 @@ class _FlowList extends React.Component {
                         </IconButton>
                     ]}
                 />
-            </div>)
+            </div>);
 
     }
 }

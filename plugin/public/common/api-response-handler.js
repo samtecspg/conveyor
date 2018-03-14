@@ -6,13 +6,5 @@ export function handleApiResponse(response) {
         error.status = response.status;
         throw error;
     }
-    return response
-        .json()
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            return response;
-        });
+    return response.data;
 }
-

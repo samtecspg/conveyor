@@ -109,6 +109,9 @@ export default {
                 'max-width': 'initial',
                 border: global.border,
                 'border-radius': global.borderRadius
+            },
+            progressBar: {
+                'height': '5px',
             }
         },
         content: {
@@ -349,6 +352,15 @@ export default {
         'MuiGrid': {
             'spacing-xs-16': {
                 'margin': '0 -8px'
+            }
+        },
+        'MuiLinearProgress': {
+            root: {
+                'background-color': 'white !important',
+
+            },
+            bar: {
+                'background-color': secondary[500],
             }
         }
     }
