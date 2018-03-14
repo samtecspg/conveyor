@@ -1,5 +1,5 @@
 ---
-#extends: "@elastic/kibana"
+#extends: "@elastic/eslint-config-kibana"
 {
   "parserOptions": {
     "ecmaVersion": 6,
