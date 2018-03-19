@@ -1,9 +1,12 @@
 import Async from 'async';
 import dashify from 'dashify';
+import {
+    FileUpload as FileUploadIcon,
+    Save as SaveIcon
+} from 'material-ui-icons';
 import Button from 'material-ui/Button';
 import Divider from 'material-ui/Divider';
 import Grid from 'material-ui/Grid';
-import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import PropTypes from 'prop-types';
@@ -22,12 +25,12 @@ import {
     ContentHeader
 } from '../global';
 import { ContentSubHeader } from '../global/content/ContentSubHeader';
+import ProgressDialog, { PROGRESS_STATUS } from '../global/dialog/ProgressDialog';
 
 const styles = theme => ({
     primaryButton: theme.custom.form.button.primary,
     secondaryButton: theme.custom.form.button.secondary,
     box: theme.custom.form.box,
-    progressBar: theme.custom.layout.progressBar
 });
 
 class _FlowCreateView extends React.Component {
@@ -42,6 +45,11 @@ class _FlowCreateView extends React.Component {
             },
             currentDescriptionHelper: undefined,
             uploadProgress: 0,
+            savingStatus: PROGRESS_STATUS.init,
+            uploadStatus: PROGRESS_STATUS.init,
+            showUploadProgress: false,
+            formStatus: false,
+            saveDialogOpen: false,
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.saveFlow = this.saveFlow.bind(this);
@@ -50,12 +58,18 @@ class _FlowCreateView extends React.Component {
         this.validate = this.validate.bind(this);
         this.handleDescriptionHelperUpdate = this.handleDescriptionHelperUpdate.bind(this);
         this.uploadProgressManager = this.uploadProgressManager.bind(this);
+        this.handleOnComplete = this.handleOnComplete.bind(this);
     }
 
     componentDidMount() {
         SourceActions.fetchByName(this.props.sourceName);
         AppActions.setTab(ObjectTypes.SOURCE);
     }
+
+    handleOnComplete() {
+        this.setState({ saveDialogOpen: false });
+        AppActions.changeLocation(`/${ObjectTypes.CHANNEL}`);
+    };
 
     validate(cb) {
         const results = _(this.state.form)
@@ -85,7 +99,11 @@ class _FlowCreateView extends React.Component {
         };
         const parameters = _(source.parameters).reject({ 'type': 'file' }).map(parseForm).value();
         const filesParameters = _(source.parameters).filter({ 'type': 'file' }).map(parseForm).value();
+        if (filesParameters.length > 0) {
+            this.setState({ showUploadProgress: true });
+        }
         const saveFormData = (form, parameters, cb) => {
+            this.setState({ savingStatus: PROGRESS_STATUS.inProgress });
             FlowActions
                 .completeCreateFlow({
                         template: this.props.source.name,
@@ -95,18 +113,25 @@ class _FlowCreateView extends React.Component {
                         parameters
                     }
                 )
-                .then(() => cb())
+                .then(() => {
+                    this.setState({ savingStatus: PROGRESS_STATUS.success });
+                    return cb();
+                })
                 .catch(cb);
         };
 
         const uploadFiles = (form, files, cb) => {
+            this.setState({ uploadStatus: PROGRESS_STATUS.inProgress });
             if (files && files.length > 0) {
                 files.map((file) => {
                     let data = new FormData();
                     data.append(file.key, file.value);
                     FlowActions
                         .postData(form.name.value.trim(), data, this.uploadProgressManager)
-                        .then(() => cb())
+                        .then(() => {
+                            this.setState({ uploadStatus: PROGRESS_STATUS.success });
+                            return cb();
+                        })
                         .catch(cb);
                 });
             }
@@ -120,11 +145,10 @@ class _FlowCreateView extends React.Component {
             if (err) {
                 this.setState({ errorMessage: err });
             }
-            else {
-                AppActions.changeLocation(`/${ObjectTypes.CHANNEL}`);
-            }
+            this.setState({ formStatus: true });
         };
 
+        this.setState({ saveDialogOpen: true });
         Async.series([
             saveFormData.bind(this, form, parameters),
             uploadFiles.bind(this, form, filesParameters)
@@ -160,7 +184,6 @@ class _FlowCreateView extends React.Component {
     }
 
     uploadProgressManager(percentCompleted) {
-        percentCompleted = percentCompleted === 100 ? 0 : percentCompleted;
         this.setState({ uploadProgress: percentCompleted });
     }
 
@@ -169,8 +192,32 @@ class _FlowCreateView extends React.Component {
         if (!source) {
             return (<div>Source not found [{this.props.sourceName}]</div>);
         }
+
         return (
             <Content>
+                <ProgressDialog
+                    open={this.state.saveDialogOpen}
+                    titleInProgress={'Please wait...'}
+                    titleSuccess={'Complete'}
+                    overallStatus={this.state.formStatus}
+                    handleDoneAction={this.handleOnComplete}
+                    processes={[
+                        {
+                            enabled: true,
+                            icon: <SaveIcon />,
+                            status: this.state.savingStatus,
+                            label: 'Creating flow',
+                        },
+                        {
+                            enabled: this.state.showUploadProgress,
+                            icon: <FileUploadIcon />,
+                            status: this.state.uploadStatus,
+                            label: 'Uploading file',
+                            determinate: true,
+                            value: this.state.uploadProgress,
+                        },
+                    ]}
+                />
                 <ContentHeader
                     title={<div>+ Create Channel: <strong>{source.name}</strong>
                     </div>}
@@ -268,13 +315,6 @@ class _FlowCreateView extends React.Component {
                     />
                 </ContentBody>
                 <Divider light />
-                <div>
-                    {this.state.uploadProgress > 0 ?
-                        <LinearProgress mode="determinate" value={this.state.uploadProgress} />
-                        :
-                        <div className={classes.progressBar} />
-                    }
-                </div>
                 <ContentFooter>
 
                     <Grid

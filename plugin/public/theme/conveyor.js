@@ -1,6 +1,8 @@
 // http://cssinjs.org/
 // https://github.com/callemall/material-ui
 
+import green from 'material-ui/colors/green';
+import defaultStyle from './default';
 // Some styles applied in the custom element are also available in the
 // `override` functionality of material-ui but I think is best to have everything
 // in a single place when possible
@@ -361,6 +363,33 @@ export default {
                     'float': 'right'
                 }
 
+            }
+        },
+        dialog: {
+            status: {
+                avatar: {
+                    'background-color': secondary['A100'],
+                    'width': '56px',
+                    'height': '56px',
+                    '& svg': {
+                        'color': secondary[500]
+                    },
+                    'box-shadow': defaultStyle.shadows[1],
+                },
+                avatarSuccess: {
+                    'background-color': `${green[500]} !important`,
+                    '&:hover': {
+                        'background-color': green[500],
+                    },
+                    '& svg': {
+                        'color': secondary['A100']
+                    }
+                },
+                progress: {
+                    'color': secondary[500],
+                    'position': 'absolute',
+                    'zIndex': 1,
+                }
             }
         }
     },

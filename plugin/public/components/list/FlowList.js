@@ -1,10 +1,10 @@
 import _ from 'lodash';
+import { FileUpload as FileUploadIcon } from 'material-ui-icons';
 import CloseIcon from 'material-ui-icons/Close';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import IconButton from 'material-ui/IconButton';
 import Input from 'material-ui/Input';
 import Menu, { MenuItem } from 'material-ui/Menu';
-import { LinearProgress } from 'material-ui/Progress';
 import Snackbar from 'material-ui/Snackbar';
 import { withStyles } from 'material-ui/styles';
 import Table, {
@@ -20,6 +20,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlowActions } from '../../actions/flow-actions';
 import InputParser from '../../common/default-input-parser';
+import ProgressDialog, { PROGRESS_STATUS } from '../global/dialog/ProgressDialog';
 
 const styles = theme => {
     return {
@@ -43,6 +44,9 @@ class _FlowList extends React.Component {
             snackbarOpen: false,
             message: undefined,
             uploadProgress: 0,
+            uploadStatus: PROGRESS_STATUS.init,
+            formStatus: false,
+            saveDialogOpen: false,
         };
         this.renderItem = this.renderItem.bind(this);
         this.renderList = this.renderList.bind(this);
@@ -52,6 +56,7 @@ class _FlowList extends React.Component {
         this.handleSnackbarOpen = this.handleSnackbarOpen.bind(this);
         this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
         this.uploadProgressManager = this.uploadProgressManager.bind(this);
+        this.handleOnComplete = this.handleOnComplete.bind(this);
     }
 
     menuHandlerDiscover = (item) => {
@@ -67,15 +72,19 @@ class _FlowList extends React.Component {
             if (err) {
                 this.setState({ message: err });
             }
-            else {
-                this.setState({ message: 'Upload successful' });
-            }
-            this.handleSnackbarOpen();
-
+            this.setState({
+                uploadStatus: PROGRESS_STATUS.success,
+                formStatus: true,
+                uploadProgress: 0,
+            });
         };
         const value = InputParser(e);
         let data = new FormData();
         data.append('file', value); //TODO: will need to be changed to handle multiple files
+        this.setState({
+            saveDialogOpen: true,
+            uploadStatus: PROGRESS_STATUS.inProgress
+        });
         FlowActions
             .postData(item.name, data, this.uploadProgressManager)
             .then(handleResponse)
@@ -105,6 +114,7 @@ class _FlowList extends React.Component {
     handleSnackbarOpen = () => {
         this.setState({ snackbarOpen: true });
     };
+
     handleSnackbarClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -114,9 +124,15 @@ class _FlowList extends React.Component {
     };
 
     uploadProgressManager(percentCompleted) {
-        percentCompleted = percentCompleted === 100 ? 0 : percentCompleted;
         this.setState({ uploadProgress: percentCompleted });
     }
+
+    handleOnComplete() {
+        this.setState({
+            saveDialogOpen: false,
+            formStatus: false,
+        });
+    };
 
     renderItem(item) {
         const { sources, classes } = this.props;
@@ -176,14 +192,23 @@ class _FlowList extends React.Component {
         const { classes } = this.props;
         return (
             <div>
-                <div>
-                    {this.state.uploadProgress > 0 ?
-                        <LinearProgress mode="determinate" value={this.state.uploadProgress} />
-                        :
-                        <div className={classes.progressBar} />
-                    }
-                </div>
-
+                <ProgressDialog
+                    open={this.state.saveDialogOpen}
+                    titleInProgress={'Please wait...'}
+                    titleSuccess={'Complete'}
+                    overallStatus={this.state.formStatus}
+                    handleDoneAction={this.handleOnComplete}
+                    processes={[
+                        {
+                            enabled: true,
+                            icon: <FileUploadIcon />,
+                            status: this.state.uploadStatus,
+                            label: 'Uploading file',
+                            determinate: true,
+                            value: this.state.uploadProgress,
+                        },
+                    ]}
+                />
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow>
