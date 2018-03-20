@@ -20,8 +20,8 @@ Keep reading to find out how Conveyor works, or skip to the installation docs to
 Before we dive into how it works, lets define some important terms.
 
  - **Channels** - These are the data connections that you have created. They either have, are, or are ready to receive data and pipe it into Elasticsearch. They are created from sources. In programming lingo, they could be considered instances of a specific source.
- - **Sources** - These are templates authored for ease of use; each generally targets a specific data source or import method.
- - **Parameters** - These are placeholders in the `sources` which will be replaced when you create a `channel`.
+ - **Sources** - These are templates authored for ease of use; each generally targets a specific data source or import method. In programming lingo, these would be classes.
+ - **Parameters** - These are placeholders in the `sources` which will be replaced when you create a `channel`. Think of them as inputs to a function or parameters for a database connection.
 
 ## How It Works
 
@@ -34,9 +34,9 @@ Conveyor is an orchestration tool and at its core is an API that talks to Elasti
 #### System Components
  - Elasticsearch - This is the data store. It holds the definitions of the sources, the channels, and logs interactions with the Conveyor API. It is also the primary store for data being imported through Channels.
  - Kibana - Kibana stands alone as an amazing tool for managing Elasticsearch. As a fully open source offering, it packs some amazing data visualizations and query tools. Add on its premium features and it becomes a powerful analytical tool for alerts, anomaly detection, and advanced user management.
- - Conveyor Plugin - The plugin is the primary interface with the Conveyor API. Within it, you can easily create, delete, and edit the channels you have built to bring data into Elasticsearch.
- - Conveyor API - The API is an orchestration engine. It knows how to combine user provided parameters with developer created Sources to build Node-RED flows.
- - Node-RED - This is the foundation on which Conveyor is built. Node-RED is an amazing tool for rapid development prototyping, IoT connectivity, and many other tasks. Its visual builder is often easier to understand for non-developers but can be frustrating for anyone not working with it frequently. Conveyor leverages its Robust API for scripting the management of flows, which are the foundation of how Node-RED works.
+ - Conveyor Plugin - The plugin is the primary interface with the Conveyor Node. Within it, you can easily create, delete, and edit the channels you have built to bring data into Elasticsearch.
+ - Conveyor Node - This node is an API, which acts as an orchestration engine. It knows how to combine user provided parameters with developer created Sources to build Node-RED flows. It also proxies data connections into Node-RED.
+ - Node-RED - This is the foundation on which Conveyor is built. Node-RED is an amazing tool for rapid development prototyping, IoT connectivity, and many other tasks. Its visual builder is often easier to understand for non-developers but can be frustrating for anyone not working with it frequently. Conveyor leverages its Robust API for scripting the management of flows, which are the foundation of how Node-RED works. *Though drawn seperately, Node-RED runs inside the Conveyor Node.*
  - Datasources - These you provide. Do you have a CSV file that you would like to quickly upload into Elastisearch? Or do you need some SQL Server data monitored by Elastics Watcher or Machine Learning tools? With Conveyor getting your data sources connected to Elasticsearch your data has never been easier to play around with.
 
 ### Basic Workflow

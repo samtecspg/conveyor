@@ -24,17 +24,6 @@
         {% endfor %}
       </ul>
       <ul>
-        <li class="text-label">Source Documentation</li>
-        {% assign source_items = site.source_documentation | sort: 'order' %}
-        {% for item in source_items %}
-          {% if page.url == item.url %}
-            <li class="is-selected"><a href="{{ site.baseurl }}{{ item.url }}" class="active">{{item.title}}</a></li>
-          {% else %}
-            <li><a href="{{ site.baseurl }}{{ item.url }}">{{item.title}}</a></li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-      <ul>
         <li class="text-label">Source Authoring</li>
         {% assign authoring_items = site.source_authoring | sort: 'order' %}
         {% for item in authoring_items %}

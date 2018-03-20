@@ -10,81 +10,43 @@ Having many Sources and having quality sources is paramount to the Conveyor prod
 
 ### Node-RED
 
-To get started authoring your own Sources, you'll first need an understanding of Node-RED. If you havven't used it before then check out this quick and fun tutorial I wrote for it. [A Fun Introduction to Node-RED](https://blog.spg.ai/a-fun-introduction-to-node-red-4d14d8bdbc6b)
+To get started authoring your own Sources, you'll first need an understanding of Node-RED. If you haven't used it before then check out this quick and fun tutorial I wrote for it. [A Fun Introduction to Node-RED](https://blog.spg.ai/a-fun-introduction-to-node-red-4d14d8bdbc6b). We're working on a Conveyor specific tutorial so stay tuned.
 
-Here is what the basic Node-RED interface looks like.
+Here is what the basic Node-RED interface looks like. If you're running Conveyor with the compose provided Node-RED should be available at [http://localhost:1880](http://localhost:1880)
 
-![Blank Node-RED Interface]()
+![Blank Node-RED Interface]({{ "/img/source-authoring/global-flow.png" | absolute_url }})
 
-On the left you have a list of available nodes, the center contains the flow or where the flow will go, and the right contains an info and debug panel. To create a flow you drag nodes onto the flow and connect them. For more detail see the above tutorial.
+The flow showing is a special flow called the **Global Flow** it contains a lot of the connection management and some startup tasks. Normally you wont modify it, but it provides a good idea of what a flow looks like.
 
-Some nodes like the `function` node provide a blank text box for inputting your code.
+On the left you have a list of available nodes, the center contains the flow or where the flow will go, and the right contains an info and debug panel. To create a flow you drag nodes onto the flow and connect them. For more detail see the above tutorial. Once you geel comfortable with node-RED let's create a source. 
 
-![Editing a Function Node]()
+#### Creating your own Source
 
-While other provide more guided inputs.
+From the Kibana interface create a channel from the *Source Template*. This is a source we've created to help you get started.
 
-![Editing a Switch Node]()
+![Select Source Template]({{ "/img/source-authoring/source-template-conveyor.png" | absolute_url }})
 
-Both of these nodes have a JSON representation. To see the JSON behind a node select it, click the menu button in the upper right hand corner, select export, choose to your clipboard, and see the JSON representation of the Node you have selected. As an example, the below is the JSON from the switch node.
+Now go to the Node-RED interface and change tabs inside Node-RED to the channel you created. This is the source tempalte flow. Let's break it down.
 
-```
-[
-    {
-        "id": "5ad142fa.4caaec",
-        "type": "switch",
-        "z": "a12e453d.6c0c4",
-        "name": "",
-        "property": "payload",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": ""
-            }
-        ],
-        "checkall": "true",
-        "outputs": 1,
-        "x": 97.5,
-        "y": 62,
-        "wires": [
-            []
-        ]
-    }
-]
-```
-{% raw %}
-All of the values in the above JSON can be replaced with `{{Mustache}}` parameters. Some of them even have to be replaced. This forms the basis for how sources work.
-{% endraw %}
+![Source Template Flow]({{ "/img/source-authoring/source-template-flow.png" | absolute_url }})
 
-### Flow Templates
+1. This **Load Configuration** section executes once everytime the flow is started. This occurs when the server starts, but also when the flow is created. There are a couple of things it does for you.
+2. Triggered on startup, this *link node* jumps to the Global Flow and create the index patterns for the channel.
+3. The section of flow leading up to this and this function node GET the flow parameters and load them into the [flow context](https://nodered.org/docs/creating-nodes/context).
+4. The **Configuration Endpoints** section exposes endpoints for GETing and PUTing the configuration variables. If the flow is designed for it, this allows modifying channel parameters even after the flow has been created.
+5. The **Data ndpoints** section exposes a way to query the underlying Elasticsearch data through a friendly Channel Specific API.
 
-In the API the JSON definition of a source is stored as a *flow definition* and interacting with them is done via the `/flowtemplate` endpoint. This definition contains the Node-RED flow, which is an array of the Node Object shown above. But it also has more information, which is mostly used for generating the UI that the user will see when they are creating a Channel.
+#### A demonstration
 
-Here is the high level Flow Template JSON:
+For a quick demonstartion I am going to create a new source that inserts data into Elasticsearch everytime we push a button in the Node-RED interface. Not super useful, but it will show the basic task of getting data into ES.
 
-```
-{
-    "name": ,
-    "description": ,
-    "groups": [],
-    "parameters": [],
-    "flow": {}
-}
-```
+We're going to need to drag 4 nodes onto the screen in the area below the Data Endpoints section:
+ - An injext node
+ - A function node
+ - A HTTP Request node
+ - A Debug node
 
-Name and Description seem self explanatory. Groups and Parameters are best shown with an example. Take the below JSON consisting of 2 groups, each with just a single parameter.
+See below for what my small flow looks like.
 
-```
-NEED TO CREATE THIS
-```
+![New Source Template Flow]({{ "/img/source-authoring/new-source-template-flow.png" | absolute_url }})
 
-This would be rendered as below:
-
-![Basic Conveyor Groups and Parameters Markup]()
-
-The above markup is inclusive of all current functionality for groups. Though there are several open issues to enhance groups. But there are more parameters available than just the text parameter. For full documentation see the [Parameters](./parameter-types/) section of the docs.
-
-## A Basic, but complete example
-
-Probably the most basic example would just be a single node with a single group and parameter. But we want this basic example to have some meat on it's bones. This example will create a record in Elasticsearch every time a button is clicked in Node-RED. We're assuming you followed the [Basic Installation Instructions](../getting_started/basic-installation/). If you didn't then it may require some adaptation. For some tips on how to manage custom configurations see the section on [Global Configuration](./global-configuration/) values, but we aren't using them in this example.
