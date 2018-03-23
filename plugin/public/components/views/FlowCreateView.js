@@ -45,9 +45,10 @@ class _FlowCreateView extends React.Component {
             },
             currentDescriptionHelper: undefined,
             uploadProgress: 0,
+            saveProgress: 0,
             savingStatus: PROGRESS_STATUS.init,
             uploadStatus: PROGRESS_STATUS.init,
-            showUploadProgress: false,
+            showUploadProgress: true,
             formStatus: false,
             saveDialogOpen: false,
         };
@@ -58,6 +59,7 @@ class _FlowCreateView extends React.Component {
         this.validate = this.validate.bind(this);
         this.handleDescriptionHelperUpdate = this.handleDescriptionHelperUpdate.bind(this);
         this.uploadProgressManager = this.uploadProgressManager.bind(this);
+        this.saveProgressManager = this.saveProgressManager.bind(this);
         this.handleOnComplete = this.handleOnComplete.bind(this);
     }
 
@@ -111,7 +113,8 @@ class _FlowCreateView extends React.Component {
                         description: form.description.value,
                         index: form.index.value,
                         parameters
-                    }
+                    },
+                    this.saveProgressManager
                 )
                 .then(() => {
                     this.setState({ savingStatus: PROGRESS_STATUS.success });
@@ -187,6 +190,10 @@ class _FlowCreateView extends React.Component {
         this.setState({ uploadProgress: percentCompleted });
     }
 
+    saveProgressManager(percentCompleted) {
+        this.setState({ saveProgress: percentCompleted });
+    }
+
     render() {
         const { source, classes } = this.props;
         if (!source) {
@@ -207,15 +214,15 @@ class _FlowCreateView extends React.Component {
                             icon: <SaveIcon />,
                             status: this.state.savingStatus,
                             label: 'Creating flow',
+                            value: this.state.saveProgress,
                         },
                         {
                             enabled: this.state.showUploadProgress,
                             icon: <FileUploadIcon />,
                             status: this.state.uploadStatus,
                             label: 'Uploading file',
-                            determinate: true,
                             value: this.state.uploadProgress,
-                        },
+                        }, 
                     ]}
                 />
                 <ContentHeader

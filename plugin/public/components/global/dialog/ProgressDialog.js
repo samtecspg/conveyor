@@ -11,10 +11,10 @@ import List, {
     ListItem,
     ListItemText
 } from 'material-ui/List';
-import { CircularProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import CustomContentProgressbar from './CustomContentProgressbar';
 
 const styles = theme => ({
     dialogAvatar: theme.custom.dialog.status.avatar,
@@ -37,14 +37,21 @@ class ProgressDialog extends Component {
     }
 
     renderListItems(process, index) {
-        const { icon, status, label, determinate, value, enabled } = process;
+        const { icon, status, label, value, enabled } = process;
         const { classes } = this.props;
         if (!enabled) return;
         return <ListItem key={index}>
-            <Avatar className={`${classes.dialogAvatar} ${status === PROGRESS_STATUS.success && classes.dialogAvatarSuccess}`}>
-                {status === PROGRESS_STATUS.success ? <CheckIcon /> : icon}
-            </Avatar>
-            {status === PROGRESS_STATUS.inProgress && <CircularProgress size={56} className={classes.dialogProgress} mode={determinate ? 'determinate' : 'indeterminate'} value={value} />}
+            <CustomContentProgressbar
+                percentage={value}
+                textForPercentage={null}
+                strokeWidth={6}
+                backgroundPadding={0}
+                hidden={status === PROGRESS_STATUS.success}
+            >
+                <Avatar className={`${classes.dialogAvatar} ${status === PROGRESS_STATUS.success && classes.dialogAvatarSuccess}`}>
+                    {status === PROGRESS_STATUS.success ? <CheckIcon /> : icon}
+                </Avatar>
+            </CustomContentProgressbar>
             <ListItemText primary={label} />
         </ListItem>;
     }
@@ -65,7 +72,7 @@ class ProgressDialog extends Component {
                     </List>
                 </DialogContent>
                 <DialogActions>
-                    {overallStatus ? <Button onClick={handleDoneAction} color="primary">Done</Button> : '&nbsp;'}
+                    {overallStatus ? <Button onClick={handleDoneAction} color="primary">Close</Button> : '&nbsp;'}
                 </DialogActions>
             </Dialog>
         );
@@ -81,7 +88,6 @@ ProgressDialog.propTypes = {
         icon: PropTypes.element.isRequired,
         status: PropTypes.oneOf(_.map(PROGRESS_STATUS)).isRequired,
         label: PropTypes.string.isRequired,
-        determinate: PropTypes.bool,
         value: PropTypes.number
     })).isRequired,
     overallStatus: PropTypes.bool.isRequired,

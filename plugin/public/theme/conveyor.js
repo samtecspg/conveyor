@@ -2,7 +2,6 @@
 // https://github.com/callemall/material-ui
 
 import green from 'material-ui/colors/green';
-import defaultStyle from './default';
 // Some styles applied in the custom element are also available in the
 // `override` functionality of material-ui but I think is best to have everything
 // in a single place when possible
@@ -369,14 +368,11 @@ export default {
             status: {
                 avatar: {
                     'background-color': secondary['A100'],
-                    'width': '56px',
-                    'height': '56px',
-                    '& svg': {
-                        'color': secondary[500]
-                    },
-                    'box-shadow': defaultStyle.shadows[1],
+                    'color': secondary[500]
                 },
                 avatarSuccess: {
+                    width: '56px',
+                    height: '56px',
                     'background-color': `${green[500]} !important`,
                     '&:hover': {
                         'background-color': green[500],
@@ -386,9 +382,29 @@ export default {
                     }
                 },
                 progress: {
-                    'color': secondary[500],
-                    'position': 'absolute',
-                    'zIndex': 1,
+                    root: {
+                        position: 'relative',
+                        width: '56px',
+                        height: '56px'
+                    },
+                    children: {
+                        position: 'absolute',
+                        height: '100%',
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    },
+                    circle: {
+                        position: 'absolute',
+                        '& .CircularProgressbar-path': {
+                            'stroke': secondary['500']
+                        },
+                        '& .CircularProgressbar-trail': {
+                            'stroke': secondary['A400']
+                        },
+                    }
                 }
             }
         }
@@ -413,6 +429,6 @@ export default {
             tooltipOpen: {
                 'font-size': '15px'
             },
-        }
+        },
     }
 };

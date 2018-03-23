@@ -9,6 +9,7 @@ import './angular/history';
 import './angular/app_store_hooks';
 import './angular/global_state';
 import 'typeface-rubik';
+import 'react-circular-progressbar/dist/styles.css';
 import './less/style.less';
 
 import {render} from 'react-dom';

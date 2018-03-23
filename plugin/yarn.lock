@@ -218,7 +218,7 @@ babel-messages@^6.23.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.26.0:
+babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -292,10 +292,6 @@ braces@^1.8.2:
     expand-range "^1.8.1"
     preserve "^0.2.0"
     repeat-element "^1.1.2"
-
-brcast@^2.0.0:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/brcast/-/brcast-2.0.2.tgz#2db16de44140e418dc37fab10beec0369e78dcef"
 
 brcast@^3.0.1:
   version "3.0.1"
@@ -2499,8 +2495,8 @@ pluralize@^4.0.0:
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-4.0.0.tgz#59b708c1c0190a2f692f1c7618c446b052fd1762"
 
 popper.js@^1.12.5:
-  version "1.12.6"
-  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.12.6.tgz#91e12a97b07815258b76915d64044e8ac053d426"
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.1.tgz#b8815e5cda6f62fc2042e47618649f75866e6753"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -2568,6 +2564,12 @@ randomatic@^1.1.3:
     is-number "^3.0.0"
     kind-of "^4.0.0"
 
+react-circular-progressbar@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/react-circular-progressbar/-/react-circular-progressbar-0.8.0.tgz#19a0103669fc1b6168dface2024de267857f868f"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-dom@^15.3.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.6.1.tgz#2cb0ed4191038e53c209eb3a79a23e2a4cf99470"
@@ -2577,9 +2579,9 @@ react-dom@^15.3.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-event-listener@^0.5.0:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/react-event-listener/-/react-event-listener-0.5.1.tgz#ba36076e47bc37c5a67ff5ccd4a9ff0f15621040"
+react-event-listener@^0.5.0, react-event-listener@^0.5.1:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/react-event-listener/-/react-event-listener-0.5.3.tgz#a8b492596ad601865314fcc2c18cb87b6ce3876e"
   dependencies:
     babel-runtime "^6.26.0"
     fbjs "^0.8.16"
@@ -2604,8 +2606,8 @@ react-jss@^7.1.0:
     theming "^1.1.0"
 
 react-popper@^0.7.2:
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.7.4.tgz#8649d539837e7c6f47bc9b24c9cf57a404e199a1"
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.7.5.tgz#71c25946f291db381231281f6b95729e8b801596"
   dependencies:
     popper.js "^1.12.5"
     prop-types "^15.5.10"
@@ -2632,12 +2634,13 @@ react-router@^4.1.1, react-router@^4.1.2:
     warning "^3.0.0"
 
 react-scrollbar-size@^2.0.0:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/react-scrollbar-size/-/react-scrollbar-size-2.0.2.tgz#237dd091fa39dec8e3a6f720807787703c5ebf9e"
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-scrollbar-size/-/react-scrollbar-size-2.1.0.tgz#105e797135cab92b1f9e16f00071db7f29f80754"
   dependencies:
-    babel-runtime "^6.23.0"
-    prop-types "^15.5.10"
-    react-event-listener "^0.5.0"
+    babel-runtime "^6.26.0"
+    prop-types "^15.6.0"
+    react-event-listener "^0.5.1"
+    stifle "^1.0.2"
 
 react-select@^1.0.0-rc.1:
   version "1.0.0-rc.5"
@@ -2659,7 +2662,7 @@ react-transition-group@^2.2.0:
     prop-types "^15.5.8"
     warning "^3.0.0"
 
-react@^15.3.1, react@^15.5.4:
+react@^15.3.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
   dependencies:
@@ -2861,8 +2864,8 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
 scroll@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/scroll/-/scroll-2.0.1.tgz#b4c7d27e8bcf3ae8a58a042f27268ae3f55f9ccd"
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/scroll/-/scroll-2.0.3.tgz#0951b785544205fd17753bc3d294738ba16fc2ab"
   dependencies:
     rafl "~1.2.1"
 
@@ -2932,6 +2935,10 @@ spdx-license-ids@^1.0.2:
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
+
+stifle@^1.0.2:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/stifle/-/stifle-1.0.4.tgz#8b3bcdf52419b0a9c79e35adadce50123c1d8e99"
 
 stream-consume@~0.1.0:
   version "0.1.0"
@@ -3065,14 +3072,13 @@ text-table@~0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
 theming@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/theming/-/theming-1.1.0.tgz#0562760b55a1b919c2d5eeb94130351f8958e13a"
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/theming/-/theming-1.3.0.tgz#286d5bae80be890d0adc645e5ca0498723725bdc"
   dependencies:
-    brcast "^2.0.0"
+    brcast "^3.0.1"
     is-function "^1.0.1"
     is-plain-object "^2.0.1"
     prop-types "^15.5.8"
-    react "^15.5.4"
 
 through2-filter@^2.0.0:
   version "2.0.0"

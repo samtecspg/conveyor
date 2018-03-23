@@ -23,8 +23,14 @@ export class FlowActions {
         return dispatch({ type: FlowActionTypes.START_CREATE_FLOW, source });
     }
 
-    static completeCreateFlow(body) {
-        return fetch.post(Api.getPathForType(ObjectTypes.CHANNEL), body)
+    static completeCreateFlow(body, uploadProgress) {
+        const onUploadProgress = (progressEvent) => {
+            if (_.isFunction(uploadProgress)) {
+                let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                uploadProgress(percentCompleted);
+            }
+        };
+        return fetch.post(Api.getPathForType(ObjectTypes.CHANNEL), body, { onUploadProgress })
             .then(handleApiResponse)
             .then(json => {
                 dispatch({ type: FlowActionTypes.COMPLETE_CREATE_FLOW, json });
