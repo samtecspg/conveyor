@@ -7,7 +7,7 @@ services:
     build: 
       context: plugin/
       args:
-        - ELASTIC_TAG=${ELASTIC_TAG:-6.2.2}
+        - ELASTIC_TAG=${ELASTIC_TAG:-6.2.3}
   channel-load:
     build: channel-sources
     volumes:
