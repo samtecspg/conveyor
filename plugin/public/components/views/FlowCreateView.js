@@ -48,7 +48,7 @@ class _FlowCreateView extends React.Component {
             saveProgress: 0,
             savingStatus: PROGRESS_STATUS.init,
             uploadStatus: PROGRESS_STATUS.init,
-            showUploadProgress: true,
+            showUploadProgress: false,
             formStatus: false,
             saveDialogOpen: false,
         };

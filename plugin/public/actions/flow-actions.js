@@ -41,7 +41,7 @@ export class FlowActions {
     static postData(flowName, body, uploadProgress) {
         const onUploadProgress = (progressEvent) => {
             if (_.isFunction(uploadProgress)) {
-                let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                let percentCompleted = (progressEvent.loaded / progressEvent.total) * 100;
                 uploadProgress(percentCompleted);
             }
         };
