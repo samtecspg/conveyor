@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
   conveyor-node:
-    image: samtecspg/conveyor-node:1.3.0
+    image: samtecspg/conveyor-node:1.3.1
     ports:
       - '0.0.0.0:4000:4000'
       - '0.0.0.0:1880:1880'
@@ -30,7 +30,7 @@ services:
       timeout: 10s
       retries: 3
   conveyorized-kibana:
-    image: samtecspg/conveyorized-kibana:1.3.0
+    image: samtecspg/conveyorized-kibana:1.3.1
     ports: ['5601:5601']
     networks:
       conveyor-net:
@@ -47,7 +47,7 @@ services:
       timeout: 10s
       retries: 3
   channel-load:
-    image: samtecspg/conveyor-channel-init:1.3.0
+    image: samtecspg/conveyor-channel-init:1.3.1
     networks: ['conveyor-net']
     depends_on:
       - elasticsearch
