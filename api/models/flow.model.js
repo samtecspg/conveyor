@@ -260,25 +260,7 @@ class FlowModel {
                 });
             }
             else {
-                newFlowModel.nodeRedId = result.nodeRedId;
-                newFlowModel.id = result.id;
-                newFlowModel.version = result.version;
-                Async.waterfall([
-                    updateES.bind(null, newFlowModel, result.id),
-                    updateNR
-                ], (error) => {
-
-                    if (error) {
-                        console.log('rollback update');
-                        return updateES(newFlowModel, newFlowModel.id, (updateError, metrics) => {
-
-                            allMetrics.push(metrics);
-                            return cb(updateError || error, allMetrics); // return error during rollback or original error
-                        });
-
-                    }
-                    return callback();
-                });
+                return cb('A flow with the same name already exists');
             }
         });
 
