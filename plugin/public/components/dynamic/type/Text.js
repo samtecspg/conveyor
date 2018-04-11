@@ -1,12 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import InputParser from '../../../common/default-input-parser'
-import InputValidator from '../../../common/input-validation'
-import {InputHelper} from '../helpers/InputDescriptionHelper';
+import {
+    FormControl,
+    FormHelperText
+} from 'material-ui/Form';
 import Input from 'material-ui/Input';
-import {FormControl, FormHelperText} from 'material-ui/Form';
+import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
-import {withStyles} from 'material-ui/styles';
+import PropTypes from 'prop-types';
+import React from 'react';
+import InputParser from '../../../common/default-input-parser';
+import InputValidator from '../../../common/input-validation';
+import { InputHelper } from '../helpers/InputDescriptionHelper';
 
 const styles = theme => {
     return {
@@ -65,7 +68,7 @@ class _Text extends React.Component {
                 >
                     <Typography type="subheading">
                         {label}<span hidden={!this.props.isRequired}>&nbsp;*</span>
-                        <InputHelper hidden={!description} referenceName={name} onDescriptionHelperUpdate={handleDescriptionHelper}/>
+                        <InputHelper hidden={!description} referenceName={name} onDescriptionHelperUpdate={handleDescriptionHelper} />
                     </Typography>
 
                     <Input
@@ -76,6 +79,7 @@ class _Text extends React.Component {
                         type={this.props.type}
                         className={classes.root}
                         defaultValue={value}
+                        autoComplete={name}
                         classes={{
                             input: 'input',
                             underline: classes.underline,

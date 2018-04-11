@@ -202,164 +202,148 @@ class _FlowCreateView extends React.Component {
 
         return (
             <Content>
-                <ProgressDialog
-                    open={this.state.saveDialogOpen}
-                    titleInProgress={'Please wait...'}
-                    titleSuccess={'Complete'}
-                    overallStatus={this.state.formStatus}
-                    handleDoneAction={this.handleOnComplete}
-                    processes={[
-                        {
-                            enabled: true,
-                            icon: <SaveIcon />,
-                            status: this.state.savingStatus,
-                            label: 'Creating flow',
-                            value: this.state.saveProgress,
-                        },
-                        {
-                            enabled: this.state.showUploadProgress,
-                            icon: <FileUploadIcon />,
-                            status: this.state.uploadStatus,
-                            label: 'Uploading file',
-                            value: this.state.uploadProgress,
-                        }, 
-                    ]}
-                />
-                <ContentHeader
-                    title={<div>+ Create Channel: <strong>{source.name}</strong>
-                    </div>}
-                >{source.description}</ContentHeader>
-                <Divider light />
-                <ContentSubHeader>
-                    <Typography type="title" gutterBottom>Basic information</Typography>
-                    <div className={classes.box}>
-
-                        <Grid container>
-                            <Grid item xs={7}>
-                                <Text
-                                    name={'name'}
-                                    label={'Name'}
-                                    placeholder={''}
-                                    description={''}
-                                    isRequired={true}
-                                    handleInputChange={this.handleInputChange}
-                                    handleValidateInput={this.handleValidateInput}
-                                />
-
-                            </Grid>
-                            {/* <Grid item xs hidden={!parameter.description}>
-                            <DescriptionHelper
-
-                                name={parameter.name}
-                                label={parameter.label}
-                                description={parameter.description}
-                                currentDescriptionHelper={this.props.currentDescriptionHelper}
-                            />
-                        </Grid>*/}
-
-                        </Grid>
-                        <Grid container>
-                            <Grid item xs={7}>
-                                <Text
-                                    name={'description'}
-                                    label={'Description'}
-                                    placeholder={''}
-                                    description={''}
-                                    isRequired={true}
-                                    handleInputChange={this.handleInputChange}
-                                    handleValidateInput={this.handleValidateInput}
-                                />
-
-                            </Grid>
-                            {/* <Grid item xs hidden={!parameter.description}>
-                            <DescriptionHelper
-
-                                name={parameter.name}
-                                label={parameter.label}
-                                description={parameter.description}
-                                currentDescriptionHelper={this.props.currentDescriptionHelper}
-                            />
-                        </Grid>*/}
-
-                        </Grid>
-                        <Grid container>
-                            <Grid item xs={7}>
-                                <Text
-                                    name={'index'}
-                                    label={'Index'}
-                                    placeholder={''}
-                                    description="Elasticsearch index name"
-                                    isRequired={true}
-                                    handleInputChange={this.handleInputChange}
-                                    handleValidateInput={this.handleValidateInput}
-                                    handleDescriptionHelper={this.handleDescriptionHelperUpdate}
-                                    value={dashify(source.name)}
-                                />
-
-                            </Grid>
-                            <Grid item xs>
-                                <DescriptionHelper
-
-                                    name="index"
-                                    label="Index"
-                                    description="Elasticsearch index name"
-                                    currentDescriptionHelper={this.state.currentDescriptionHelper}
-                                />
-                            </Grid>
-
-                        </Grid>
-                    </div>
-                </ContentSubHeader>
-                <Divider light />
-                <ContentBody>
-                    <DynamicForm
-                        handleInputChange={this.handleInputChange}
-                        parameters={source.parameters}
-                        groups={source.groups}
-                        handleValidateInput={this.handleValidateInput}
-                        handleDescriptionHelperUpdate={this.handleDescriptionHelperUpdate}
-                        currentDescriptionHelper={this.state.currentDescriptionHelper}
+                <form autoComplete="on">
+                    <ProgressDialog
+                        open={this.state.saveDialogOpen}
+                        titleInProgress={'Please wait...'}
+                        titleSuccess={'Complete'}
+                        overallStatus={this.state.formStatus}
+                        handleDoneAction={this.handleOnComplete}
+                        processes={[
+                            {
+                                enabled: true,
+                                icon: <SaveIcon />,
+                                status: this.state.savingStatus,
+                                label: 'Creating flow',
+                                value: this.state.saveProgress,
+                            },
+                            {
+                                enabled: this.state.showUploadProgress,
+                                icon: <FileUploadIcon />,
+                                status: this.state.uploadStatus,
+                                label: 'Uploading file',
+                                value: this.state.uploadProgress,
+                            },
+                        ]}
                     />
-                </ContentBody>
-                <Divider light />
-                <ContentFooter>
+                    <ContentHeader
+                        title={<div>+ Create Channel: <strong>{source.name}</strong>
+                        </div>}
+                    >{source.description}</ContentHeader>
+                    <Divider light />
+                    <ContentSubHeader>
+                        <Typography type="title" gutterBottom>Basic information</Typography>
+                        <div className={classes.box}>
 
-                    <Grid
-                        container
-                        justify={'flex-end'}
-                        spacing={24}
-                    >
-                        <Grid item>
-                            <Button
-                                color="accent"
-                                className={classes.secondaryButton}
-                                onClick={() => AppActions.changeLocation(`/${ObjectTypes.SOURCE}`)}
+                            <Grid container>
+                                <Grid item xs={7}>
+                                    <Text
+                                        name={'name'}
+                                        label={'Name'}
+                                        placeholder={''}
+                                        description={''}
+                                        isRequired={true}
+                                        handleInputChange={this.handleInputChange}
+                                        handleValidateInput={this.handleValidateInput}
+                                    />
 
-                                classes={{
-                                    label: 'button-label'
-                                }}
-                            >
-                                <Typography type="button">Cancel</Typography>
+                                </Grid>
 
-                            </Button>
+                            </Grid>
+                            <Grid container>
+                                <Grid item xs={7}>
+                                    <Text
+                                        name={'description'}
+                                        label={'Description'}
+                                        placeholder={''}
+                                        description={''}
+                                        isRequired={true}
+                                        handleInputChange={this.handleInputChange}
+                                        handleValidateInput={this.handleValidateInput}
+                                    />
+
+                                </Grid>
+
+                            </Grid>
+                            <Grid container>
+                                <Grid item xs={7}>
+                                    <Text
+                                        name={'index'}
+                                        label={'Index'}
+                                        placeholder={''}
+                                        description="Elasticsearch index name"
+                                        isRequired={true}
+                                        handleInputChange={this.handleInputChange}
+                                        handleValidateInput={this.handleValidateInput}
+                                        handleDescriptionHelper={this.handleDescriptionHelperUpdate}
+                                        value={dashify(source.name)}
+                                    />
+
+                                </Grid>
+                                <Grid item xs>
+                                    <DescriptionHelper
+
+                                        name="index"
+                                        label="Index"
+                                        description="Elasticsearch index name"
+                                        currentDescriptionHelper={this.state.currentDescriptionHelper}
+                                    />
+                                </Grid>
+
+                            </Grid>
+                        </div>
+                    </ContentSubHeader>
+                    <Divider light />
+                    <ContentBody>
+                        <DynamicForm
+                            handleInputChange={this.handleInputChange}
+                            parameters={source.parameters}
+                            groups={source.groups}
+                            handleValidateInput={this.handleValidateInput}
+                            handleDescriptionHelperUpdate={this.handleDescriptionHelperUpdate}
+                            currentDescriptionHelper={this.state.currentDescriptionHelper}
+                        />
+                    </ContentBody>
+                    <Divider light />
+                    <ContentFooter>
+
+                        <Grid
+                            container
+                            justify={'flex-end'}
+                            spacing={24}
+                        >
+                            <Grid item>
+                                <Button
+                                    color="accent"
+                                    className={classes.secondaryButton}
+                                    onClick={() => AppActions.changeLocation(`/${ObjectTypes.SOURCE}`)}
+
+                                    classes={{
+                                        label: 'button-label'
+                                    }}
+                                >
+                                    <Typography type="button">Cancel</Typography>
+
+                                </Button>
+                            </Grid>
+
+                            <Grid item>
+                                <Button
+                                    color="primary"
+                                    className={classes.primaryButton}
+                                    onClick={this.handleOnSubmit}
+                                    classes={{
+                                        label: 'button-label'
+                                    }}
+                                >
+                                    <Typography type="button">Finish</Typography>
+
+                                </Button>
+                            </Grid>
+
                         </Grid>
-
-                        <Grid item>
-                            <Button
-                                color="primary"
-                                className={classes.primaryButton}
-                                onClick={this.handleOnSubmit}
-                                classes={{
-                                    label: 'button-label'
-                                }}
-                            >
-                                <Typography type="button">Finish</Typography>
-
-                            </Button>
-                        </Grid>
-
-                    </Grid>
-                </ContentFooter>
+                    </ContentFooter>
+                </form>
             </Content>
         );
     }
