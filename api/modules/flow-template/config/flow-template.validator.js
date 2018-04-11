@@ -40,8 +40,8 @@ class FlowTemplateValidate {
                     parameters: FlowTemplateSchema.parameters.required(),
                     groups: FlowTemplateSchema.groups.required(),
                     hasDashboards: FlowTemplateSchema.hasDashboards.optional(),
-                    hasAlerts:  FlowTemplateSchema.hasAlerts.optional(),
-                    hasLearning:  FlowTemplateSchema.hasLearning.optional(),
+                    hasAlerts: FlowTemplateSchema.hasAlerts.optional(),
+                    hasLearning: FlowTemplateSchema.hasLearning.optional()
                 };
             })()
         };

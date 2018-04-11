@@ -57,7 +57,7 @@ class FlowTemplateModel {
                     payload.groups,
                     payload.hasDashboards,
                     payload.hasAlerts,
-                    payload.hasLearning,
+                    payload.hasLearning
                 );
                 if (!template) { // save a new template
                     const values = {
@@ -128,7 +128,7 @@ class FlowTemplateModel {
                 result._source.groups,
                 result._source.hasDashboards,
                 result._source.hasAlerts,
-                result._source.hasLearning,
+                result._source.hasLearning
             );
             flowTemplate.id = result._id;
             flowTemplate.version = result._version;
@@ -161,7 +161,7 @@ class FlowTemplateModel {
                     result._source.groups,
                     result._source.hasDashboards,
                     result._source.hasAlerts,
-                    result._source.hasLearning,
+                    result._source.hasLearning
                 );
                 flowTemplate.id = result._id;
                 flowTemplate.version = result._version;

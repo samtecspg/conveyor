@@ -186,7 +186,7 @@ class FlowModel {
             });
         };
 
-        const updateNR = (updatedFlow, next) => {
+       /* const updateNR = (updatedFlow, next) => {
 
             //Use ES id in template to keep reference between bot services
             parsedParameters.parameters._id = updatedFlow.id;
@@ -199,7 +199,7 @@ class FlowModel {
                 }
                 next(err, updatedFlow);
             });
-        };
+        };*/
 
         const rollbackCreateES = (flow, next) => {
 

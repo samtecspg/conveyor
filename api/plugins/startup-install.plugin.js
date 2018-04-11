@@ -74,7 +74,7 @@ const startNodeRED = (callback) => {
         httpNodeRoot: '/',
         userDir: AppConstants.NODE_RED_DATA,
         flowFile: 'conveyor_flows.json',
-            apiMaxLength: '500mb',
+        apiMaxLength: '500mb',
         logging: {
             // Console logging
             console: {

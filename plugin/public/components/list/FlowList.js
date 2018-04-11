@@ -61,8 +61,9 @@ class _FlowList extends React.Component {
 
     menuHandlerDiscover = (item) => {
         this.handleOptionRequestClose(item);
-        window.location = `${this.props.basePath}/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:${item.index},interval:auto,query:'')`;
+        window.location = `${this.props.basePath}/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:${item.index},interval:auto,query:(language:lucene,query:''),sort:!(_score,desc))`;
     };
+    
     menuHandlerUpload = (item) => {
         this.handleOptionRequestClose(item);
     };
