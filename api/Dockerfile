@@ -12,11 +12,11 @@ RUN mkdir /usr/src && mkdir /usr/src/app && mkdir /usr/src/data
 RUN apk add dockerize --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
 
 WORKDIR /usr/src/app
+COPY package.json package-lock.json yarn.lock ./
+RUN yarn install
 
 # Copy this whole directory into /usr/src/app
 
 COPY . .
-
-RUN yarn install
 
 CMD ["node", "start.js"]

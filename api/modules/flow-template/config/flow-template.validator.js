@@ -37,7 +37,7 @@ class FlowTemplateValidate {
                     name: FlowTemplateSchema.name.required(),
                     description: FlowTemplateSchema.description.required(),
                     flow: FlowTemplateSchema.flow.required(),
-                    parameters: FlowTemplateSchema.parameters.required(),
+                    parameters: FlowTemplateSchema.parameters.optional(),
                     groups: FlowTemplateSchema.groups.required(),
                     hasDashboards: FlowTemplateSchema.hasDashboards.optional(),
                     hasAlerts: FlowTemplateSchema.hasAlerts.optional(),

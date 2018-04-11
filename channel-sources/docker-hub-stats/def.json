@@ -12,7 +12,7 @@
         {
             "type": "text",
             "group": "repoInformation",
-            "name": "name",
+            "name": "dockername",
             "label": "Org or User Name",
             "description": "This can be either an organization or user name.",
             "required": true
