@@ -4,8 +4,47 @@
     "hasDashboards": true,
     "hasAlerts": true,
     "hasLearning": true,
-    "groups": [],
-    "parameters": [],
+    "groups": [
+        {
+            "key": "examples",
+            "title": "Examples",
+            "description": "Examples"
+        }
+    ],
+    "parameters": [
+        {
+            "type": "boolean",
+            "group": "examples",
+            "name": "bool1",
+            "label": "Default true",
+            "value": "true",
+            "description": "Managing ES Mappings can be difficult. Use this toggle to force all values to be saved as strings. You can always use the reindex api later to change the mapping types."
+        },
+        {
+            "type": "boolean",
+            "group": "examples",
+            "name": "bool2",
+            "label": "Default false",
+            "value": "false",
+            "description": "Default false"
+        },
+        {
+            "type": "text",
+            "group": "examples",
+            "name": "text1",
+            "label": "Text with placeholder",
+            "placeholder": "placeholder text",
+            "description": "Text with placeholder."
+        },
+        {
+            "type": "text",
+            "group": "examples",
+            "name": "text2",
+            "label": "Text with default value.",
+            "value": "default value",
+            "description": "Text with default value."
+        }
+    ],
     "flow": {
         "label": "{{_name}}",
         "nodes": [

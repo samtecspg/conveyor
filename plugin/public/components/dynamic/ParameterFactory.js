@@ -1,6 +1,12 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import {Bool, Code, List, Text, File} from './type';
+import React from 'react';
+import {
+    Bool,
+    Code,
+    File,
+    List,
+    Text
+} from './type';
 
 export class ParameterFactory extends React.Component {
     build(parameter) {
@@ -14,25 +20,31 @@ export class ParameterFactory extends React.Component {
             handleValidateInput: this.props.handleValidateInput,
             handleDescriptionHelper: this.props.handleDescriptionHelperUpdate,
             validation: parameter.validation,
-            validate: this.props.executeValidation
+            validate: this.props.executeValidation,
+            value: parameter.value
         };
+
         switch (parameter.type) {
             case 'text':
-                return <Text {...defaultProps}/>;
+                return <Text {...defaultProps} />;
             case 'password':
-                return <Text {...defaultProps} type="password"/>;
+                return <Text {...defaultProps} type="password" />;
             case 'boolean':
-                return <Bool {...defaultProps}/>;
+                console.log(`ParameterFactory::build::parameter`); // TODO: REMOVE!!!!
+                console.log(parameter); // TODO: REMOVE!!!!
+                console.log(`ParameterFactory::build::parameter`); // TODO: REMOVE!!!!
+                console.log(defaultProps); // TODO: REMOVE!!!!
+                return <Bool {...defaultProps} value={parameter.value === 'true'} />;
             case 'number':
-                return <Text {...defaultProps} type="number"/>;
+                return <Text {...defaultProps} type="number" />;
             case 'code':
-                return <Code {...defaultProps}/>;
+                return <Code {...defaultProps} />;
             case 'list-single':
-                return <List {...defaultProps} options={parameter.options}/>;
+                return <List {...defaultProps} options={parameter.options} />;
             case 'list-multiple':
-                return <List {...defaultProps} options={parameter.options} isMultiple={true}/>;
+                return <List {...defaultProps} options={parameter.options} isMultiple={true} />;
             case 'file':
-                return <File {...defaultProps} options={parameter.options} isMultiple={true}/>;
+                return <File {...defaultProps} options={parameter.options} isMultiple={true} />;
             default:
                 return <div>Not a valid type [type:{parameter.type}]</div>;
         }

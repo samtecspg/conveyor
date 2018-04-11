@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import InputParser from '../../../common/default-input-parser'
-import {InputHelper} from '../helpers/InputDescriptionHelper';
+import { withStyles } from 'material-ui/styles';
 import Switch from 'material-ui/Switch';
 import Typography from 'material-ui/Typography';
-import {withStyles} from 'material-ui/styles';
+import PropTypes from 'prop-types';
+import React from 'react';
+import InputParser from '../../../common/default-input-parser';
+import { InputHelper } from '../helpers/InputDescriptionHelper';
 
 const styles = theme => {
     return {
@@ -34,14 +34,14 @@ class _Bool extends React.Component {
     }
 
     render() {
-        const { description, label, name, handleDescriptionHelper, value, classes } = this.props;
+        const { description, label, name, handleDescriptionHelper, value, classes, isRequired } = this.props;
         return (
             <div>
                 <Typography type="subheading">
-                    {label}<span hidden={!this.props.isRequired}>&nbsp;*</span><InputHelper hidden={!description} referenceName={name} onDescriptionHelperUpdate={handleDescriptionHelper}/>
+                    {label}<span hidden={!isRequired}>&nbsp;*</span><InputHelper hidden={!description} referenceName={name} onDescriptionHelperUpdate={handleDescriptionHelper}/>
                     <Switch
                         onChange={this.handleOnChange}
-                        value={value}
+                        checked={value}
                         classes={{
                             checked: classes.checked,
                             bar: classes.bar
