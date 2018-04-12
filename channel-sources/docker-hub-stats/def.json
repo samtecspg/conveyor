@@ -691,7 +691,7 @@
                 "id": "{{_id}}-4",
                 "type": "function",
                 "name": "",
-                "func": "var name = flow.get('name');\n \nmsg.url = 'https://hub.docker.com/v2/repositories/' + name\nmsg.method = 'GET'\n\nreturn msg;",
+                "func": "var name = flow.get('dockername');\n \nmsg.url = 'https://hub.docker.com/v2/repositories/' + name\nmsg.method = 'GET'\n\nreturn msg;",
                 "outputs": 1,
                 "noerr": 0,
                 "x": 270,
