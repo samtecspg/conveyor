@@ -1,5 +1,6 @@
 /.idea/
 /api/node_modules/
+/channel-sources/node_modules/
 *.csv
 *.dat
 *.iml

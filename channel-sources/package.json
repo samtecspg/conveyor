@@ -1,0 +1,18 @@
+{
+  "name": "conveyor-sources",
+  "version": "0.0.0",
+  "description": "Install and Test Scripts for Conveyor Sources",
+  "main": "index.js",
+  "author": "Caleb M Keller",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "jest": "^22.4.3",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "superagent-retry-delay": "^2.2.4",
+    "supertest": "^3.0.0"
+  }
+}
