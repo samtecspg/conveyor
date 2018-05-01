@@ -85,6 +85,7 @@ def main():
                 print "Install of '" + dirname + "' conveyor source completed successfully."
             except requests.exceptions.RequestException as err:
                 print bcolors.FAIL + "Error while installing '" + dirname + "' channel: " + bcolors.ENDC, err
+        break
 
 if __name__ == "__main__":
     main()
