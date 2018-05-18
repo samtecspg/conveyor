@@ -6,43 +6,146 @@
     "hasLearning": true,
     "groups": [
         {
+            "description": "Examples",
             "key": "examples",
-            "title": "Examples",
-            "description": "Examples"
+            "title": "Examples"
+        },
+        {
+            "description": "List examples",
+            "key": "lists",
+            "title": "Lists"
+        },
+        {
+            "key": "lists.sub",
+            "title": "Lists sub-group",
+            "description": "List Sub group"
         }
     ],
     "parameters": [
         {
-            "type": "boolean",
             "group": "examples",
             "name": "bool1",
-            "label": "Default true",
             "value": "true",
+            "label": "Default true",
+            "type": "boolean",
             "description": "Managing ES Mappings can be difficult. Use this toggle to force all values to be saved as strings. You can always use the reindex api later to change the mapping types."
         },
         {
-            "type": "boolean",
             "group": "examples",
             "name": "bool2",
-            "label": "Default false",
             "value": "false",
+            "label": "Default false",
+            "type": "boolean",
             "description": "Default false"
         },
         {
-            "type": "text",
             "group": "examples",
-            "name": "text1",
+            "description": "Text with placeholder.",
+            "type": "text",
             "label": "Text with placeholder",
             "placeholder": "placeholder text",
-            "description": "Text with placeholder."
+            "name": "text1"
+        },
+        {
+            "group": "examples",
+            "name": "text2",
+            "value": "default value",
+            "label": "Text with default value.",
+            "type": "text",
+            "description": "Text with default value."
         },
         {
             "type": "text",
             "group": "examples",
-            "name": "text2",
-            "label": "Text with default value.",
-            "value": "default value",
-            "description": "Text with default value."
+            "description": "<div>This should be unique<ul><li>test1</li><li>test2</li></ul></div>",
+            "name": "text3",
+            "label": "Text with HTML description (not working)"
+        },
+        {
+            "group": "examples",
+            "description": "Password",
+            "required": true,
+            "label": "Password",
+            "type": "password",
+            "name": "password"
+        },
+        {
+            "group": "examples",
+            "description": "Number",
+            "required": true,
+            "label": "Select a number",
+            "type": "number",
+            "name": "number",
+            "value": 123
+        },
+        {
+            "group": "lists",
+            "description": "description:singleList",
+            "placeholder": "List of options",
+            "required": true,
+            "label": "Single selection list",
+            "type": "list-single",
+            "options": [
+                {
+                    "value": 1,
+                    "label": "First"
+                },
+                {
+                    "value": 2,
+                    "label": "Second"
+                },
+                {
+                    "value": 4,
+                    "label": "Forth"
+                }
+            ],
+            "name": "singleList",
+            "value": [
+                1
+            ]
+        },
+        {
+            "group": "lists.sub",
+            "description": "description:multiList",
+            "placeholder": "List of options",
+            "required": true,
+            "label": "Multiple selection list",
+            "type": "list-multiple",
+            "options": [
+                {
+                    "value": 1,
+                    "label": "First"
+                },
+                {
+                    "value": 2,
+                    "label": "Second"
+                },
+                {
+                    "value": 4,
+                    "label": "Forth"
+                }
+            ],
+            "name": "multiList",
+            "value": [
+                1,
+                2
+            ]
+        },
+        {
+            "group": "examples",
+            "description": "Code example",
+            "required": true,
+            "label": "Code",
+            "type": "code",
+            "name": "code",
+            "value": "const test = 'test';"
+        },
+        {
+            "group": "examples",
+            "description": "Select the file you would like to upload.",
+            "type": "file",
+            "name": "file",
+            "label": "File to Upload"
         }
     ],
     "flow": {

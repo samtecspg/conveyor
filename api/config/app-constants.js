@@ -26,6 +26,8 @@ if (!parsed) {
         ELASTIC_SEARCH_URL: envValues.ELASTIC_SEARCH_URL || 'http://elasticsearch:9200',
         ELASTIC_SEARCH_HTTP_AUTH: envValues.ELASTIC_SEARCH_HTTP_AUTH || '',
         ELASTIC_SEARCH_LOG_LEVEL: envValues.ELASTIC_SEARCH_LOG_LEVEL || 'error',
+        KIBANA_URL: envValues.KIBANA_URL || 'http://localhost:5601',
+        KIBANA_VERSION: envValues.KIBANA_VERSION || '6.3.0',
         NODE_ENV: envValues.NODE_ENV
     });
 }

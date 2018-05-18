@@ -10,5 +10,9 @@ module.exports = {
     placeholder: Joi.string().optional(),
     required: Joi.boolean().optional(),
     description: Joi.string(),
-    value: Joi.any()
+    value: Joi.any(),
+    options: Joi.array().items(Joi.object().keys({
+        label: Joi.string(),
+        value: Joi.any()
+    })).description('List of Options for a list parameter')
 };

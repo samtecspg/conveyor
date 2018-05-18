@@ -6,15 +6,7 @@ const Async = require('async');
 const AppConstants = require('../config/app-constants');
 
 class FlowTemplateModel {
-    constructor(deprecated,
-                name,
-                description,
-                parameters,
-                flow,
-                groups,
-                hasDashboards,
-                hasAlerts,
-                hasLearning) {
+    constructor(deprecated, name, description, parameters, flow, groups, hasDashboards, hasAlerts, hasLearning) {
 
         this.deprecated = deprecated || false;
         this.name = name;

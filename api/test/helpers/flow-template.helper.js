@@ -37,7 +37,7 @@ const helper = {
         }, (err, result) => {
 
             if (err) {
-                return done(err);
+                return cb(err);
             }
             return cb(null, result);
         });

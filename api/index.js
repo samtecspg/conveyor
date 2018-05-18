@@ -49,6 +49,7 @@ module.exports = (callback) => {
     });
 
     server.on('response', (request) => {
+
         console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
         if (request.response.source.error) {
             console.log(request.response.source);
