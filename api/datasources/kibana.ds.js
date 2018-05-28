@@ -35,7 +35,7 @@ const datasource = {
         wreck.post('/api/saved_objects/index-pattern', (err, response, body) => {
 
             metrics.stop();
-            if (response.statusCode >= 400 || response.statusCode <= 599) {
+            if (response.statusCode >= 400 && response.statusCode <= 599) {
                 errorHandler(new Error(body));
                 return cb(err, metrics);
             }
