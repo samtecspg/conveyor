@@ -1,6 +1,6 @@
 {
     "name": "conveyor-api",
-    "version": "0.0.4",
+    "version": "2.0.1",
     "description": "Ingest API",
     "main": "start.js",
     "scripts": {
