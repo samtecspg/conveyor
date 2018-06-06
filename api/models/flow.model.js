@@ -8,6 +8,7 @@ const NodeRED = require('../datasources').NodeRED;
 const ES = require('../datasources').Elasticsearch;
 const Kibana = require('../datasources').Kibana;
 const ParameterConvert = require('../lib/parameter-convert.lib');
+const moment = require('moment');
 
 const parseEStoModel = (document) => {
     const flow = new FlowModel(
@@ -22,12 +23,15 @@ const parseEStoModel = (document) => {
     );
     flow.nodeRedId = document._source.nodeRedId;
     flow.indexPatternId = document._source.indexPatternId;
+    flow.indexPatternId = document._source.indexPatternId;
+    flow.status = document._source.status;
+    flow.lastStatusUpdate = document._source.lastStatusUpdate;
     return flow;
 };
 
 class FlowModel {
 
-    constructor(id, version, template, templateVersion, name, description, index, parameters) {
+    constructor(id, version, template, templateVersion, name, description, index, status, parameters) {
 
         this.id = id;
         this.version = version;
@@ -38,6 +42,7 @@ class FlowModel {
         this.index = index;
         this.parameters = parameters;
         this.indexPatternId = '';
+        this.status = status;
     }
 
     static validateParameters(templateParameters, newParameters) {
@@ -104,7 +109,17 @@ class FlowModel {
     static save(payload, flowTemplate, cb) {
 
         const allMetrics = [];
-        const newFlowModel = new FlowModel(null, null, flowTemplate.name, flowTemplate.version, payload.name, payload.description, payload.index, payload.parameters);
+        const newFlowModel = new FlowModel(
+            null,
+            null,
+            flowTemplate.name,
+            flowTemplate.version,
+            payload.name,
+            payload.description,
+            payload.index,
+            'Created',
+            payload.parameters,
+        );
         const template = Handlebars.compile(flowTemplate.flow);
         const parsedParameters = FlowModel.validateParameters(flowTemplate.parameters, newFlowModel.parameters);
         if (parsedParameters.errors.length > 0) {
@@ -124,6 +139,7 @@ class FlowModel {
 
                 return { key: parameter.key, value: JSON.stringify(parameter.value) };
             });
+            flow.lastStatusUpdate = moment.utc();
             const values = {
                 index: AppConstants.ES_INDEX,
                 type: 'default',
@@ -233,7 +249,6 @@ class FlowModel {
                     console.error(err);
                     return cb(err, null, allMetrics);
                 }
-                newFlowModel.version = flow.version;
                 return cb(null, newFlowModel, allMetrics);
             });
         };
