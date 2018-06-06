@@ -12,5 +12,6 @@ module.exports = {
     name: Joi.string().trim().description('Name of the Flow (this is unique)'),
     description: Joi.string().description('Description of the Flow'),
     index: Joi.string().description('Name of index used by Elasticsearch'),
+    indexPatternId: Joi.string().description('Id of the KIbana\'s index pattern'),
     parameters: Joi.array().items(ParameterSchema).description('List of Parameters, must match with Flow Template\'s parameters')
 };

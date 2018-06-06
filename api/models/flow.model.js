@@ -10,7 +10,6 @@ const Kibana = require('../datasources').Kibana;
 const ParameterConvert = require('../lib/parameter-convert.lib');
 
 const parseEStoModel = (document) => {
-
     const flow = new FlowModel(
         document._id,
         document._version,
@@ -22,6 +21,7 @@ const parseEStoModel = (document) => {
         document._source.parameters
     );
     flow.nodeRedId = document._source.nodeRedId;
+    flow.indexPatternId = document._source.indexPatternId;
     return flow;
 };
 
@@ -37,6 +37,7 @@ class FlowModel {
         this.description = description;
         this.index = index;
         this.parameters = parameters;
+        this.indexPatternId = '';
     }
 
     static validateParameters(templateParameters, newParameters) {
@@ -117,16 +118,16 @@ class FlowModel {
         parsedParameters.parameters._name = newFlowModel.name;
         parsedParameters.parameters._index = newFlowModel.index;
 
-        const saveES = (newFlow, next) => {
+        const saveES = ({ flow }, next) => {
 
-            newFlow.parameters = newFlow.parameters.map((parameter) => {
+            flow.parameters = flow.parameters.map((parameter) => {
 
                 return { key: parameter.key, value: JSON.stringify(parameter.value) };
             });
             const values = {
                 index: AppConstants.ES_INDEX,
                 type: 'default',
-                document: newFlow
+                document: flow
             };
             ES.save(values, (err, result, metrics) => {
 
@@ -134,14 +135,13 @@ class FlowModel {
                 if (err) {
                     return next(err);
                 }
-                next(null, result);
+                flow.id = result._id;
+                next(null, { flow });
             });
         };
 
-        const saveNR = (es, next) => {
-            //Use ES id in template to keep reference between both services
-            parsedParameters.parameters._id = es._id;
-            newFlowModel.id = es._id;
+        const saveNR = ({ flow }, next) => {
+            parsedParameters.parameters._id = flow.id;
             const parsedTempl = template(parsedParameters.parameters);
             const parsedjson = JSON.parse(parsedTempl);
             NodeRED.flow.save(parsedjson, (err, id, metrics) => {
@@ -157,17 +157,16 @@ class FlowModel {
                     return next(error);
                 }
                 newFlowModel.nodeRedId = id;
-                next(err, newFlowModel, es._id);
+                next(err, { flow });
             });
         };
 
-        const updateES = (updatedFlow, id, next) => {
-
+        const updateES = ({ flow }, next) => {
             const values = {
                 index: AppConstants.ES_INDEX,
                 type: 'default',
-                id,
-                document: updatedFlow
+                id: flow.id,
+                document: flow
             };
             ES.update(values, (err, result, metrics) => {
 
@@ -175,8 +174,8 @@ class FlowModel {
                 if (err) {
                     return next(err);
                 }
-                updatedFlow.id = result._id;
-                return next(null, updatedFlow);
+                flow.version = result._version;
+                return next(null, { flow });
             });
         };
 
@@ -212,16 +211,16 @@ class FlowModel {
             });
         };
 
-        const createIndexPattern = (flow, next) => {
+        const createIndexPattern = ({ flow }, next) => {
 
-            Kibana.createIndexPattern({ index: flow.index }, (err, metrics) => {
-
+            Kibana.createIndexPattern({ index: flow.index }, (err, indexPattern, metrics) => {
                 allMetrics.push(metrics);
                 if (err) {
                     console.error(new Error(err));
                     return next(err);
                 }
-                next(err, newFlowModel);
+                flow.indexPatternId = indexPattern.id;
+                next(err, { flow });
             });
         };
 
@@ -249,12 +248,11 @@ class FlowModel {
             }
             if (!result) {
                 Async.waterfall([
-                    saveES.bind(null, newFlowModel),
+                    saveES.bind(null, { flow: newFlowModel }),
                     saveNR,
-                    updateES,
-                    createIndexPattern
-                ], (error) => {
-
+                    createIndexPattern,
+                    updateES
+                ], (error, result) => {
                     if (error) {
                         console.log('rollback create');
                         return rollbackCreateES(newFlowModel, (deleteError, metrics) => {

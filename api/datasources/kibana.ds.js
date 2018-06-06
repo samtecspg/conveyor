@@ -26,7 +26,6 @@ const errorHandler = (err) => {
 const datasource = {
 
     createIndexPattern: (params, cb) => {
-
         const query = { 'attributes': { 'title': params.index } };
         const wreck = Wreck.defaults({
             payload: query
@@ -37,9 +36,9 @@ const datasource = {
             metrics.stop();
             if (response.statusCode >= 400 && response.statusCode <= 599) {
                 errorHandler(new Error(body));
-                return cb(err, metrics);
+                return cb(body.message, metrics);
             }
-            return cb(null, metrics);
+            return cb(null, body, metrics);
         });
     }
 };
