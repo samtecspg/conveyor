@@ -63,7 +63,7 @@
         {
             "type": "text",
             "group": "examples",
-            "description": "<div>This should be unique<ul><li>test1</li><li>test2</li></ul></div>",
+            "description": "<div>This should be unique. And this is a list in HTML: <ul><li>test1</li><li>test2</li></ul></div>",
             "name": "text3",
             "label": "Text with HTML description (not working)"
         },
