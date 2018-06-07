@@ -11,6 +11,7 @@ module.exports = {
     required: Joi.boolean().optional(),
     description: Joi.string(),
     value: Joi.any(),
+    isAdvance: Joi.boolean(),
     options: Joi.array().items(Joi.object().keys({
         label: Joi.string(),
         value: Joi.any()

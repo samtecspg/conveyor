@@ -11,6 +11,12 @@
             "title": "Examples"
         },
         {
+            "description": "Group with some advance parameters",
+            "key": "advance",
+            "title": "Advance"
+        },
+        
+        {
             "description": "List examples",
             "key": "lists",
             "title": "Lists"
@@ -146,6 +152,30 @@
             "type": "file",
             "name": "file",
             "label": "File to Upload"
+        },
+        {
+            "group": "advance",
+            "label": "Some advance parameter that should be required (if visible)",
+            "description": "Advance required parameter",
+            "type": "text",
+            "required": true,
+            "isAdvance": true,
+            "name": "advText1"
+        },
+        {
+            "group": "advance",
+            "label": "Another advance parameter",
+            "description": "Advance parameter",
+            "isAdvance": true,
+            "type": "text",
+            "name": "advText2"
+        },
+        {
+            "group": "advance",
+            "label": "Just some text",
+            "description": "Not really advance parameter",
+            "type": "text",
+            "name": "advText3"
         }
     ],
     "flow": {
