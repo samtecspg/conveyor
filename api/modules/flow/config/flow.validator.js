@@ -28,7 +28,8 @@ class FlowValidate {
             query: (() => {
 
                 return {
-                    size: Joi.number().description('Number of objects to be returned (default:10)')
+                    size: Joi.number().description('Number of objects to be returned (default:10)'),
+                    page: Joi.number().description('Page to be returned (default:1)')
                 };
             })()
         };

@@ -90,8 +90,8 @@ class FlowModel {
                 }
             }
             if (!(templateParameter.type === AppConstants.PARAMETER_TYPE_BOOLEAN ||
-                    templateParameter.type === AppConstants.PARAMETER_TYPE_LIST_SINGLE ||
-                    templateParameter.type === AppConstants.PARAMETER_TYPE_LIST_MULTIPLE) && templateParameter.validation) {
+                templateParameter.type === AppConstants.PARAMETER_TYPE_LIST_SINGLE ||
+                templateParameter.type === AppConstants.PARAMETER_TYPE_LIST_MULTIPLE) && templateParameter.validation) {
                 const regexp = new RegExp(templateParameter.validation.rule);
                 const match = regexp.exec(value);
                 if (!match) {
@@ -302,14 +302,15 @@ class FlowModel {
             }
             cb(null, parseEStoModel(result), metrics);
         });
-    };
+    }
 
-    static findAll(size, cb) {
+    static findAll({ size, page }, cb) {
 
         const values = {
             index: AppConstants.ES_INDEX,
             type: 'default',
-            size
+            size,
+            page
         };
         ES.findAll(values, (err, results, metrics) => {
 
@@ -317,10 +318,16 @@ class FlowModel {
                 console.error(err);
                 return cb(err, metrics);
             }
-            const response = [];
+            const response = {
+                total: results.hits.total,
+                page,
+                size,
+                results: []
+            };
+
             _(results.hits.hits).each((value) => {
 
-                response.push(parseEStoModel(value));
+                response.results.push(parseEStoModel(value));
             });
 
             cb(null, response, metrics);

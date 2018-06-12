@@ -84,12 +84,14 @@ const datasource = {
 
     },
     findAll: (params, cb) => {
-
+        const { index, type, size, page } = params;
+        const from = page !== undefined ? (page * size) : 0;
         const query = {
-            index: params.index,
-            type: params.type,
+            index,
+            type,
             body: { query: { match_all: {} } },
-            size: params.size ? params.size : 10
+            size,
+            from
         };
         const metrics = new Metrics('Elasticsearch', 'findAll', query);
         Client.search(query, (err, response) => {

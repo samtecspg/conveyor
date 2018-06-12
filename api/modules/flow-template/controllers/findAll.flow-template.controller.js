@@ -3,9 +3,8 @@ const FlowTemplate = require('../../../models/flow-template.model');
 const Boom = require('boom');
 
 module.exports = (request, reply) => {
-
-    const size = request.query ? request.query.size : null;
-    return FlowTemplate.findAll(size, (err, flows, metrics) => {
+    const { size, page } = request.query;
+    return FlowTemplate.findAll({ size, page }, (err, flows, metrics) => {
 
         request.addMetrics(metrics);
         if (err) {

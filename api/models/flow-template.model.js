@@ -128,12 +128,13 @@ class FlowTemplateModel {
         });
     };
 
-    static findAll(size, cb) {
+    static findAll({ size, page }, cb) {
 
         const values = {
             index: AppConstants.ES_INDEX + 'template',
             type: 'default',
-            size
+            size,
+            page
         };
         ES.findAll(values, (err, results, metrics) => {
 
@@ -141,7 +142,12 @@ class FlowTemplateModel {
                 console.error(err);
                 return cb(err);
             }
-            const response = [];
+            const response = {
+                total: results.hits.total,
+                page,
+                size,
+                results: []
+            };
             _(results.hits.hits).each((result) => {
 
                 const flowTemplate = new FlowTemplateModel(
@@ -157,7 +163,7 @@ class FlowTemplateModel {
                 );
                 flowTemplate.id = result._id;
                 flowTemplate.version = result._version;
-                response.push(flowTemplate);
+                response.results.push(flowTemplate);
             });
 
             cb(null, response, metrics);
