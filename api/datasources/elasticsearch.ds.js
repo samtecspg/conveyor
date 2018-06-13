@@ -99,7 +99,7 @@ const datasource = {
             metrics.stop();
             if (err) {
                 errorHandler(new Error(err));
-                return cb(err, metrics);
+                return cb(err,response, metrics);
             }
             return cb(null, response, metrics);
         });

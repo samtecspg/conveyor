@@ -137,34 +137,34 @@ class FlowTemplateModel {
             page
         };
         ES.findAll(values, (err, results, metrics) => {
-
-            if (err) {
-                console.error(err);
-                return cb(err);
-            }
             const response = {
-                total: results.hits.total,
+                total: 0,
                 page,
                 size,
                 results: []
             };
-            _(results.hits.hits).each((result) => {
+            if (err) {
+                console.error(err);
+            } else {
+                response.total = results.hits.total;
+                _(results.hits.hits).each((result) => {
 
-                const flowTemplate = new FlowTemplateModel(
-                    result._source.deprecated,
-                    result._source.name,
-                    result._source.description,
-                    result._source.parameters,
-                    result._source.flow,
-                    result._source.groups,
-                    result._source.hasDashboards,
-                    result._source.hasAlerts,
-                    result._source.hasLearning
-                );
-                flowTemplate.id = result._id;
-                flowTemplate.version = result._version;
-                response.results.push(flowTemplate);
-            });
+                    const flowTemplate = new FlowTemplateModel(
+                        result._source.deprecated,
+                        result._source.name,
+                        result._source.description,
+                        result._source.parameters,
+                        result._source.flow,
+                        result._source.groups,
+                        result._source.hasDashboards,
+                        result._source.hasAlerts,
+                        result._source.hasLearning
+                    );
+                    flowTemplate.id = result._id;
+                    flowTemplate.version = result._version;
+                    response.results.push(flowTemplate);
+                });
+            }
 
             cb(null, response, metrics);
         });

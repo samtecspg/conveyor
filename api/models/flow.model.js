@@ -313,23 +313,21 @@ class FlowModel {
             page
         };
         ES.findAll(values, (err, results, metrics) => {
-
-            if (err) {
-                console.error(err);
-                return cb(err, metrics);
-            }
             const response = {
-                total: results.hits.total,
+                total: 0,
                 page,
                 size,
                 results: []
             };
+            if (err) {
+                console.error(err);
+            } else {
+                response.total = results.hits.total;
+                _(results.hits.hits).each((value) => {
 
-            _(results.hits.hits).each((value) => {
-
-                response.results.push(parseEStoModel(value));
-            });
-
+                    response.results.push(parseEStoModel(value));
+                });
+            }
             cb(null, response, metrics);
         });
     }
