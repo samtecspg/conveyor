@@ -1,5 +1,4 @@
-/api/node_modules/
-/channel-sources/node_modules/
+node_modules
 *.csv
 *.dat
 *.iml
@@ -18,7 +17,8 @@
 .strong-pm
 npm-debug.log
 .env
-/es-data/nodes
+/elasticsearch/data/nodes
 /kibana
 .vscode
 .idea
+/local-storage/elasticsearch/data/nodes/

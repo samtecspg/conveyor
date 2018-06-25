@@ -1,5 +1,5 @@
 # Folder organization
-There are 3 main folders, `api`, `plugin`, and `channel-sources`, the first one contains the conveyor backend service and the plugin contains the code for the kibana plugin that works as a front-end. `channel-sources` an library of channel-sources and the supporting script to load them into Conveyor when its first initialized
+There are 3 main folders, `api`, `kibana-extra/conveyor`, and `channel-sources`, the first one contains the conveyor backend service and the plugin contains the code for the kibana plugin that works as a front-end. `channel-sources` an library of channel-sources and the supporting script to load them into Conveyor when its first initialized
 
 # Docker builds
 The root compose file pulls tagged versions of the system from dockerhub.  If you want to build your own (for instance, if your developing locally and you want to try it in the docker enviornment) add on the `build-compose-override` to your compose command as follows:
@@ -44,7 +44,7 @@ The plugin will work as a front end to our API
 Follow the steps on the [Kibana Contributing Guide](https://github.com/elastic/kibana/blob/master/CONTRIBUTING.md#contributing-code) to setup your development environment. When you are done, you should have a `kibana` folder on the same level as the `plugin` and `api` folder.
 
 ```
-$ cd plugin
+$ cd kibana-extra/conveyor
 $ yarn start
 ```
 or

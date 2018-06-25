@@ -1,7 +1,7 @@
 {
     "name": "conveyor-api",
-    "version": "2.0.1",
-    "description": "Ingest API",
+    "version": "1.4.0",
+    "description": "Conveyor API",
     "main": "start.js",
     "scripts": {
         "test": "lab --lint --timeout 10000",

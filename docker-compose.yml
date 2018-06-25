@@ -1,8 +1,8 @@
 version: '3.0'
 
 services:
-  conveyor-node:
-    image: samtecspg/conveyor-node:repo-head
+  api:
+    build: api/
     ports:
       - '0.0.0.0:4000:4000'
       - '0.0.0.0:1880:1880'
@@ -10,48 +10,55 @@ services:
       conveyor-net:
         aliases:
           - api
+          - node-red
     volumes:
       - ${NODERED_CONFIG:-./local-storage/node-red}:/usr/src/data
     depends_on:
       - elasticsearch
     command: ["dockerize", "-wait", "tcp://elasticsearch:9200", "-timeout", "5m", "node", "start.js"]
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.2.2}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.3.0}
     environment:
      - ES_JAVA_OPTS=${ES_RAM:--Xmx4g -Xms4g}
     ports: ['9200:9200']
     networks: ['conveyor-net']
     volumes:
-      - ${ES_CONFIG:-./local-storage/elasticsearch/elasticsearch.yml}:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ${ES_DATA:-./local-storage/es-data}:/usr/share/elasticsearch/data
+      - ${ES_CONFIG:-./local-storage/elasticsearch/config/elasticsearch.yml}:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${ES_DATA:-./local-storage/elasticsearch/data}:/usr/share/elasticsearch/data
     healthcheck:
       test: ['CMD', 'curl', '-f', '-u', '${ES_USER:-elastic}:${ES_PASSWORD:-changeme}', 'http://localhost:9200']
       interval: 1m30s
       timeout: 10s
       retries: 3
-  conveyorized-kibana:
-    image: samtecspg/conveyorized-kibana:repo-head
+  kibana:
+    build:
+      context: kibana-extra/conveyor/
+      args:
+        - ELASTIC_TAG=${ELASTIC_TAG:-6.3.0}
     ports: ['5601:5601']
     networks:
       conveyor-net:
         aliases:
           - kibana
     volumes:
-      - ${KIBANA_CONFIG:-./local-storage/kibana/kibana.yml}:/usr/share/kibana/config/kibana.yml
+      - ${KIBANA_CONFIG:-./local-storage/kibana/config/kibana.yml}:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
-      - conveyor-node
+      - api
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5601/login']
       interval: 1m30s
       timeout: 10s
       retries: 3
   channel-load:
-    image: samtecspg/conveyor-channel-init:repo-head
+    build:
+      context: channel-sources/
+    volumes:
+     - ${CHANNEL_FOLDER:-./channel-sources/}:/usr/src/app
     networks: ['conveyor-net']
     depends_on:
       - elasticsearch
-      - conveyor-node
-      - conveyorized-kibana
+      - api
+      - kibana
 networks:
   conveyor-net:

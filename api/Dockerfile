@@ -1,4 +1,4 @@
-FROM node:8.9-alpine
+FROM node:10.4.1-alpine
 
 # progress=false stops npm from slowing to show a progress bar (because can't be seen in docker anyway)
 RUN npm set progress=false && \

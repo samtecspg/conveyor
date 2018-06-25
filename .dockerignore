@@ -1,4 +1,6 @@
 Dockerfile
 /*/node_modules/
 /es-config/
-/es-data/
+/kibana-extra/*/node_modules/
+/*/.vscode/
+/*/.idea/

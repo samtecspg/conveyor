@@ -1,0 +1,23 @@
+{
+  "settings" : {
+    "index.blocks.read_only_allow_delete" : false
+  },
+  "mappings": {
+    "doc": {
+      "dynamic": "true" ,
+      "properties": {
+        "config": {
+          "dynamic": "true",
+          "properties": {
+            "key": {
+              "type": "keyword"
+            },
+            "value": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    }
+  }
+}

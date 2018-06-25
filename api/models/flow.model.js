@@ -427,6 +427,18 @@ class FlowModel {
             });
         };
 
+        const deleteIndexPattern = (indexPatternId, next) => {
+
+            Kibana.deleteIndexPattern({ indexPatternId }, (err, metrics) => {
+                allMetrics.push(metrics);
+                if (err) {
+                    console.error(new Error(err));
+                    return next(err);
+                }
+                next(err);
+            });
+        };
+
         this.findByName(name, (err, result, findMetrics) => {
 
             allMetrics.push(findMetrics);
@@ -439,7 +451,8 @@ class FlowModel {
                 Async.series([
                     deleteES.bind(null, result.id),
                     deleteESIndex.bind(null, result.index),
-                    deleteNodeRed.bind(null, result.nodeRedId)
+                    deleteNodeRed.bind(null, result.nodeRedId),
+                    deleteIndexPattern.bind(null, result.indexPatternId),
                 ], (error) => {
 
                     if (error) {

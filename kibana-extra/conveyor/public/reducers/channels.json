@@ -1,0 +1,17 @@
+[
+  {
+    "id": "lHBbuWIBSxgT_jLOzCsx",
+    "template": "Docker Hub Statistics",
+    "templateVersion": 1,
+    "name": "samtecspg",
+    "description": "samtecspg",
+    "index": "docker-hub-statistics-samtecspg",
+    "parameters": [
+      {
+        "value": "\"samtecspg\"",
+        "key": "dockername"
+      }
+    ],
+    "nodeRedId": "26b55bf8.32f454"
+  }
+]
