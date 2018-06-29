@@ -19,12 +19,12 @@ const parseEStoModel = (document) => {
         document._source.name,
         document._source.description,
         document._source.index,
+        document._source.status,
         document._source.parameters
     );
     flow.nodeRedId = document._source.nodeRedId;
     flow.indexPatternId = document._source.indexPatternId;
     flow.indexPatternId = document._source.indexPatternId;
-    flow.status = document._source.status;
     flow.lastStatusUpdate = document._source.lastStatusUpdate;
     return flow;
 };
