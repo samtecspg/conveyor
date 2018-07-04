@@ -1,0 +1,18 @@
+{
+  "main": "index.js",
+  "plugin": {
+    "name": "kibana",
+    "description": "Kibaba service placeholder",
+    "type" : "function",
+    "version": "0.1.0",
+    "consumes": [],
+    "provides": [
+      "kibana-init",
+      "elasticsearch"
+    ]
+  },
+  "dependencies": {
+  },
+  "bundledDependencies": [
+  ]
+}

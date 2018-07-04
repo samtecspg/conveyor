@@ -1,0 +1,67 @@
+{
+  "main": "index.js",
+  "plugin": {
+    "name": "text-file",
+    "description": "Text file source",
+    "type": "source",
+    "version": "0.1.0",
+    "consumes": [
+      "elasticsearch"
+    ],
+    "provides": [
+      "text-file-init",
+      "text-file-definition",
+      "text-file-execute"
+    ],
+    "definition": {
+      "name": "Text Import",
+      "description": "Use this source to upload files containing data records and store that data in ES. Files can be a variety of delimited formats like CSVs or TSVs.",
+      "groups": [
+        {
+          "key": "fileInformation",
+          "title": "Information about the file",
+          "description": "Upload your file. For now this source does not allow specifying custom delimeters, but it is possible if needed. Also the source expects the file to have the first row as the column titles."
+        },
+        {
+          "key": "indexInformation",
+          "title": "Data Storage Options",
+          "description": "You can use the options below to configure whether the data should be cleared upon further uploads or if the new data should be merged with the old. Merging while using a unique field allows for incremental loading."
+        }
+      ],
+      "parameters": [
+        {
+          "type": "file",
+          "group": "fileInformation",
+          "name": "file",
+          "label": "File to Upload",
+          "description": "Select the file you would like to upload."
+        },
+        {
+          "type": "boolean",
+          "group": "fileInformation",
+          "name": "forceStrings",
+          "label": "Force all Values to Strings",
+          "description": "Managing ES Mappings can be difficult. Use this toggle to force all values to be saved as strings. You can always use the reindex api later to change the mapping types."
+        },
+        {
+          "type": "boolean",
+          "group": "indexInformation",
+          "name": "truncate",
+          "label": "Overwrite on Future Uploads",
+          "description": "Set this to true if you would like to delete all of the data for this source before loading new data. Setting this to true allows a 'truncate before load' leaving it false allows incremental loading."
+        },
+        {
+          "type": "text",
+          "group": "indexInformation",
+          "name": "uniqueField",
+          "label": "Unique Field for Incremental Loading and Deduplication",
+          "description": "Set a field here to be used for the id of the record. Setting this allows for incremental loading and updating of existing records with the same ID."
+        }
+      ]
+    }
+  },
+  "dependencies": {
+  },
+  "bundledDependencies": [
+  ]
+}

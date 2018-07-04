@@ -8,6 +8,7 @@ const Inert = require('inert');
 const Vision = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
+const SourcesLoader = require('./plugins/sources-loader.plugin');
 const MetricsLogger = require('./plugins/metrics-logger.plugin');
 const Startup = require('./plugins/startup-install.plugin');
 
@@ -61,7 +62,10 @@ module.exports = (callback) => {
     });
 
     server.register([
-
+        {
+            register: SourcesLoader,
+            options: {}
+        },
         Inert,
         Vision,
         {
