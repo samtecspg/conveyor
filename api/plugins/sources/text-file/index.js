@@ -4,9 +4,10 @@ module.exports = (options, imports, register) => {
     const init = ({ server }) => {
     };
 
-    const execute = ({ channel }) => {
-        console.log(`${options.name}:execute`); // TODO: REMOVE!!!!
+    //TODO: don't pass the request and reply, just the data
+    const execute = ({ channel, request, reply }) => {
         const elasticsearch = imports.elasticsearch();
+        reply(`${options.name}:execute`);
     };
 
     register(null, {

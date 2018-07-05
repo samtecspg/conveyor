@@ -50,7 +50,7 @@ const generateRoutes = function generateRoutes(suffix) {
                 handler: routeHandler,
                 payload: {
                     output: 'stream',
-                    parse: false
+                    parse: true
                 }
             }
         },

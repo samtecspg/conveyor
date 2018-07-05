@@ -30,6 +30,7 @@ exports.register = (server, options, next) => {
             };
             _.forEach(app.packages, pluginToSource);
             server.expose('sources', sources);
+            //server.decorate('request', 'sourceLoader', sources);
             // call next on https://github.com/c9/architect#event-ready-app
         });
         app.on('service', (name, service) => {

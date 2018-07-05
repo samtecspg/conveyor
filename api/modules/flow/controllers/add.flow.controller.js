@@ -4,9 +4,11 @@ const FlowTemplate = require('../../../models/flow-template.model');
 const Boom = require('boom');
 
 module.exports = (request, reply) => {
-
-    // TODO: Move this to flow model
-    FlowTemplate.findByName(request.payload.template, (err, flowTemplate, metrics) => {
+    const { server, payload } = request;
+    const { template } = payload;
+    const sources = server.plugins['sources-loader'].sources;
+    // TODO: Move this to flow model ->https://github.com/hapipal/toys/blob/HEAD/API.md#toyspreprereqs
+    FlowTemplate.findByName({ name: template, sources }, (err, flowTemplate, metrics) => {
 
         request.addMetrics(metrics);
         if (err) {

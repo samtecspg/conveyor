@@ -4,6 +4,42 @@ const ES = require('../datasources').Elasticsearch;
 const _ = require('lodash');
 const Async = require('async');
 const AppConstants = require('../config/app-constants');
+const Metrics = require('../lib/metrics.lib');
+
+const parseModelFromPlugin = ({ source, version = 0 }) => {
+
+    const flowTemplate = new FlowTemplateModel(
+        false,
+        source.definition.name,
+        source.definition.description,
+        source.definition.parameters,
+        source.execute,
+        source.definition.groups,
+        !!source.definition.hasDashboards,
+        !!source.definition.hasAlerts,
+        !!source.definition.hasLearning
+    );
+    flowTemplate.id = source.definition.name;
+    flowTemplate.version = version;
+    return flowTemplate;
+};
+const parseModelFromESResult = ({ result }) => {
+
+    const flowTemplate = new FlowTemplateModel(
+        result._source.deprecated,
+        result._source.name,
+        result._source.description,
+        result._source.parameters,
+        result._source.flow,
+        result._source.groups,
+        result._source.hasDashboards,
+        result._source.hasAlerts,
+        result._source.hasLearning
+    );
+    flowTemplate.id = result._id;
+    flowTemplate.version = result._version;
+    return flowTemplate;
+};
 
 class FlowTemplateModel {
     constructor(deprecated, name, description, parameters, flow, groups, hasDashboards, hasAlerts, hasLearning) {
@@ -44,7 +80,6 @@ class FlowTemplateModel {
                     payload.name,
                     payload.description,
                     payload.parameters,
-                    //JSON.stringify(payload.flow),
                     payload.flow,
                     payload.groups,
                     payload.hasDashboards,
@@ -111,24 +146,12 @@ class FlowTemplateModel {
                 console.error(err);
                 return cb(err);
             }
-            const flowTemplate = new FlowTemplateModel(
-                result._source.deprecated,
-                result._source.name,
-                result._source.description,
-                result._source.parameters,
-                result._source.flow,
-                result._source.groups,
-                result._source.hasDashboards,
-                result._source.hasAlerts,
-                result._source.hasLearning
-            );
-            flowTemplate.id = result._id;
-            flowTemplate.version = result._version;
+            const flowTemplate = parseModelFromESResult({ result });
             cb(null, flowTemplate, metrics);
         });
     };
 
-    static findAll({ size, page }, cb) {
+    static findAll({ size, page, sources }, cb) {
 
         const values = {
             index: AppConstants.ES_INDEX + 'template',
@@ -149,19 +172,14 @@ class FlowTemplateModel {
                 response.total = results.hits.total;
                 _(results.hits.hits).each((result) => {
 
-                    const flowTemplate = new FlowTemplateModel(
-                        result._source.deprecated,
-                        result._source.name,
-                        result._source.description,
-                        result._source.parameters,
-                        result._source.flow,
-                        result._source.groups,
-                        result._source.hasDashboards,
-                        result._source.hasAlerts,
-                        result._source.hasLearning
-                    );
-                    flowTemplate.id = result._id;
-                    flowTemplate.version = result._version;
+                    const flowTemplate = parseModelFromESResult({ result });
+                    response.results.push(flowTemplate);
+                });
+
+                //TODO: Hardcoded source from plugin
+                _.forEach(sources, (source, key) => {
+                    console.log(`flow-template.model::::${JSON.stringify(source)}`); // TODO: REMOVE!!!!
+                    const flowTemplate = parseModelFromPlugin({ source });
                     response.results.push(flowTemplate);
                 });
             }
@@ -170,7 +188,7 @@ class FlowTemplateModel {
         });
     }
 
-    static findByName(name, cb) {
+    static findByName({ name, sources }, cb) {
 
         const values = {
             index: AppConstants.ES_INDEX + 'template',
@@ -184,6 +202,15 @@ class FlowTemplateModel {
             }
 
         };
+        //TODO: Hardcoded source from plugin
+        const source = _.find(sources, (source) => source.definition.name === name);
+        if (source) {
+            const metrics = new Metrics('Plugin', 'findByName', {});
+            metrics.stop();
+
+            const flowTemplate = parseModelFromPlugin({ source });
+            return cb(null, flowTemplate, metrics);
+        }
         ES.searchByQuery(values, (err, result, metrics) => {
 
             if (err) {
@@ -203,16 +230,7 @@ class FlowTemplateModel {
                 return cb(msg, null, metrics);
             }
             result = result.hits.hits[0];
-            const flowTemplate = new FlowTemplateModel(
-                result._source.deprecated,
-                result._source.name,
-                result._source.description,
-                result._source.parameters,
-                result._source.flow,
-                result._source.groups
-            );
-            flowTemplate.id = result._id;
-            flowTemplate.version = result._version;
+            const flowTemplate = parseModelFromESResult({ result });
             return cb(null, flowTemplate, metrics);
         });
     };

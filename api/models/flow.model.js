@@ -118,9 +118,9 @@ class FlowModel {
             payload.description,
             payload.index,
             'Created',
-            payload.parameters,
+            payload.parameters
         );
-        const template = Handlebars.compile(flowTemplate.flow);
+
         const parsedParameters = FlowModel.validateParameters(flowTemplate.parameters, newFlowModel.parameters);
         if (parsedParameters.errors.length > 0) {
             const error = new Error(`The following parameters didn't pass validation:\n${parsedParameters.errors.join('\n')}`);
@@ -157,8 +157,9 @@ class FlowModel {
         };
 
         const saveNR = ({ flow }, next) => {
+            const template2501 = Handlebars.compile(flowTemplate.flow);
             parsedParameters.parameters._id = flow.id;
-            const parsedTempl = template(parsedParameters.parameters);
+            const parsedTempl = template2501(parsedParameters.parameters);
             const parsedjson = JSON.parse(parsedTempl);
             NodeRED.flow.save(parsedjson, (err, id, metrics) => {
 
@@ -262,12 +263,7 @@ class FlowModel {
                 }
             }
             if (!result) {
-                Async.waterfall([
-                    saveES.bind(null, { flow: newFlowModel }),
-                    saveNR,
-                    createIndexPattern,
-                    updateES
-                ], (error, result) => {
+                const asyncCallback = (error) => {
                     if (error) {
                         console.log('rollback create');
                         return rollbackCreateES(newFlowModel, (deleteError, metrics) => {
@@ -278,7 +274,21 @@ class FlowModel {
 
                     }
                     return callback();
-                });
+                };
+                if (_.isFunction(flowTemplate.flow)) {
+                    Async.waterfall([
+                        saveES.bind(null, { flow: newFlowModel }),
+                        createIndexPattern,
+                        updateES
+                    ], asyncCallback);
+                } else {
+                    Async.waterfall([
+                        saveES.bind(null, { flow: newFlowModel }),
+                        saveNR,
+                        createIndexPattern,
+                        updateES
+                    ], asyncCallback);
+                }
             }
             else {
                 return cb('A flow with the same name already exists');
