@@ -61,7 +61,9 @@
     }
   },
   "dependencies": {
+    "fast-csv": "^2.4.1"
   },
   "bundledDependencies": [
+    "fast-csv"
   ]
 }

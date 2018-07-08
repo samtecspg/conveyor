@@ -55,13 +55,13 @@ class FlowTemplateModel {
         this.hasLearning = !!hasLearning;
     }
 
-    static save(payload, cb) {
+    static save({ payload, sources }, cb) {
 
         const allMetrics = [];
         Async.waterfall([
             (next) => { //Search for template
 
-                this.findByName(payload.name, (err, result, metrics) => {
+                this.findByName({ name: payload.name, sources }, (err, result, metrics) => {
 
                     allMetrics.push(metrics);
                     if (err) {
