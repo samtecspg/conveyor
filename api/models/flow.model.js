@@ -134,11 +134,6 @@ class FlowModel {
         parsedParameters.parameters._index = newFlowModel.index;
 
         const saveES = ({ flow }, next) => {
-
-            flow.parameters = flow.parameters.map((parameter) => {
-
-                return { key: parameter.key, value: JSON.stringify(parameter.value) };
-            });
             flow.lastStatusUpdate = moment.utc();
             const values = {
                 index: AppConstants.ES_INDEX,

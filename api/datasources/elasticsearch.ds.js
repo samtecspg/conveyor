@@ -29,6 +29,7 @@ const datasource = {
             index: params.index,
             type: params.type,
             body: params.document,
+            id: params.id,
             refresh: 'true'
         };
         const metrics = new Metrics('Elasticsearch', 'save', query);
@@ -161,7 +162,7 @@ const datasource = {
             return cb(null, response, metrics);
         });
     },
-    'deleteIndex': (params, cb) => {
+    deleteIndex: (params, cb) => {
 
         const query = {
             index: params.index
@@ -176,7 +177,40 @@ const datasource = {
             }
             return cb(null, response, metrics);
         });
-    }
+    },
+    deleteByQuery: (params, cb) => {
+
+        const query = {
+            index: params.index,
+            body: params.body
+        };
+        const metrics = new Metrics('Elasticsearch', 'deleteByQuery', query);
+        Client.deleteByQuery(query, (err, response) => {
+
+            metrics.stop();
+            if (err) {
+                errorHandler(new Error(err));
+                return cb(err, metrics);
+            }
+            return cb(null, response, metrics);
+        });
+    },
+    indexExists: (params, cb) => {
+
+        const query = {
+            index: [params.index],
+            ignoreUnavailable: false
+        };
+        const metrics = new Metrics('Elasticsearch', 'indexExists', query);
+        Client.indices.exists(query, (err, response) => {
+            metrics.stop();
+            if (err) {
+                errorHandler(new Error(err));
+                return cb(err, metrics);
+            }
+            return cb(null, response, metrics);
+        });
+    },
 };
 
 module.exports = datasource;

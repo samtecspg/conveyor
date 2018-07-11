@@ -14,7 +14,7 @@
       "text-file-execute"
     ],
     "definition": {
-      "name": "Text Import",
+      "name": "Text File",
       "description": "Use this source to upload files containing data records and store that data in ES. Files can be a variety of delimited formats like CSVs or TSVs.",
       "groups": [
         {

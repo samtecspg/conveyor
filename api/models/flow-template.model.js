@@ -178,8 +178,8 @@ class FlowTemplateModel {
 
                 //TODO: Hardcoded source from plugin
                 _.forEach(sources, (source, key) => {
-                    console.log(`flow-template.model::::${JSON.stringify(source)}`); // TODO: REMOVE!!!!
                     const flowTemplate = parseModelFromPlugin({ source });
+                    response.total += 1;
                     response.results.push(flowTemplate);
                 });
             }

@@ -3,59 +3,126 @@ const fs = require('fs');
 const csv = require('fast-csv');
 
 module.exports = (options, imports, register) => {
+
     const init = ({ server }) => {
     };
 
     //TODO: don't pass the request and reply, just the data
     const execute = ({ channel, request, reply }) => {
+
         const elasticsearch = imports.elasticsearch();
-        const data = request.payload;
-        if (data.file) {
-            const name = data.file.hapi.filename;
-            const path = __dirname + '/uploads/' + name;
+        const payload = request.payload;
+        const { forceStrings, uniqueField, truncate } = channel.parameters.reduce((accumulator, parameter) => Object.assign(accumulator, { [parameter.key]: parameter.value }), {});
+        if (payload.file) {
+            const name = payload.file.hapi.filename;
+            const path = `${__dirname}/uploads/${Date.now()}-${name}`;
             const file = fs.createWriteStream(path);
+            const truncateData = (next) => {
+                const { index } = channel;
+                try {
+                    const query = {
+                        index,
+                        body: {
+                            'query': {
+                                'match_all': {}
+                            }
+                        }
+
+                    };
+                    elasticsearch.indexExists({ index }, (err, exists) => {
+                        if (err) {
+                            return next(err);
+                        }
+                        if (exists) {
+                            return elasticsearch.deleteByQuery(query, next);
+                        }
+                        return next();
+                    });
+                } catch (e) {
+                    console.error(e);
+                    next();
+                }
+
+            };
+            const save = ({ data, id, next }) => {
+
+                elasticsearch.save({
+                    id,
+                    index: channel.index,
+                    type: 'default',
+                    document: data
+                }, next);
+            };
+            const format = ({ data, next }) => {
+                const parsedData = {};
+                let id = undefined;
+                for (const k in data) {
+                    parsedData[k] = data[k];
+                    if (forceStrings) {
+                        parsedData[k] = String(parsedData[k]);
+                    }
+
+                    const newK = k.replace(/\./g, '_');
+
+                    if (newK !== k) {
+                        parsedData[newK] = data[k];
+                        delete parsedData[k];
+                    }
+                }
+
+                if (uniqueField && uniqueField !== '' && parsedData[uniqueField] !== undefined) {
+                    id = parsedData[uniqueField];
+                }
+                save({ data: parsedData, id, next });
+            };
+
+            const parse = (err) => {
+
+                if (err) {
+                    return reply(JSON.stringify(err));
+                }
+                const stream = fs.createReadStream(path);
+                const csvStream = csv
+                    .parse({
+                        headers: true,
+                        ignoreEmpty: true
+                    })
+                    .transform((data, next) => {
+
+                        format({ data, next });
+                    })
+                    .on('end', () => {
+
+                        fs.unlinkSync(path);
+                        const ret = {
+                            filename: payload.file.hapi.filename,
+                            headers: payload.file.hapi.headers
+                        };
+
+                        reply(JSON.stringify(ret));
+                    });
+                stream.pipe(csvStream);
+            };
 
             file.on('error', (err) => {
+
                 return console.error(err);
             });
 
-            data.file.pipe(file);
+            payload.file.pipe(file);
 
-            data.file.on('end', (err) => {
+            payload.file.on('end', (err) => {
+
                 if (err) {
                     reply(err);
-                } else {
-                    const stream = fs.createReadStream(path);
-                    const csvStream = csv
-                        .parse({
-                            headers: true,
-                            ignoreEmpty: true
-                        })
-                        .transform((data, next) => {
-
-                            elasticsearch.save({
-                                index: channel.index,
-                                type: 'default',
-                                document: data
-                            }, next);
-                        })
-                        .on('data', (data) => {
-
-                            // console.log(channel);
-                            // console.log(data);
-                        })
-                        .on('end', () => {
-                            fs.unlinkSync(path);
-                            console.log('done');
-                            const ret = {
-                                filename: data.file.hapi.filename,
-                                headers: data.file.hapi.headers
-                            };
-
-                            //TODO: Delete file
-                            reply(JSON.stringify(ret));
-                        });
-                    stream.pipe(csvStream);
+                }
+                else {
+                    if (truncate) {
+                        truncateData(parse);
+                    }
+                    else {
+                        parse();
+                    }
                 }
 
             });
