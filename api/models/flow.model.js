@@ -61,7 +61,7 @@ class FlowModel {
             //console.log(`[${templateParameter.name} = ${value}] isRequired=${templateParameter.required} - validation=${templateParameter.validation ? templateParameter.validation.rule : 'none'}`);
 
             //can be simplified but is easier to read this way
-            if (templateParameter.required) {
+            if (templateParameter.required && !templateParameter.isAdvance) {
                 if (!value) {
                     return errors.push(`[${templateParameter.name} = ${parameter.value}] => Required.`);
                 }

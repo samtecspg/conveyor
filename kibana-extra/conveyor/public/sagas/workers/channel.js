@@ -30,6 +30,7 @@ export function* createChannel(payload) {
       yield call(postChannelData, { channelName: body.name, files, fileUploadProgress });
     }
   } catch (error) {
+    onUploadProgress(null, Status.FAIL);
     yield put(global.createChannelFail(generateMessage({ type: MessageTypes.RESPONSE_ERROR, message: error })));
   }
 }
