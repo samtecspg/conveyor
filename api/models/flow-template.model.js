@@ -137,6 +137,7 @@ class FlowTemplateModel {
             page
         };
         ES.findAll(values, (err, results, metrics) => {
+
             const response = {
                 total: 0,
                 page,
@@ -145,7 +146,8 @@ class FlowTemplateModel {
             };
             if (err) {
                 console.error(err);
-            } else {
+            }
+            else {
                 response.total = results.hits.total;
                 _(results.hits.hits).each((result) => {
 

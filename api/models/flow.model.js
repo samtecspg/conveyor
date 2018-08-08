@@ -8,9 +8,10 @@ const NodeRED = require('../datasources').NodeRED;
 const ES = require('../datasources').Elasticsearch;
 const Kibana = require('../datasources').Kibana;
 const ParameterConvert = require('../lib/parameter-convert.lib');
-const moment = require('moment');
+const Moment = require('moment');
 
 const parseEStoModel = (document) => {
+
     const flow = new FlowModel(
         document._id,
         document._version,
@@ -139,7 +140,7 @@ class FlowModel {
 
                 return { key: parameter.key, value: JSON.stringify(parameter.value) };
             });
-            flow.lastStatusUpdate = moment.utc();
+            flow.lastStatusUpdate = Moment.utc();
             const values = {
                 index: AppConstants.ES_INDEX,
                 type: 'default',
@@ -157,6 +158,7 @@ class FlowModel {
         };
 
         const saveNR = ({ flow }, next) => {
+
             parsedParameters.parameters._id = flow.id;
             const parsedTempl = template(parsedParameters.parameters);
             const parsedjson = JSON.parse(parsedTempl);
@@ -178,6 +180,7 @@ class FlowModel {
         };
 
         const updateES = ({ flow }, next) => {
+
             const values = {
                 index: AppConstants.ES_INDEX,
                 type: 'default',
@@ -230,6 +233,7 @@ class FlowModel {
         const createIndexPattern = ({ flow }, next) => {
 
             Kibana.createIndexPattern({ index: flow.index }, (err, indexPattern, metrics) => {
+
                 allMetrics.push(metrics);
                 if (err) {
                     console.error(new Error(err));
@@ -267,7 +271,8 @@ class FlowModel {
                     saveNR,
                     createIndexPattern,
                     updateES
-                ], (error, result) => {
+                ], (error) => {
+
                     if (error) {
                         console.log('rollback create');
                         return rollbackCreateES(newFlowModel, (deleteError, metrics) => {
@@ -313,6 +318,7 @@ class FlowModel {
             page
         };
         ES.findAll(values, (err, results, metrics) => {
+
             const response = {
                 total: 0,
                 page,
@@ -321,7 +327,8 @@ class FlowModel {
             };
             if (err) {
                 console.error(err);
-            } else {
+            }
+            else {
                 response.total = results.hits.total;
                 _(results.hits.hits).each((value) => {
 
@@ -430,6 +437,7 @@ class FlowModel {
         const deleteIndexPattern = (indexPatternId, next) => {
 
             Kibana.deleteIndexPattern({ indexPatternId }, (err, metrics) => {
+
                 allMetrics.push(metrics);
                 if (err) {
                     console.error(new Error(err));
@@ -452,7 +460,7 @@ class FlowModel {
                     deleteES.bind(null, result.id),
                     deleteESIndex.bind(null, result.index),
                     deleteNodeRed.bind(null, result.nodeRedId),
-                    deleteIndexPattern.bind(null, result.indexPatternId),
+                    deleteIndexPattern.bind(null, result.indexPatternId)
                 ], (error) => {
 
                     if (error) {

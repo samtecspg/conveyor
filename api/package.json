@@ -4,6 +4,8 @@
     "description": "Conveyor API",
     "main": "start.js",
     "scripts": {
+        "lint": "lab -dL",
+        "lint:fix": "lab -dL --lint-fix",
         "test": "lab --lint --timeout 10000",
         "test:coverage": "lab --lint --coverage",
         "start": "npm-run-all --parallel start:server",

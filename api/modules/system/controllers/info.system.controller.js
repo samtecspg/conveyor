@@ -1,12 +1,12 @@
 'use strict';
-const pack = require('../../../package');
+const PKG = require('../../../package');
 
 module.exports = (request, reply) => {
 
     return reply({
-        'name': pack.name,
-        'version': pack.version,
-        'description': pack.description
-    })
+        'name': PKG.name,
+        'version': PKG.version,
+        'description': PKG.description
+    });
 
 };

@@ -27,7 +27,7 @@ class FlowTemplateValidate {
 
                 return {
                     size: Joi.number().description('Number of objects to be returned (default:10)'),
-                    page: Joi.number().description('Page to be returned (default:1)'),
+                    page: Joi.number().description('Page to be returned (default:1)')
                 };
             })()
         };

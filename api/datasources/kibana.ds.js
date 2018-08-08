@@ -1,6 +1,5 @@
 'use strict';
 /* $lab:coverage:off$ */
-const _ = require('lodash');
 const AppConstants = require('../config/app-constants');
 const Wreck = require('wreck').defaults({
     headers: {
@@ -26,6 +25,7 @@ const errorHandler = (err) => {
 
 const datasource = {
     createIndexPattern: (params, cb) => {
+
         const query = { 'attributes': { 'title': params.index } };
         const wreck = Wreck.defaults({
             payload: query
@@ -34,6 +34,9 @@ const datasource = {
         wreck.post('/api/saved_objects/index-pattern', (err, response, body) => {
 
             metrics.stop();
+            if (err) {
+                cb(err, metrics);
+            }
             if (response.statusCode >= 400 && response.statusCode <= 599) {
                 errorHandler(new Error(body));
                 return cb(body.message, metrics);
@@ -42,12 +45,16 @@ const datasource = {
         });
     },
     deleteIndexPattern: ({ indexPatternId }, cb) => {
+
         const wreck = Wreck.defaults({});
         const metrics = new Metrics('Kibana', 'deleteIndexPattern', { id: indexPatternId });
 
         wreck.delete(`/api/saved_objects/index-pattern/${indexPatternId}`, (err, response, body) => {
 
             metrics.stop();
+            if (err) {
+                cb(err, metrics);
+            }
             if (response.statusCode >= 400 && response.statusCode <= 599) {
                 errorHandler(new Error(body));
                 return cb(body.message, metrics);
