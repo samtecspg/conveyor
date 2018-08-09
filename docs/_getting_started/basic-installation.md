@@ -23,9 +23,9 @@ To get started
 
 
 ```
-curl -L -O https://github.com/samtecspg/conveyor/releases/download/v1.3.1/conveyor-v1.3.1.zip
-unzip conveyor-v1.3.1.zip
-cd conveyor-v1.3.1
+curl -L -O https://github.com/samtecspg/conveyor/releases/download/v1.4.0/conveyor-v1.4.0.zip
+unzip conveyor-v1.4.0.zip
+cd conveyor-v1.4.0
 docker-compose up
 ```
 
