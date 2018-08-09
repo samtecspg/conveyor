@@ -1,0 +1,14 @@
+version: '3.0'
+
+services:
+  conveyor-node:
+    build: api/
+  conveyorized-kibana:
+    build:
+      context: kibana-extra/conveyor/
+      args:
+        - ELASTIC_TAG=${ELASTIC_TAG:-6.3.0}
+  channel-load:
+    build: channel-sources
+    volumes:
+     - ${CHANNEL_FOLDER:-./channel-sources/}:/usr/src/app

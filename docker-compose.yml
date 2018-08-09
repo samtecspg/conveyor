@@ -1,8 +1,8 @@
 version: '3.0'
 
 services:
-  api:
-    build: api/
+  conveyor-node:
+    image: samtecspg/conveyor-node:1.4.0
     ports:
       - '0.0.0.0:4000:4000'
       - '0.0.0.0:1880:1880'
@@ -30,11 +30,8 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
-  kibana:
-    build:
-      context: kibana-extra/conveyor/
-      args:
-        - ELASTIC_TAG=${ELASTIC_TAG:-6.3.0}
+  conveyorized-kibana:
+    image: samtecspg/conveyorized-kibana:1.4.0
     ports: ['5601:5601']
     networks:
       conveyor-net:
@@ -44,21 +41,18 @@ services:
       - ${KIBANA_CONFIG:-./local-storage/kibana/config/kibana.yml}:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
-      - api
+      - conveyor-node
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5601/login']
       interval: 1m30s
       timeout: 10s
       retries: 3
   channel-load:
-    build:
-      context: channel-sources/
-    volumes:
-     - ${CHANNEL_FOLDER:-./channel-sources/}:/usr/src/app
+    image: samtecspg/conveyor-channel-init:1.4.0
     networks: ['conveyor-net']
     depends_on:
       - elasticsearch
-      - api
-      - kibana
+      - conveyor-node
+      - conveyorized-kibana
 networks:
   conveyor-net:
