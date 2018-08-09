@@ -1,4 +1,5 @@
 import { EuiButton } from '@elastic/eui/lib/components/button/button';
+import { EuiCallOut } from '@elastic/eui/lib/components/call_out/call_out';
 import { EuiForm } from '@elastic/eui/lib/components/form/form';
 import { EuiHorizontalRule } from '@elastic/eui/lib/components/horizontal_rule/horizontal_rule';
 import { EuiPanel } from '@elastic/eui/lib/components/panel/panel';
@@ -68,7 +69,8 @@ class ChannelCreate extends Component {
     processIndicatorPercent: null,
     groupsAndParameters: null,
     form: {},
-    group: {}
+    group: {},
+    isFormValid: true
   };
 
   componentDidMount() {
@@ -267,6 +269,7 @@ class ChannelCreate extends Component {
   onSubmit = (event) => {
     event.preventDefault();
     const isValid = this.onValidate();
+    this.setState({ isFormValid: isValid });
     if (!isValid) return;
     this.setState({
       processIndicatorVisible: true,
@@ -324,7 +327,8 @@ class ChannelCreate extends Component {
       processIndicatorVisible,
       processIndicatorPercent,
       groupsAndParameters,
-      defaultParameters
+      defaultParameters,
+      isFormValid
     } = this.state;
     const spacer = 'm';
     return (
@@ -361,6 +365,21 @@ class ChannelCreate extends Component {
               >
                 Save form
               </EuiButton>
+              {!isFormValid ?
+                <EuiCallOut
+                  title="Sorry, there was an error"
+                  color="danger"
+                  iconType="cross"
+                  className={'error-panel'}
+                >
+                  <p>
+                    Please check the form and submit again
+                  </p>
+                </EuiCallOut>
+                :
+                null
+              }
+
             </EuiForm>
           </form>
         </ContentBody>
