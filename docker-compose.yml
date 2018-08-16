@@ -2,7 +2,9 @@ version: '3.0'
 
 services:
   conveyor-node:
-    image: samtecspg/conveyor-node:1.4.0
+    image: samtecspg/conveyor-node:1.4.1
+    environment:
+     - KIBANA_VERSION=${ELASTIC_TAG:-6.3.2}
     ports:
       - '0.0.0.0:4000:4000'
       - '0.0.0.0:1880:1880'
@@ -17,7 +19,7 @@ services:
       - elasticsearch
     command: ["dockerize", "-wait", "tcp://elasticsearch:9200", "-timeout", "5m", "node", "start.js"]
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.3.0}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.3.2}
     environment:
      - ES_JAVA_OPTS=${ES_RAM:--Xmx4g -Xms4g}
     ports: ['9200:9200']
@@ -31,7 +33,7 @@ services:
       timeout: 10s
       retries: 3
   conveyorized-kibana:
-    image: samtecspg/conveyorized-kibana:1.4.0
+    image: samtecspg/conveyorized-kibana:1.4.1
     ports: ['5601:5601']
     networks:
       conveyor-net:
@@ -48,7 +50,7 @@ services:
       timeout: 10s
       retries: 3
   channel-load:
-    image: samtecspg/conveyor-channel-init:1.4.0
+    image: samtecspg/conveyor-channel-init:1.4.1
     networks: ['conveyor-net']
     depends_on:
       - elasticsearch

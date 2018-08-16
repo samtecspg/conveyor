@@ -7,7 +7,7 @@ services:
     build:
       context: kibana-extra/conveyor/
       args:
-        - ELASTIC_TAG=${ELASTIC_TAG:-6.3.0}
+        - ELASTIC_TAG=${ELASTIC_TAG:-6.3.2}
   channel-load:
     build: channel-sources
     volumes:
