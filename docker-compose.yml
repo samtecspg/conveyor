@@ -3,6 +3,8 @@ version: '3.0'
 services:
   conveyor-node:
     image: samtecspg/conveyor-node:repo-head
+    environment:
+     - KIBANA_VERSION=${ELASTIC_TAG:-6.3.2}
     ports:
       - '0.0.0.0:4000:4000'
       - '0.0.0.0:1880:1880'
