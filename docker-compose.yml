@@ -4,7 +4,7 @@ services:
   conveyor-node:
     image: samtecspg/conveyor-node:repo-head
     environment:
-     - KIBANA_VERSION=${ELASTIC_TAG:-6.3.2}
+     - KIBANA_VERSION=${ELASTIC_TAG:-6.4.0}
     ports:
       - '0.0.0.0:4000:4000'
       - '0.0.0.0:1880:1880'
@@ -19,7 +19,7 @@ services:
       - elasticsearch
     command: ["dockerize", "-wait", "tcp://elasticsearch:9200", "-timeout", "5m", "node", "start.js"]
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.3.2}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_TAG:-6.4.0}
     environment:
      - ES_JAVA_OPTS=${ES_RAM:--Xmx4g -Xms4g}
     ports: ['9200:9200']

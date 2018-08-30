@@ -1,10 +1,10 @@
 {
   "name": "conveyor",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Conveyor",
   "main": "index.js",
   "kibana": {
-    "version": "6.3.2",
+    "version": "6.4.0",
     "templateVersion": "1.0.0"
   },
   "scripts": {
@@ -12,6 +12,7 @@
     "kbn": "node ../../kibana/scripts/kbn",
     "lint": "eslint **/*.js",
     "start": "KIBANA_ROOT=../../kibana plugin-helpers start",
+    "start:base": "KIBANA_ROOT=../../kibana plugin-helpers start --no-base-path",
     "test:server": "plugin-helpers test:server",
     "test:browser": "plugin-helpers test:browser",
     "build": "plugin-helpers build"
@@ -40,7 +41,7 @@
   "devDependencies": {
     "@elastic/eslint-config-kibana": "link:../../kibana/packages/eslint-config-kibana",
     "@elastic/eslint-import-resolver-kibana": "^0.9.0",
-    "@elastic/eui": "^0.0.39",
+    "@elastic/eui": "3.0.5",
     "@kbn/plugin-helpers": "link:../../kibana/packages/kbn-plugin-helpers",
     "babel-eslint": "^8.0.2",
     "eslint": "^4.11.0",
