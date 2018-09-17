@@ -172,8 +172,8 @@
         },
         {
             "id": "global-13",
-            "z": "96d29327.89647",
-            "name": "",
+            "type": "http response",
+	    "name": "",
             "statusCode": "",
             "headers": {},
             "x": 850,
