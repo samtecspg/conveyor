@@ -58,7 +58,6 @@
             "y": 80,
             "wires": [
                 [
-                    "global-38",
                     "global-5"
                 ]
             ]
@@ -73,7 +72,7 @@
             "wires": []
         },
         {
-            "id": "global-10",
+            "id": "global-7",
             "type": "switch",
             "name": "",
             "property": "elasticsearch.useTLS",
@@ -89,18 +88,18 @@
             "checkall": "false",
             "outputs": 2,
             "x": 430,
-            "y": 560,
+            "y": 180,
             "wires": [
                 [
-                    "global-11"
+                    "global-8"
                 ],
                 [
-                    "global-12"
+                    "global-9"
                 ]
             ]
         },
         {
-            "id": "global-11",
+            "id": "global-8",
             "type": "http request",
             "name": "Basic Auth with SSL",
             "method": "use",
@@ -108,15 +107,15 @@
             "url": "",
             "tls": "global-16",
             "x": 620,
-            "y": 540,
+            "y": 160,
             "wires": [
                 [
-                    "global-17"
+                    "global-13"
                 ]
             ]
         },
         {
-            "id": "global-12",
+            "id": "global-9",
             "type": "http request",
             "name": "Basic Auth without SSL",
             "method": "use",
@@ -124,24 +123,24 @@
             "url": "",
             "tls": "",
             "x": 630,
-            "y": 580,
+            "y": 200,
             "wires": [
                 [
-                    "global-17"
+                    "global-13"
                 ]
             ]
         },
         {
-            "id": "global-20",
+            "id": "global-10",
             "type": "comment",
             "name": "Elasticsearch Query Proxy",
             "info": "This endpoint exists to simplify the connection to Elasticsearch.\n\nIt could certainly be cleaned up by creating a http node that accept auth changes on the fly or by creating a better ES node.",
             "x": 130,
-            "y": 520,
+            "y": 140,
             "wires": []
         },
         {
-            "id": "global-21",
+            "id": "global-11",
             "type": "http in",
             "name": "",
             "url": "/elasticsearch",
@@ -149,496 +148,37 @@
             "upload": false,
             "swaggerDoc": "",
             "x": 110,
-            "y": 560,
+            "y": 180,
             "wires": [
                 [
-                    "global-22"
+                    "global-12"
                 ]
             ]
         },
         {
-            "id": "global-22",
+            "id": "global-12",
             "type": "function",
             "name": "",
             "func": "delete msg.req, msg.res;\n\nvar es = global.get('elasticsearch');\n\nvar errors = [];\n\nif (es) {\n    var url = es.url;\n} else {\n    errors.push('No ES Connection found in the Global Configuraiton.')\n}\n\nvar request = msg.payload;\n\nif (request.path) {\n    msg.url = url + request.path;\n} else {\n    errors.push('No path found in payload')   \n}\n\nif (request.payload) {\n    msg.payload = request.payload\n}\n\nif (request.method) {\n    msg.method = request.method\n} else {\n    msg.method = 'GET'\n}\n\nmsg.headers = {\n    'Content-Type': 'application/json'\n}\n\nif (global.get('elasticsearch') && global.get('elasticsearch').basicAuth) {\n    var basicAuth = global.get('elasticsearch').basicAuth;\n    if ( basicAuth.username && basicAuth.password) {\n        var username = basicAuth.username;\n        var password = basicAuth.password;\n        var crypt = new Buffer(username + ':' + password).toString('base64')\n        var authStr = 'Basic ' + crypt\n\n        msg.headers.Authorization = authStr;\n    } else {\n        errors.push('Basic Auth Specified, but no username or password found.')   \n    }\n}\n\nmsg.errors = errors;\n\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 290,
-            "y": 560,
+            "y": 180,
             "wires": [
                 [
-                    "global-10"
+                    "global-7"
                 ]
             ]
         },
         {
-            "id": "global-17",
-            "type": "http response",
+            "id": "global-13",
+            "z": "96d29327.89647",
             "name": "",
             "statusCode": "",
             "headers": {},
             "x": 850,
-            "y": 560,
-            "wires": []
-        },
-        {
-            "id": "global-25",
-            "type": "comment",
-            "name": "Update Index Patterns",
-            "info": "",
-            "x": 120,
-            "y": 380,
-            "wires": []
-        },
-        {
-            "id": "global-26",
-            "type": "link in",
-            "name": "Update Index Patterns",
-            "links": [
-                "global-74"
-            ],
-            "x": 35,
-            "y": 420,
-            "wires": [
-                [
-                    "global-24"
-                ]
-            ]
-        },
-        {
-            "id": "global-27",
-            "type": "http request",
-            "name": "GET Flows",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 470,
-            "y": 420,
-            "wires": [
-                [
-                    "global-28"
-                ]
-            ]
-        },
-        {
-            "id": "global-29",
-            "type": "function",
-            "name": "Format",
-            "func": "msg = {\n    url: global.get('conveyor-api').url + '/flow?size=1000',\n    method: 'GET'\n}\n\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 320,
-            "y": 420,
-            "wires": [
-                [
-                    "global-27"
-                ]
-            ]
-        },
-        {
-            "id": "global-28",
-            "type": "function",
-            "name": "",
-            "func": "if (msg.statusCode == 200 && msg.payload.length > 0) {\n    \n    if (global.get('kibana').major < 6) {\n        msg = {\n            currentFlows: msg.payload,\n            payload: {\n                path: '/.kibana/index-pattern/_search',\n                method: 'GET'\n            },\n            url: global.get('node-red').url + '/elasticsearch',\n            method: 'POST'\n        }\n    } else {\n        msg = {\n            currentFlows: msg.payload,\n            url: global.get('node-red').url + '/kibana',\n            method: 'POST',\n            payload: {\n                path: '/api/saved_objects/index-pattern',\n                method: 'GET'\n            }\n        }\n    }\n    \n    \n    return msg;\n}",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 610,
-            "y": 420,
-            "wires": [
-                [
-                    "global-30"
-                ]
-            ]
-        },
-        {
-            "id": "global-30",
-            "type": "http request",
-            "name": "GET Index Patterns",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 770,
-            "y": 420,
-            "wires": [
-                [
-                    "global-31"
-                ]
-            ]
-        },
-        {
-            "id": "global-32",
-            "type": "function",
-            "name": "Check",
-            "func": "var currentFlows = msg.currentFlows;\n\nvar missingPatterns = [];\n\nif (global.get('kibana').major < 6) {\n    var currentPatterns = msg.payload.hits.hits;\n    \n    currentFlows.forEach(function(flow) {\n        var indexFound = currentPatterns.find(function(pattern) {\n            return flow.index == pattern._id\n        })\n        \n        if (!indexFound || indexFound._id != flow.index) {\n            missingPatterns.push(flow.index)\n        }\n    })\n} else {\n    var currentPatterns = msg.payload.saved_objects;\n    \n    currentFlows.forEach(function(flow) {\n        var indexFound = currentPatterns.find(function(pattern) {\n            return flow.index == pattern.id\n        })\n        \n        if (!indexFound || indexFound.id != flow.index) {\n            missingPatterns.push(flow.index)\n        }\n    })\n}\n\n\n\nmsg = {\n    payload: missingPatterns\n}\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 130,
-            "y": 460,
-            "wires": [
-                [
-                    "global-33"
-                ]
-            ]
-        },
-        {
-            "id": "global-31",
-            "type": "link out",
-            "name": "Index Pattern - End Line 1",
-            "links": [
-                "global-34"
-            ],
-            "x": 895,
-            "y": 420,
-            "wires": []
-        },
-        {
-            "id": "global-34",
-            "type": "link in",
-            "name": "Index Pattern - Start Line 2",
-            "links": [
-                "global-31"
-            ],
-            "x": 35,
-            "y": 460,
-            "wires": [
-                [
-                    "global-32"
-                ]
-            ]
-        },
-        {
-            "id": "global-33",
-            "type": "split",
-            "name": "",
-            "splt": "\\n",
-            "spltType": "str",
-            "arraySplt": 1,
-            "arraySpltType": "len",
-            "stream": false,
-            "addname": "",
-            "x": 250,
-            "y": 460,
-            "wires": [
-                [
-                    "global-35"
-                ]
-            ]
-        },
-        {
-            "id": "global-35",
-            "type": "function",
-            "name": "Format",
-            "func": "var index = msg.payload;\nvar parts = msg.parts\n\nif (global.get('kibana').major < 6) {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/index-pattern/' + index + '?refresh=true',\n            method: 'POST',\n            payload: {\n                \"title\": index\n            }\n        },\n        parts: parts\n    }\n} else {\n    msg = {\n        url: global.get('node-red').url + '/elasticsearch',\n        method: 'POST',\n        payload: {\n            path: '/.kibana/doc/index-pattern:' + index + '?refresh=true',\n            method: 'PUT',\n            payload: {\n                \"type\":\"index-pattern\",\n                \"updated_at\": new Date(),\n                \"index-pattern\": {\n                    \"title\": index\n                }\n            }\n        },\n        parts: parts\n    }\n}\n\n// Used later to create default index if needed.\nmsg.index = index;\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 380,
-            "y": 460,
-            "wires": [
-                [
-                    "global-36"
-                ]
-            ]
-        },
-        {
-            "id": "global-36",
-            "type": "http request",
-            "name": "POST Index patterns",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 760,
-            "y": 460,
-            "wires": [
-                [
-                    "global-47"
-                ]
-            ]
-        },
-        {
-            "id": "global-24",
-            "type": "delay",
-            "name": "",
-            "pauseType": "rate",
-            "timeout": "5",
-            "timeoutUnits": "seconds",
-            "rate": "1",
-            "nbRateUnits": "10",
-            "rateUnits": "second",
-            "randomFirst": "1",
-            "randomLast": "5",
-            "randomUnits": "seconds",
-            "drop": true,
-            "x": 160,
-            "y": 420,
-            "wires": [
-                [
-                    "global-29"
-                ]
-            ]
-        },
-        {
-            "id": "global-38",
-            "type": "link out",
-            "name": "Load Global Context - End",
-            "links": [
-                "global-42"
-            ],
-            "x": 755,
-            "y": 80,
-            "wires": []
-        },
-        {
-            "id": "global-40",
-            "type": "switch",
-            "name": "",
-            "property": "statusCode",
-            "propertyType": "msg",
-            "rules": [
-                {
-                    "t": "neq",
-                    "v": "200",
-                    "vt": "str"
-                },
-                {
-                    "t": "else"
-                }
-            ],
-            "checkall": "false",
-            "outputs": 2,
-            "x": 450,
-            "y": 180,
-            "wires": [
-                [
-                    "global-48"
-                ],
-                [
-                    "global-45"
-                ]
-            ]
-        },
-        {
-            "id": "global-41",
-            "type": "comment",
-            "name": "Check Kibana Version",
-            "info": "If this doesn't return then we know it is below 6.0 otherwise we acn get the version from the payload.",
-            "x": 120,
-            "y": 140,
-            "wires": []
-        },
-        {
-            "id": "global-42",
-            "type": "link in",
-            "name": "",
-            "links": [
-                "global-38"
-            ],
-            "x": 35,
-            "y": 180,
-            "wires": [
-                [
-                    "global-44"
-                ]
-            ]
-        },
-        {
-            "id": "global-43",
-            "type": "http request",
-            "name": "",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 310,
-            "y": 180,
-            "wires": [
-                [
-                    "global-40"
-                ]
-            ]
-        },
-        {
-            "id": "global-44",
-            "type": "function",
-            "name": "",
-            "func": "msg = {\n    url: global.get('node-red').url + '/kibana',\n    method: 'POST',\n    payload: {\n        path: '/api/status',\n        method: 'GET'\n    }\n}\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 130,
-            "y": 180,
-            "wires": [
-                [
-                    "global-43"
-                ]
-            ]
-        },
-        {
-            "id": "global-45",
-            "type": "function",
-            "name": "",
-            "func": "kibanaConfig = global.get('kibana');\n\nif (msg.statusCode == 200) {\n    kibanaConfig.version = msg.payload.version.number\n    kibanaConfig.major = Number(msg.payload.version.number.split('.')[0])\n    kibanaConfig.minor = Number(msg.payload.version.number.split('.')[1])\n    kibanaConfig.patch = Number(msg.payload.version.number.split('.')[2])\n    kibanaConfig.build = msg.payload.version.build_number\n} else {\n    kibanaConfig.version = '<6'\n}\n\nglobal.set('kibana', kibanaConfig);\n\nmsg = {\n    payload: kibanaConfig\n}\n\nreturn msg",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 650,
-            "y": 180,
-            "wires": [
-                [
-                    "global-46",
-                    "global-49"
-                ]
-            ]
-        },
-        {
-            "id": "global-46",
-            "type": "link out",
-            "name": "Check Kibana Version - End",
-            "links": [
-                "global-65"
-            ],
-            "x": 735,
             "y": 180,
             "wires": []
-        },
-        {
-            "id": "global-47",
-            "type": "debug",
-            "name": "",
-            "active": true,
-            "console": "false",
-            "complete": "payload",
-            "x": 950,
-            "y": 460,
-            "wires": []
-        },
-        {
-            "id": "global-48",
-            "type": "delay",
-            "name": "",
-            "pauseType": "delay",
-            "timeout": "5",
-            "timeoutUnits": "seconds",
-            "rate": "1",
-            "nbRateUnits": "1",
-            "rateUnits": "second",
-            "randomFirst": "1",
-            "randomLast": "5",
-            "randomUnits": "seconds",
-            "drop": false,
-            "x": 300,
-            "y": 140,
-            "wires": [
-                [
-                    "global-44"
-                ]
-            ]
-        },
-        {
-            "id": "global-49",
-            "type": "debug",
-            "name": "",
-            "active": true,
-            "console": "false",
-            "complete": "false",
-            "x": 790,
-            "y": 140,
-            "wires": []
-        },
-        {
-            "id": "global-51",
-            "type": "link in",
-            "name": "Set Default Index Pattern - Start",
-            "links": [
-                "global-68"
-            ],
-            "x": 35,
-            "y": 320,
-            "wires": [
-                [
-                    "global-54"
-                ]
-            ]
-        },
-        {
-            "id": "global-52",
-            "type": "function",
-            "name": "Format",
-            "func": "var index = msg.payload.id;\nvar kibana = global.get('kibana');\n\nif (kibana.major < 6) {\n    msg = {\n        // url: global.get('node-red').url + '/elasticsearch',\n        // method: 'POST',\n        // payload: {\n        //     path: '/.kibana/config/' + kibana.version,\n        //     method: 'POST',\n        //     payload: {\n        //         \"buildNum\": kibana.build\n        //     }\n        // }\n    }\n} else {\n    msg = {\n        url: global.get('node-red').url + '/kibana',\n        method: 'POST',\n        payload: {\n            path: '/api/kibana/settings/defaultIndex',\n            method: 'POST',\n            payload: {\n            \t\"value\": index\n            }\n        }\n    }\n}\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 560,
-            "y": 340,
-            "wires": [
-                [
-                    "global-53"
-                ]
-            ]
-        },
-        {
-            "id": "global-53",
-            "type": "http request",
-            "name": "POST Default Index Pattern",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 760,
-            "y": 340,
-            "wires": [
-                [
-                    "global-74"
-                ]
-            ]
-        },
-        {
-            "id": "global-54",
-            "type": "function",
-            "name": "",
-            "func": "if (msg.payload) {\n    var metricsIndex = msg.payload\n}\n\nif (global.get('kibana').major < 6) {\n    msg = {\n        // currentFlows: msg.payload,\n        // payload: {\n        //     path: '/.kibana/config/_search',\n        //     method: 'GET'\n        // },\n        // url: global.get('node-red').url + '/elasticsearch',\n        // method: 'POST',\n        // index: index\n    }\n} else {\n    msg = {\n        currentFlows: msg.payload,\n        url: global.get('node-red').url + '/kibana',\n        method: 'POST',\n        payload: {\n            path: '/api/saved_objects/config',\n            method: 'GET'\n        },\n        metricsIndex: metricsIndex\n    }\n}\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 130,
-            "y": 320,
-            "wires": [
-                [
-                    "global-55"
-                ]
-            ]
-        },
-        {
-            "id": "global-55",
-            "type": "http request",
-            "name": "Saved Objects",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 280,
-            "y": 320,
-            "wires": [
-                [
-                    "global-56"
-                ]
-            ]
-        },
-        {
-            "id": "global-56",
-            "type": "function",
-            "name": "",
-            "func": "var hasDefaultIndexPattern = false;\n\nif (msg.statusCode == 200) {\n    if (global.get('kibana').major < 6) {\n        // if (msg.payload.hits.hits && msg.payload.hits.hits.length > 0) {\n        //     var hits = msg.payload.hits.hits;\n        //     hasDefaultIndexPattern = true\n        // }\n    } else {\n        if (msg.payload.saved_objects && msg.payload.saved_objects.length > 0) {\n            var objects = msg.payload.saved_objects;\n            \n            var defaultIndexPattern = objects[0].attributes.defaultIndex;\n        }\n        \n        if (!defaultIndexPattern) {\n            return [null, {payload: msg.metricsIndex}]\n        } else {\n            return [{}, null]\n        }\n    }\n}",
-            "outputs": "2",
-            "noerr": 0,
-            "x": 430,
-            "y": 320,
-            "wires": [
-                [
-                    "global-74"
-                ],
-                [
-                    "global-52"
-                ]
-            ]
         },
         {
             "id": "global-5",
@@ -647,21 +187,21 @@
             "active": true,
             "console": "false",
             "complete": "false",
-            "x": 810,
-            "y": 40,
+            "x": 870,
+            "y": 80,
             "wires": []
         },
         {
-            "id": "global-57",
+            "id": "global-14",
             "type": "comment",
             "name": "Kibana Query Proxy",
             "info": "This endpoint exists to simplify the connection to Kibana.\n\nIt could certainly be cleaned up by creating a http node that accept auth changes on the fly or by creating a better ES node.",
             "x": 110,
-            "y": 620,
+            "y": 240,
             "wires": []
         },
         {
-            "id": "global-58",
+            "id": "global-15",
             "type": "switch",
             "name": "",
             "property": "kibana.useTLS",
@@ -677,18 +217,18 @@
             "checkall": "false",
             "outputs": 2,
             "x": 430,
-            "y": 660,
+            "y": 280,
             "wires": [
                 [
-                    "global-63"
+                    "global-21"
                 ],
                 [
-                    "global-59"
+                    "global-17"
                 ]
             ]
         },
         {
-            "id": "global-59",
+            "id": "global-17",
             "type": "http request",
             "name": "Basic Auth without SSL",
             "method": "use",
@@ -696,15 +236,15 @@
             "url": "",
             "tls": "",
             "x": 610,
-            "y": 700,
+            "y": 320,
             "wires": [
                 [
-                    "global-62"
+                    "global-20"
                 ]
             ]
         },
         {
-            "id": "global-60",
+            "id": "global-18",
             "type": "http in",
             "name": "",
             "url": "/kibana",
@@ -712,40 +252,40 @@
             "upload": false,
             "swaggerDoc": "",
             "x": 90,
-            "y": 660,
+            "y": 280,
             "wires": [
                 [
-                    "global-61"
+                    "global-19"
                 ]
             ]
         },
         {
-            "id": "global-61",
+            "id": "global-19",
             "type": "function",
             "name": "",
             "func": "delete msg.req, msg.res;\n\nvar kibana = global.get('kibana');\n\nvar errors = [];\n\nif (kibana) {\n    var url = kibana.url;\n} else {\n    errors.push('No ES Connection found in the Global Configuraiton.')\n}\n\nvar request = msg.payload;\n\nif (request.path) {\n    msg.url = url + request.path;\n} else {\n    errors.push('No path found in payload')   \n}\n\nif (request.payload) {\n    msg.payload = request.payload\n}\n\nif (request.method) {\n    msg.method = request.method\n} else {\n    msg.method = 'GET'\n}\n\nmsg.headers = {\n    'Content-Type': 'application/json',\n    'kbn-xsrf': 'conveyor'\n}\n\nif (global.get('kibana') && global.get('kibana').basicAuth) {\n    var basicAuth = global.get('kibana').basicAuth;\n    if ( basicAuth.username && basicAuth.password) {\n        var username = basicAuth.username;\n        var password = basicAuth.password;\n        var crypt = new Buffer(username + ':' + password).toString('base64')\n        var authStr = 'Basic ' + crypt\n\n        msg.headers.Authorization = authStr;\n    } else {\n        errors.push('Basic Auth Specified, but no username or password found.')   \n    }\n}\n\nmsg.errors = errors;\n\nreturn msg;",
             "outputs": 1,
             "noerr": 0,
             "x": 290,
-            "y": 660,
+            "y": 280,
             "wires": [
                 [
-                    "global-58"
+                    "global-15"
                 ]
             ]
         },
         {
-            "id": "global-62",
+            "id": "global-20",
             "type": "http response",
             "name": "",
             "statusCode": "",
             "headers": {},
             "x": 850,
-            "y": 660,
+            "y": 280,
             "wires": []
         },
         {
-            "id": "global-63",
+            "id": "global-21",
             "type": "http request",
             "name": "Basic Auth with SSL",
             "method": "use",
@@ -753,138 +293,12 @@
             "url": "",
             "tls": "global-16",
             "x": 620,
-            "y": 640,
-            "wires": [
-                [
-                    "global-62"
-                ]
-            ]
-        },
-        {
-            "id": "global-64",
-            "type": "comment",
-            "name": "Create Conveyor Index Pattern",
-            "info": "",
-            "x": 150,
-            "y": 240,
-            "wires": []
-        },
-        {
-            "id": "global-65",
-            "type": "link in",
-            "name": "Create Covneyor Index Pattern - Start",
-            "links": [
-                "global-46"
-            ],
-            "x": 35,
-            "y": 280,
-            "wires": [
-                [
-                    "global-69"
-                ]
-            ]
-        },
-        {
-            "id": "global-68",
-            "type": "link out",
-            "name": "Check Kibana Version - End",
-            "links": [
-                "global-51"
-            ],
-            "x": 915,
-            "y": 280,
-            "wires": []
-        },
-        {
-            "id": "global-69",
-            "type": "function",
-            "name": "",
-            "func": "var index = msg.index;\n\nif (global.get('kibana').major < 6) {\n    msg = {}\n    // msg = {\n    //     currentFlows: msg.payload,\n    //     payload: {\n    //         path: '/.kibana/config/_search',\n    //         method: 'GET'\n    //     },\n    //     url: global.get('node-red').url + '/elasticsearch',\n    //     method: 'POST',\n    //     index: index\n    // }\n} else {\n    msg = {\n        currentFlows: msg.payload,\n        url: global.get('node-red').url + '/kibana',\n        method: 'POST',\n        payload: {\n            path: '/api/saved_objects',\n            method: 'GET'\n        }\n    }\n}\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 130,
-            "y": 280,
-            "wires": [
-                [
-                    "global-70"
-                ]
-            ]
-        },
-        {
-            "id": "global-70",
-            "type": "http request",
-            "name": "Saved Objects",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 280,
-            "y": 280,
-            "wires": [
-                [
-                    "global-71"
-                ]
-            ]
-        },
-        {
-            "id": "global-71",
-            "type": "function",
-            "name": "",
-            "func": "var hasDefaultIndexPattern = false;\n\nif (msg.statusCode == 200) {\n    if (global.get('kibana').major < 6) {\n        // if (msg.payload.hits.hits && msg.payload.hits.hits.length > 0) {\n        //     var hits = msg.payload.hits.hits;\n        //     hasDefaultIndexPattern = true\n        // }\n    } else {\n        if (msg.payload.saved_objects && msg.payload.saved_objects.length > 0) {\n            var objects = msg.payload.saved_objects;\n            \n            var conveyorMetricIndexPattern = objects.find( function( object ) {\n                return object.attributes.title == 'conveyor_metrics'\n            })\n        }\n        \n        if (!conveyorMetricIndexPattern) {\n            return [msg,null]\n        } else {\n            return [null, {payload: conveyorMetricIndexPattern}]\n        }\n    }\n}",
-            "outputs": "2",
-            "noerr": 0,
-            "x": 430,
-            "y": 280,
-            "wires": [
-                [
-                    "global-72"
-                ],
-                [
-                    "global-68"
-                ]
-            ]
-        },
-        {
-            "id": "global-72",
-            "type": "function",
-            "name": "Format",
-            "func": "var kibana = global.get('kibana');\n\nif (kibana.major < 6) {\n    msg = {\n        // url: global.get('node-red').url + '/elasticsearch',\n        // method: 'POST',\n        // payload: {\n        //     path: '/.kibana/config/' + kibana.version,\n        //     method: 'POST',\n        //     payload: {\n        //         \"buildNum\": kibana.build\n        //     }\n        // }\n    }\n} else {\n    msg = {\n        url: global.get('node-red').url + '/kibana',\n        method: 'POST',\n        payload: {\n            path: '/api/saved_objects/index-pattern',\n            method: 'POST',\n            payload: {\n            \t\"attributes\": {\n            \t\t\"title\": \"conveyor_metrics\"\n            \t}\n            }\n        }\n    }\n}\n\nreturn msg;",
-            "outputs": 1,
-            "noerr": 0,
-            "x": 560,
             "y": 260,
             "wires": [
                 [
-                    "global-73"
+                    "global-20"
                 ]
             ]
-        },
-        {
-            "id": "global-73",
-            "type": "http request",
-            "name": "POST Conveyor Pattern",
-            "method": "use",
-            "ret": "obj",
-            "url": "",
-            "tls": "",
-            "x": 750,
-            "y": 260,
-            "wires": [
-                [
-                    "global-68"
-                ]
-            ]
-        },
-        {
-            "id": "global-74",
-            "type": "link out",
-            "name": "Check Kibana Version - End",
-            "links": [
-                "global-26"
-            ],
-            "x": 915,
-            "y": 320,
-            "wires": []
         },
         {
             "id": "global-16",
