@@ -6,6 +6,11 @@
             "key": "repoInformation",
             "title": "Repository Information",
             "description": "Provide the repository name and owner. Please note that the repository must either be public or you must have access to it in order to pull all data."
+        },
+        {
+            "key": "advanced",
+            "title": "Advanced Parameters",
+            "description": "These parameters are used to keep track of paging from the Github API. They can be used to reset the data, but are best left alone."
         }
     ],
     "parameters": [
@@ -35,7 +40,9 @@
         },
         {
             "type": "number",
+            "group": "advanced",
             "name": "stargazerPage",
+            "isAdvance": true,
             "label": "Current Stars Page",
             "description": "The page of starred users that we've made it up to.",
             "required": false
@@ -43,6 +50,8 @@
         {
             "type": "number",
             "name": "subscriberPage",
+            "group": "advanced",
+            "isAdvance": true,
             "label": "Current Subscriber Page",
             "description": "The page of Subscribed users that we've made it up to.",
             "required": false
