@@ -17,7 +17,7 @@ xpack.security.enabled: false
 xpack.monitoring.enabled: false
 xpack.ml.enabled: false
 xpack.graph.enabled: false
-xpack.reporting.enabled: false
+xpack.reporting.enabled: true
 
 conveyor.enabled: true
 conveyor.api.url: "http://api:4000"
