@@ -4,7 +4,7 @@
   "description": "Conveyor",
   "main": "index.js",
   "kibana": {
-    "version": "6.3.2",
+    "version": "6.5.1",
     "templateVersion": "1.0.0"
   },
   "scripts": {
