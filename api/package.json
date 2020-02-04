@@ -37,7 +37,7 @@
         "dotenv": "^4.0.0",
         "elasticsearch": "^13.3.1",
         "h2o2": "^5.4.0",
-        "handlebars": "^4.0.11",
+        "handlebars": "^4.3.0",
         "hapi": "^16.6.3",
         "hapi-swagger": "^7.10.0",
         "hoek": "^4.2.1",
