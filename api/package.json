@@ -44,7 +44,7 @@
         "inert": "^4.2.1",
         "joi": "^10.6.0",
         "moment": "^2.21.0",
-        "node-red": "^0.17.5",
+        "node-red": "^0.20.8",
         "node-red-embedded-start": "^0.1.6",
         "request": "^2.83.0",
         "vision": "^4.1.1"
