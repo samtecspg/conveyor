@@ -12,7 +12,7 @@ A slightly terrifying requirement for developers of Kibana plugins is that they 
 
 #### Files which require change
 
-There are several files which need ot be changed before starting the build.
+There are several files which need to be changed before starting the build.
 * Change the **version** in `./plugin/package.json`
 * Change the Docker tag in `./plugin/Dockerfile`
 
